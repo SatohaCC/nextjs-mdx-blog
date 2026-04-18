@@ -1,0 +1,131 @@
+---
+title: 'Panda CSS と Storybook でダークモードを飼いならす：コンポーネント指向の A11y とスタイル管理'
+date: '2026-04-18'
+excerpt: 'Next.js + Panda CSS 環境でのボタンのアクセシビリティ改善と、Storybook におけるダークモード反映のハマりどころと解決策をまとめる。'
+tags: ['PandaCSS', 'Storybook', 'Next.js', 'Accessibility', 'TypeScript']
+---
+
+# Panda CSS と Storybook でダークモードを飼いならす：コンポーネント指向の A11y とスタイル管理
+
+現代のフロントエンド開発において、**ダークモード対応**と**アクセシビリティ (A11y)** は欠かせない要素です。今回は、Next.js + Panda CSS + react-aria-components (RAC) というスタックで構築しているこのブログにおいて、これらを「いかにシンプルに、かつ堅牢に実装するか」という課題に取り組んだ記録をまとめます。
+
+## 1. Button コンポーネントに A11y を「閉じ込める」
+
+まず取り組んだのは、テーマ切り替えボタンのアクセシビリティ改善です。
+Next.js などの SSR 環境では、ハイドレーション（JSが動く状態になること）が完了するまで現在のテーマが確定しません。そのため、確定するまではボタンをスクリーンリーダーから隠す必要があります。
+
+以前はこのロジックを各ページやコンポーネントで条件分岐として書いていましたが、これを `Button` コンポーネント側に集約しました。
+
+### 課題と解決策
+
+RAC の `Button` は、内部的に `aria-hidden` を DOM に伝播させないという癖があります。これを解決するために、`Button` 内部で `span` ラップを行うワークアラウンドを実装しました。
+
+```tsx
+// Button.tsx 内部のロジック
+export const Button = ({ 'aria-hidden': ariaHidden, ...props }: ButtonProps) => {
+  const isHidden = ariaHidden === 'true' || ariaHidden === true;
+
+  // RAC の Button は tabIndex を直接取らないため、excludeFromTabOrder を使用
+  const excludeFromTabOrder = props.excludeFromTabOrder || isHidden;
+
+  const button = <AriaButton {...props} excludeFromTabOrder={excludeFromTabOrder} />;
+
+  // aria-hidden が true の場合は span でラップして確実に隠す
+  if (isHidden) {
+    return (
+      <span aria-hidden="true" style={{ display: 'contents' }}>
+        {button}
+      </span>
+    );
+  }
+  return button;
+};
+```
+
+このように「コンポーネント自身が、自身の隠蔽状態に合わせてタブ順序からも自動で抜ける」ように設計することで、利用側は `mounted` 状態を `aria-hidden` に渡すだけで済むようになり、宣言的な UI 記述が可能になりました。
+
+## 2. Storybook でダークモードが反映されない？
+
+次に向き合ったのが、**「Storybook でダークモードに切り替えても、タグなどのコンポーネントの文字色が変わらない」**という不具合です。
+
+### なぜ起きたのか
+
+Storybook はコンポーネントを独立した iframe 内でレンダリングします。実際のアプリ（`layout.tsx`）では `body` タグなどにベースの文字色が設定されていますが、Storybook のデフォルト状態ではそれがないため、`color: inherit`（継承）が参照元を見失い、ブラウザのデフォルト色にフォールバックしていました。
+
+### 解決策：Storybook デコレーターによる環境の再現
+
+「コンポーネント側を修正する」のではなく、**「Storybook の環境に正しい親要素（Context）を提供する」**ことで解決しました。
+
+#### 1. Preview デコレーターの強化
+
+`.storybook/preview.tsx` で、すべてのストーリーをラップする `div` に対し、アプリのベースとなる文字色と背景色を適用しました。
+
+```tsx
+// .storybook/preview.tsx
+decorators: [
+  (Story, context) => {
+    const theme = context.globals.theme || 'light';
+    return (
+      <div
+        data-theme={theme}
+        className={css({
+          color: 'text.default', // 親としてテキスト色を保持
+          bg: 'bg.default',    // 背景色も同期
+          minH: '100vh',
+        })}
+      >
+        <div style={{ padding: '2rem' }}>
+          <Story />
+        </div>
+      </div>
+    );
+  },
+],
+```
+
+#### 2. トークン定義の盤石化
+
+また、環境に左右されず `{colors.white}` などの参照を確実にするため、プロジェクトの `tokens` に明示的な定義を追加しました。
+
+```ts
+// panda.config.ts
+export default defineConfig({
+  theme: {
+    extend: {
+      tokens: {
+        colors: {
+          white: { value: '#ffffff' }, // 明示的な定義で解決を確実にする
+        },
+      },
+      // ...
+    },
+  },
+});
+```
+
+これにより、コンポーネント自体は `color: inherit` という柔軟な設計を保ったまま、Storybook 上でも本番環境と同じ見た目を再現できました。
+
+## 3. 開発者体験 (DX) とカバレッジの整理
+
+開発を進める中で、Vitest のカバレッジレポートに Panda CSS が生成する `styled-system/` 以下のコードが含まれてしまい、数値が実態より低く出てしまう問題がありました。
+
+ライブラリによって生成されるコードはテストの対象外とするのが適切であるため、`vitest.config.ts` で除外設定を行いました。
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    coverage: {
+      exclude: [...configDefaults.coverage.exclude!, 'styled-system/**'],
+    },
+  },
+});
+```
+
+## まとめ
+
+今回の作業を通じて、**「コンポーネントライブラリの癖をラップして、プロジェクト固有の A11y 要件をデフォルト化する」**ことの効果を実感しました。
+
+また、Panda CSS のようなビルドタイム CSS-in-JS は非常に強力ですが、Storybook のような外部ツールと組み合わせる際は、「どのファイルがスキャンのトリガーになるか」を意識することが重要です。
+
+設定を整えたことで、ダークモード環境下でも自信を持ってコンポーネント駆動開発を進められるようになりました。

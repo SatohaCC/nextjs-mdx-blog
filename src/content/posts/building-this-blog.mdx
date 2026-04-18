@@ -1,0 +1,155 @@
+---
+title: 'このブログを作り直した話：技術スタックと設計の記録'
+date: '2026-04-18'
+excerpt: 'Next.js 16・PandaCSS・MDX を中心に、ブログをゼロから作り直した。採用した技術と設計方針をまとめる。'
+tags: ['Next.js', 'React', 'PandaCSS', 'MDX', 'TypeScript']
+---
+
+# このブログを作り直した話：技術スタックと設計の記録
+
+Antigravity使って作り直してみた。
+個人ブログとかはもう簡単に作れる。なによりエラー時に調査時間が短くなった。
+最新の部分などはややハマるが、それでも十分早い。
+
+## 技術スタック
+
+| カテゴリ               | 採用技術                        |
+| ---------------------- | ------------------------------- |
+| フレームワーク         | Next.js 16（App Router）        |
+| スタイリング           | PandaCSS                        |
+| コンポーネント         | React Aria Components           |
+| コンテンツ             | MDX（`next-mdx-remote-client`） |
+| シンタックスハイライト | rehype-pretty-code（Shiki）     |
+| テスト                 | Vitest + Storybook              |
+| 言語                   | TypeScript                      |
+
+## コンテンツ管理：データベースなし
+
+記事はすべて `src/content/posts/` 以下の MDX ファイルとして管理している。データベースは使っていない。
+
+```
+src/content/posts/
+├── building-this-blog.mdx
+├── html-a-vs-button.mdx
+└── ...
+```
+
+ビルド時にファイルを読み込んで静的に生成する構成なので、サーバーやデータベースの管理が不要でシンプルに保てる。記事の追加はファイルを置くだけで済む。
+
+フロントマターに `title`・`date`・`excerpt`・`tags` を書くと、一覧ページやOGPに自動で反映される。
+
+```mdx
+---
+title: 'タイトル'
+date: '2026-04-18'
+excerpt: '概要'
+tags: ['Next.js', 'React']
+---
+
+本文...
+```
+
+## ディレクトリ構成：Vertical Sliced Architecture
+
+「技術的な層」ではなく「機能の単位」でディレクトリを切る Vertical Sliced Architecture を採用した。
+
+```
+src/
+├── app/           # ルーティングのみ。ロジックは持たない
+├── components/    # 機能非依存の共通コンポーネント
+│   ├── ui/        # Button, Tag, AppLink など
+│   ├── layouts/   # Header, Footer
+│   └── mdx/       # MDXレンダラー
+├── features/      # 機能スライス
+│   ├── posts/     # 記事一覧・詳細・検索・タグ
+│   └── about/     # プロフィールページ
+└── lib/           # ユーティリティ
+```
+
+`features/posts/` の中には `api/`・`components/`・`types.ts` が揃っていて、記事に関わる変更はここだけ見れば済む。技術横断的なディレクトリ（`services/`・`repositories/` など）を作ると、1つの機能を追加するたびに複数の場所を変更することになる。それが嫌だった。
+
+## スタイリング：PandaCSS
+
+PandaCSS を採用した。ビルド時に静的な CSS を出力するので、ランタイムのオーバーヘッドがない。
+
+```typescript
+// ComponentName.styles.ts
+export const containerStyles = css({
+  bg: 'bg.card',
+  borderRadius: 'card',
+  p: '6',
+  shadow: 'sm',
+});
+```
+
+スタイルはコンポーネントファイルには書かず、`.styles.ts` に分離している。インラインスタイルやハードコードした値（`#fff`・`16px` など）は禁止にして、すべてトークンを使う。
+
+global-error.tsxはエラーで読み込まれないものがある可能性があるため、例外的にCSSのもインラインがいいらしい。
+
+## MDX レンダリング
+
+記事の本文は `next-mdx-remote-client` で MDX をレンダリングしている。
+プラグインは次の3つ。
+
+- **remark-gfm**：テーブル・取り消し線・タスクリストなど GitHub Flavored Markdown の拡張
+- **rehype-slug**：見出しに `id` を付与（目次のアンカーリンク用）
+- **rehype-pretty-code**：Shiki ベースのシンタックスハイライト（テーマ：`github-dark`）
+
+```tsx
+<MDXRemote
+  source={content}
+  options={{
+    mdxOptions: {
+      remarkPlugins: [remarkGfm],
+      rehypePlugins: [[rehypeSlug], [rehypePrettyCode, { theme: 'github-dark' }]],
+    },
+  }}
+/>
+```
+
+拡張の記法も作れる
+GitHub の NOTE / TIP / WARNING / CAUTION / IMPORTANT アラート記法にも対応している。
+
+> [!TIP]
+> こんな感じで書けば、スタイルが当たる。
+
+## Next.js 16 のキャッシュ戦略
+
+Next.js 16 では `'use cache'` ディレクティブが導入された。
+関数の先頭に書くだけでその関数の結果がキャッシュされる。
+Reactのキャッシュとどっちを優先させるのかわからん。
+
+```typescript
+export const getAllPosts = async (): Promise<Post[]> => {
+  'use cache';
+  cacheLife('days');
+  cacheTag('posts');
+
+  // ファイルシステムを読む処理...
+};
+```
+
+`cacheTag('posts')` でタグを付けておくと、`revalidateTag('posts')` でキャッシュを個別に無効化できる。
+
+以前は React の `cache()` と組み合わせて使っていたが、`'use cache'` だけで十分なことに気づいて React 側は削除した。
+
+## 動的ページの Suspense 境界
+
+検索ページは `searchParams`（URLクエリパラメータ）を読むため、ページ全体を静的生成できない。Next.js 16 では `searchParams` を `await` すると動的レンダリングになる。
+
+Suspense で囲むことで、静的なシェル（ヘッダー・フッター）は即座に配信しつつ、検索結果部分だけ非同期で返せる。
+
+```tsx
+const SearchPage = ({ searchParams }: SearchPageProps) => (
+  <Suspense fallback={<SearchSkeleton />}>
+    <SearchContainer searchParams={searchParams} />
+  </Suspense>
+);
+```
+
+## まとめ
+
+作り直したことで、技術的な負債がなくゼロから好きな設計で書けた。
+特に Vertical Sliced Architecture と PandaCSS の組み合わせは開発体験がよい。機能追加のたびに触る場所が明確で、スタイルの意図しない汚染も起きにくい。
+
+しばらくはこの構成で運用しながら、記事を書いていく予定。

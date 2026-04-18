@@ -1,0 +1,71 @@
+@layer reset, base, tokens, recipes, utilities;
+
+html {
+  scrollbar-gutter: stable;
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+}
+
+/* View Transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-new(root) {
+  animation-name: fade-in, slide-up;
+}
+
+::view-transition-old(root) {
+  animation-name: fade-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Ensure shared elements (like the title) are not affected by the root animations if they have their own names */
+/* Browser handles this automatically, but we can fine-tune shared element animations here if needed */
+::view-transition-group(*) {
+  animation-duration: 0.4s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent the header from animating/fading */
+::view-transition-group(page-header) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root),
+  ::view-transition-group(*) {
+    animation: none !important;
+  }
+}
+
+/* Global focus visibility fallback */
+:focus-visible {
+  outline: 2px solid var(--colors-accent-default);
+  outline-offset: 2px;
+}

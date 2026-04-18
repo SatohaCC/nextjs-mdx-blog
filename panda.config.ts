@@ -1,0 +1,331 @@
+import { defineConfig } from '@pandacss/dev';
+
+export default defineConfig({
+  preflight: true,
+  include: [
+    './src/**/*.{js,jsx,ts,tsx}',
+    './pages/**/*.{js,jsx,ts,tsx}',
+    './pages/**/*stories.{js,jsx,ts,tsx}',
+    './.storybook/**/*.{js,jsx,ts,tsx}',
+  ],
+  exclude: [],
+
+  conditions: {
+    light: '[data-theme=light] &',
+    dark: '.dark &, [data-theme=dark] &',
+  },
+
+  theme: {
+    extend: {
+      keyframes: {
+        shimmer: {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+      },
+      tokens: {
+        // サイズトークン
+        sizes: {
+          sidebar: { value: '280px' },
+          searchBox: { value: '140px' },
+          searchBoxExpanded: { value: '160px' },
+          accentBar: { value: '4px' },
+        },
+        // ボーダー幅トークン
+        borderWidths: {
+          thin: { value: '1px' },
+          medium: { value: '2px' },
+          thick: { value: '4px' },
+        },
+        // シャドウトークン
+        shadows: {
+          sm: { value: '0 1px 2px rgba(0,0,0,0.05)' },
+          md: { value: '0 4px 12px rgba(0,0,0,0.1)' },
+          lg: { value: '0 10px 25px rgba(0,0,0,0.15)' },
+        },
+        // フォントウェイトトークン
+        fontWeights: {
+          extrabold: { value: '800' },
+        },
+        // 行高トークン
+        lineHeights: {
+          none: { value: '1' },
+          snug: { value: '1.4' },
+          relaxed: { value: '1.8' },
+        },
+        // フォントファミリートークン
+        fonts: {
+          mono: {
+            value:
+              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          },
+        },
+        // イージングトークン
+        easings: {
+          standard: { value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+        },
+        // デュレーショントークン
+        durations: {
+          medium: { value: '250ms' },
+        },
+        // フォントサイズトークン
+        fontSizes: {
+          code: { value: '0.9em' },
+        },
+        // z-indexトークン
+        zIndex: {
+          hide: { value: -1 },
+          base: { value: 0 },
+          docked: { value: 10 },
+          dropdown: { value: 1000 },
+          sticky: { value: 1100 },
+          banner: { value: 1200 },
+          overlay: { value: 1300 },
+          modal: { value: 1400 },
+          popover: { value: 1500 },
+          skipLink: { value: 1600 },
+          toast: { value: 1700 },
+        },
+        colors: {
+          inherit: { value: 'inherit' },
+          current: { value: 'currentColor' },
+          white: { value: '#ffffff' },
+          black: { value: '#000000' },
+          // たけのこの里カラーパレット
+          takenoko: {
+            // チョコレートブラウン
+            chocolate: {
+              50: { value: '#EFEBE9' },
+              100: { value: '#D7CCC8' },
+              200: { value: '#BCAAA4' },
+              300: { value: '#A1887F' },
+              400: { value: '#8D6E63' },
+              500: { value: '#795548' },
+              600: { value: '#6D4C41' },
+              700: { value: '#5D4037' },
+              800: { value: '#4E342E' },
+              900: { value: '#3E2723' },
+            },
+            // クリーム（ビスケット）
+            cream: {
+              50: { value: '#FFFDE7' },
+              100: { value: '#FFF9C4' },
+              200: { value: '#FFF59D' },
+              300: { value: '#FFF176' },
+              400: { value: '#FFEE58' },
+              500: { value: '#FDD835' },
+              600: { value: '#FBC02D' },
+              700: { value: '#F9A825' },
+              800: { value: '#F57F17' },
+              900: { value: '#FF6F00' },
+            },
+            // 竹の葉グリーン（より深い色を追加）
+            bamboo: {
+              50: { value: '#E8F5E9' },
+              100: { value: '#C8E6C9' },
+              200: { value: '#A5D6A7' },
+              300: { value: '#81C784' },
+              400: { value: '#66BB6A' },
+              500: { value: '#4CAF50' },
+              600: { value: '#43A047' },
+              700: { value: '#388E3C' },
+              800: { value: '#2E7D32' },
+              900: { value: '#1B5E20' },
+              950: { value: '#051507' }, // 極めて深い緑（AAA背景用）
+            },
+          },
+        },
+      },
+      semanticTokens: {
+        colors: {
+          bg: {
+            default: { value: { base: '{colors.white}', _dark: '#09090b' } },
+            muted: {
+              value: { base: '{colors.takenoko.bamboo.50}', _dark: '#18181b' },
+            },
+            subtle: {
+              value: {
+                base: '{colors.takenoko.bamboo.100}',
+                _dark: '#27272a',
+              },
+            },
+            active: {
+              value: { base: '{colors.takenoko.bamboo.900}', _dark: '#27272a' },
+            },
+          },
+          text: {
+            default: {
+              value: {
+                base: '{colors.takenoko.chocolate.900}',
+                _dark: '{colors.white}',
+              },
+            },
+            muted: {
+              value: {
+                base: '{colors.takenoko.chocolate.700}',
+                _dark: '{colors.white}',
+              },
+            },
+            inverted: { value: { base: '{colors.white}', _dark: '{colors.white}' } },
+            onAccent: {
+              value: {
+                base: '{colors.white}',
+                _dark: '{colors.white}',
+              },
+            },
+          },
+          border: {
+            default: {
+              value: {
+                base: '{colors.takenoko.bamboo.200}',
+                _dark: '#27272a',
+              },
+            },
+            muted: {
+              value: {
+                base: '{colors.takenoko.bamboo.100}',
+                _dark: '#18181b',
+              },
+            },
+          },
+          accent: {
+            default: {
+              value: {
+                base: '{colors.takenoko.bamboo.900}',
+                _dark: '{colors.takenoko.bamboo.400}',
+              },
+            },
+            solid: {
+              value: {
+                base: '{colors.takenoko.bamboo.900}',
+                _dark: '{colors.takenoko.bamboo.800}',
+              },
+            },
+            hover: {
+              value: {
+                base: '{colors.takenoko.bamboo.700}',
+                _dark: '{colors.takenoko.bamboo.300}',
+              },
+            },
+            focusRing: {
+              value: {
+                base: '{colors.takenoko.bamboo.900}',
+                _dark: '{colors.takenoko.bamboo.400}',
+              },
+            },
+          },
+          link: {
+            default: {
+              value: {
+                base: '{colors.takenoko.bamboo.900}',
+                _dark: '{colors.white}',
+              },
+            },
+            hover: {
+              value: {
+                base: '{colors.takenoko.bamboo.700}',
+                _dark: '{colors.takenoko.bamboo.300}',
+              },
+            },
+          },
+          overlay: {
+            subtle: {
+              value: { base: 'rgba(0, 0, 0, 0.04)', _dark: 'rgba(255, 255, 255, 0.08)' },
+            },
+            light: {
+              value: { base: 'rgba(0, 0, 0, 0.06)', _dark: 'rgba(255, 255, 255, 0.12)' },
+            },
+          },
+          alert: {
+            note: {
+              fg: { value: { base: '{colors.blue.800}', _dark: '{colors.blue.200}' } },
+              bg: {
+                value: { base: '{colors.blue.50}', _dark: 'rgba(59, 130, 246, 0.1)' },
+              },
+              border: {
+                value: { base: '{colors.blue.200}', _dark: '{colors.blue.800}' },
+              },
+            },
+            tip: {
+              fg: {
+                value: {
+                  base: '{colors.takenoko.bamboo.950}',
+                  _dark: '{colors.takenoko.bamboo.100}',
+                },
+              },
+              bg: {
+                value: {
+                  base: '{colors.takenoko.bamboo.50}',
+                  _dark: 'rgba(76, 175, 80, 0.1)',
+                },
+              },
+              border: {
+                value: {
+                  base: '{colors.takenoko.bamboo.200}',
+                  _dark: '{colors.takenoko.bamboo.800}',
+                },
+              },
+            },
+            important: {
+              fg: { value: { base: '{colors.purple.800}', _dark: '{colors.purple.200}' } },
+              bg: {
+                value: { base: '{colors.purple.50}', _dark: 'rgba(168, 85, 247, 0.1)' },
+              },
+              border: {
+                value: { base: '{colors.purple.200}', _dark: '{colors.purple.800}' },
+              },
+            },
+            warning: {
+              fg: { value: { base: '{colors.amber.900}', _dark: '{colors.amber.200}' } },
+              bg: {
+                value: { base: '{colors.amber.50}', _dark: 'rgba(245, 158, 11, 0.1)' },
+              },
+              border: {
+                value: { base: '{colors.amber.200}', _dark: '{colors.amber.800}' },
+              },
+            },
+            caution: {
+              fg: { value: { base: '{colors.red.800}', _dark: '{colors.red.100}' } },
+              bg: {
+                value: { base: '{colors.red.50}', _dark: 'rgba(239, 68, 68, 0.1)' },
+              },
+              border: {
+                value: { base: '{colors.red.200}', _dark: '{colors.red.800}' },
+              },
+            },
+          },
+        },
+        radii: {
+          card: { value: '{radii.2xl}' },
+          button: { value: '{radii.md}' },
+        },
+        shadows: {
+          card: {
+            default: { value: '{shadows.sm}' },
+            hover: { value: '{shadows.md}' },
+          },
+        },
+        spacing: {
+          layout: {
+            gutter: {
+              value: { base: '{spacing.6}', lg: '{spacing.8}' },
+            },
+            pagePadding: { value: '{spacing.layout.gutter}' },
+          },
+          component: {
+            padding: { value: '{spacing.6}' },
+          },
+          section: {
+            gap: { value: { base: '{spacing.10}', lg: '{spacing.14}' } },
+          },
+          content: {
+            sectionGap: { value: '{spacing.12}' },
+          },
+        },
+      },
+    },
+  },
+
+  outdir: 'styled-system',
+  jsxFramework: 'react',
+});

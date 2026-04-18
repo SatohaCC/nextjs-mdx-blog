@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(npx prettier:*)",
+      "mcp__panda__get_usage_report",
+      "mcp__panda__get_config",
+      "mcp__panda__get_semantic_tokens",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('storybook version:', d.get\\('version'\\)\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(xargs grep *)",
+      "Bash(xargs python3 *)",
+      "Bash(grep -v \"^//\")",
+      "Bash(npx storybook *)",
+      "Bash(netstat -ano)",
+      "Bash(findstr \":600\")"
+    ]
+  }
+}
