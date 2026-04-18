@@ -89,10 +89,28 @@ jj describe -m "テスト用下書きの作成"
 ```
 
 ```bash
-jj git push -b create-draft-test
+jj git push -b test
 
-# Error: Won't push commit f246a38911d2 since it has no description
-# Hint: Rejected commit: srzsvonp f246a389 create-draft-test | (no description set)
+# Changes to push to origin:
+#   Add bookmark test to f5597f3b7804
+```
+
+pushされたぽい
+Githubを開くとtestブランチが作成されている。
+
+ちなみに
+
+```bash
+git branch
+```
+
+この時点でもmainブランチ。
+
+Githubでプルリクエストを作成する。
+マージ。
+
+```bash
+jj git fetch
 ```
 
 ### 参考資料
