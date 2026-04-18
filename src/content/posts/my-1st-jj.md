@@ -3,6 +3,7 @@ title: 'Jujutsu のメモ書き'
 date: '2026-04-18'
 excerpt: 'gitと併用して使えるJujutsu'
 tags: ['Jujutsu']
+draft: true
 ---
 
 # Jujutsu のメモ書き

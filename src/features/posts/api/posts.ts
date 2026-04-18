@@ -35,7 +35,14 @@ export const getAllPosts = async (): Promise<Post[]> => {
       };
     });
 
-  return Promise.all(postsPromises);
+  const allPosts = await Promise.all(postsPromises);
+
+  // Filter out drafts in production
+  if (process.env.NODE_ENV === 'production') {
+    return allPosts.filter((post) => !post.frontmatter.draft);
+  }
+
+  return allPosts;
 };
 
 export const getPostBySlug = async (slug: string): Promise<Post | undefined> => {
@@ -50,6 +57,10 @@ export const getPostBySlug = async (slug: string): Promise<Post | undefined> => 
   }
 
   if (!parsed) {
+    return undefined;
+  }
+
+  if (process.env.NODE_ENV === 'production' && parsed.data.draft) {
     return undefined;
   }
 
