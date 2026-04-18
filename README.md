@@ -1,6 +1,6 @@
-# My Tech Blog
+# Satoha's Blog
 
-Next.js、PandaCSS、React Aria を使用した静的生成ブログです。
+Next.js、PandaCSS、React Aria を使用した、Satoha（[satoha.net](https://satoha.net/)）による静的生成ブログです。
 
 ## 技術スタック
 
@@ -20,7 +20,6 @@ Next.js、PandaCSS、React Aria を使用した静的生成ブログです。
 - 📄 **ページネーション**: 静的生成によるページ分割
 - 🌙 **ダークモード**: システム設定連動のテーマ切り替え
 - ⌨️ **アクセシビリティ**: React Aria によるキーボードナビゲーション
-- 🎨 **カスタムテーマ**: 「たけのこの里」をイメージした配色
 - 📊 **シンタックスハイライト**: `rehype-pretty-code` + Shiki
 - ✅ **GFM対応**: テーブル、タスクリスト、取り消し線など
 - 📑 **目次自動生成**: 見出しから目次を自動生成
@@ -130,12 +129,12 @@ src/
 
 ### 機能別ディレクトリで「何を直せばいいか」を直感的に
 
-| やりたいこと | 開くディレクトリ |
-| --- | --- |
-| ボタンのデザインを変えたい | `src/components/ui/Button/` |
-| 記事一覧カードのUIを変えたい | `src/features/posts/components/PostList/ArticleCard/` |
-| 記事取得のロジックを変えたい | `src/features/posts/api/postUsecase.ts` |
-| ヘッダーのレイアウトを変えたい | `src/components/layouts/Header/` |
+| やりたいこと                   | 開くディレクトリ                                      |
+| ------------------------------ | ----------------------------------------------------- |
+| ボタンのデザインを変えたい     | `src/components/ui/Button/`                           |
+| 記事一覧カードのUIを変えたい   | `src/features/posts/components/PostList/ArticleCard/` |
+| 記事取得のロジックを変えたい   | `src/features/posts/api/postUsecase.ts`               |
+| ヘッダーのレイアウトを変えたい | `src/components/layouts/Header/`                      |
 
 ### デザイナーとエンジニアの分業
 
@@ -157,8 +156,6 @@ ComponentName/
 ├── ComponentNamePresentational.styles.ts    # PandaCSS スタイル
 └── index.ts                                 # re-export
 ```
-
-
 
 ## 記事の書き方
 
