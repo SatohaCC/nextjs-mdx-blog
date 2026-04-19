@@ -9,6 +9,10 @@
     "panda": {
       "command": "npx",
       "args": ["panda", "mcp"]
+    },
+    "storybook": {
+      "type": "http",
+      "url": "http://localhost:6006/mcp"
     }
   }
 }

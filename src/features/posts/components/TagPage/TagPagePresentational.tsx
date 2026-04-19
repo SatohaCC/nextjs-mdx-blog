@@ -1,5 +1,5 @@
 import { AppLink } from '@/components/ui/AppLink';
-import { PostListPresentational as PostList } from '@/features/posts/components/PostList';
+import { PostListPresentational as PostList } from '@/features/posts/components/PostList/PostListPresentational';
 import type { Post } from '@/features/posts/types';
 
 import { backToHomeLinkStyles, tagPageContainerStyles } from './TagPagePresentational.styles';
