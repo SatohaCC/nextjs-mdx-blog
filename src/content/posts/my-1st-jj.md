@@ -52,7 +52,7 @@ Step 3: コードを書く・確認する
 jj bookmark set create-draft-test -r "@"
 ```
 
-WindowsのPowerShellだとダブルクオーテーションがないと通らない？？
+WindowsのPowerShellだとダブルクオーテーションがないと通らない。
 
 ```bash
 git branch
@@ -120,6 +120,14 @@ jj new main@origin
 ```
 
 明示的にリモートのmainブランチから派生させる。
+
+```bash
+git branch
+# * (HEAD detached from refs/heads/main)
+#   main
+```
+
+jjとgitでブランチの考えが違うのでこうなるが問題ない。
 
 ### 参考資料
 
