@@ -11,14 +11,14 @@ export const statusPageWrapperStyles = flex({
 });
 
 export const statusPageStatusStyles = css({
-  fontSize: '7xl',
+  fontSize: { base: '5xl', sm: '7xl' },
   fontWeight: 'extrabold',
   color: 'accent.default',
   lineHeight: 'none',
 });
 
 export const statusPageTitleStyles = css({
-  fontSize: '2xl',
+  fontSize: { base: 'xl', sm: '2xl' },
   fontWeight: 'bold',
   color: 'text.default',
 });

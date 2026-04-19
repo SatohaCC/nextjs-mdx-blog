@@ -21,7 +21,7 @@ export const headerInnerStyles = flex({
 });
 
 export const logoStyles = css({
-  fontSize: 'xl',
+  fontSize: { base: 'lg', sm: 'xl' },
   fontWeight: 'extrabold',
   letterSpacing: 'tighter',
   color: 'text.default',
@@ -30,7 +30,7 @@ export const logoStyles = css({
   _hover: { color: 'accent.default' },
 });
 
-export const navContainerStyles = flex({ gap: '4', align: 'center' });
+export const navContainerStyles = flex({ gap: { base: '2', sm: '4' }, align: 'center' });
 
 export const navLinkStyles = css({
   fontSize: 'sm',

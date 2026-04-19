@@ -2,7 +2,7 @@ import { css } from '../../../../styled-system/css';
 
 // Page Title Styles
 export const pageTitleStyles = css({
-  fontSize: '3xl',
+  fontSize: { base: '2xl', sm: '3xl' },
   fontWeight: '800',
   letterSpacing: 'tight',
   color: 'text.default',
@@ -17,7 +17,7 @@ export const pageTitleWithSubtitleStyles = css({
 // Subtitle Styles
 export const subtitleStyles = css({
   color: 'text.muted',
-  fontSize: 'lg',
+  fontSize: { base: 'sm', sm: 'lg' },
   fontWeight: 'medium',
   mt: '-4',
 });

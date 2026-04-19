@@ -3,7 +3,7 @@ import { stack } from '../../../../../../styled-system/patterns';
 
 // Card Base Styles
 export const articleCardStyles = css({
-  p: '6',
+  p: { base: '4', sm: '6' },
   borderRadius: 'card',
   border: '1px solid',
   borderColor: 'border.default',
@@ -20,7 +20,7 @@ export const articleCardStyles = css({
 
 // Typography Styles
 export const titleStyles = css({
-  fontSize: '2xl',
+  fontSize: { base: 'xl', sm: '2xl' },
   fontWeight: 'bold',
   color: 'text.default',
 });
