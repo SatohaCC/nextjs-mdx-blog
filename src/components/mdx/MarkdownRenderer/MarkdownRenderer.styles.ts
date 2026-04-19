@@ -2,7 +2,7 @@ import { css } from '../../../../styled-system/css';
 
 export const markdownContentStyles = css({
   '& h1': {
-    fontSize: '3xl',
+    fontSize: { base: '2xl', sm: '3xl' },
     fontWeight: 'bold',
     mt: '8',
     mb: '6',
@@ -12,17 +12,17 @@ export const markdownContentStyles = css({
     color: 'text.default',
   },
   '& h2': {
-    fontSize: '2xl',
+    fontSize: { base: 'xl', sm: '2xl' },
     fontWeight: 'bold',
     mt: '8',
     mb: '5',
     color: 'text.default',
   },
-  '& h3': { fontSize: 'xl', fontWeight: 'bold', mt: '6', mb: '4', color: 'text.default' },
+  '& h3': { fontSize: { base: 'lg', sm: 'xl' }, fontWeight: 'bold', mt: '6', mb: '4', color: 'text.default' },
   '& p': {
     mb: '5',
     lineHeight: 'relaxed',
-    fontSize: 'lg',
+    fontSize: { base: 'base', sm: 'lg' },
     color: 'text.muted',
     textWrap: 'pretty',
   },
@@ -65,7 +65,7 @@ export const markdownContentStyles = css({
     color: 'text.muted',
     my: '6',
   },
-  '& table': { w: 'full', borderCollapse: 'collapse', mb: '8' },
+  '& table': { w: 'full', borderCollapse: 'collapse', mb: '8', display: 'block', overflowX: 'auto' },
   '& th': {
     borderBottom: '2px solid',
     borderColor: 'border.default',

@@ -17,7 +17,7 @@ export const mainContentLayoutStyles = css({
   maxW: '6xl',
   mx: 'auto',
   px: { base: '6', lg: '8' },
-  py: '8',
+  py: { base: '6', lg: '8' },
   display: 'flex',
   flexDirection: { base: 'column', lg: 'row' },
   gap: '12',

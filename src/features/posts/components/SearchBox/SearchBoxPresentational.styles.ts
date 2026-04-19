@@ -1,7 +1,6 @@
 import { css } from '../../../../../styled-system/css';
-import { flex } from '../../../../../styled-system/patterns';
 
-export const searchFormStyles = flex({ align: 'center', gap: '2' });
+export const searchFormStyles = css({ display: { base: 'none', md: 'flex' }, alignItems: 'center', gap: '2' });
 
 export const searchContainerStyles = css({
   display: 'flex',
