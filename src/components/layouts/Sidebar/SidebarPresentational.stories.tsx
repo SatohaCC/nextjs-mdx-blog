@@ -60,7 +60,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     // Assert: 最新記事のリンクが表示される
-    const postLinks = within(canvasElement).getAllByRole('link', { name: /Hello World|Next\.js|TypeScript/ });
+    const postLinks = within(canvasElement).getAllByRole('link', {
+      name: /Hello World|Next\.js|TypeScript/,
+    });
     await expect(postLinks.length).toBeGreaterThanOrEqual(1);
   },
 };

@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/features/posts/api/posts', () => ({ getAllPosts: vi.fn() }));
-
 import type { Post } from '../types';
 import { getAllPosts } from './posts';
 import { getPaginatedSearchPosts, getSearchTotalPages, searchPosts } from './search';
+
+vi.mock('@/features/posts/api/posts', () => ({ getAllPosts: vi.fn() }));
 
 function makePost(slug: string, title: string, excerpt: string, tags: string[] = []): Post {
   return {
