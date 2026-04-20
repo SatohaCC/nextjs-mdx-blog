@@ -13,6 +13,7 @@ export default defineConfig({
   conditions: {
     light: '[data-theme=light] &',
     dark: '.dark &, [data-theme=dark] &',
+    smDown: '@media (max-width: 639px)',
   },
 
   theme: {

@@ -1,30 +1,40 @@
+import fs from 'fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
-vi.mock('fs', () => ({
-  default: {
-    promises: {
-      access: vi.fn(),
-      readdir: vi.fn(),
-    },
-  },
-}));
-vi.mock('@/lib/mdx-parser');
-
-import fs from 'fs';
 import { readMarkdownFile } from '@/lib/mdx-parser';
+
 import type { Post, PostFrontmatter } from '../types';
 import {
   getAllPosts,
   getAllTags,
+  getMarkdownDataByPath,
   getPaginatedPosts,
+  getPostBySlug,
   getPostsByTag,
   getRelatedPosts,
   getSortedPostsData,
   getTotalPages,
 } from './posts';
 
-function makePost(slug: string, overrides: Partial<PostFrontmatter> & { content?: string } = {}): Post {
+const { mockReaddir } = vi.hoisted(() => ({
+  mockReaddir: vi.fn<() => Promise<string[]>>(),
+}));
+
+vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
+vi.mock('fs', () => ({
+  default: {
+    promises: {
+      access: vi.fn(),
+      readdir: mockReaddir,
+    },
+  },
+}));
+vi.mock('@/lib/mdx-parser');
+
+function makePost(
+  slug: string,
+  overrides: Partial<PostFrontmatter> & { content?: string } = {}
+): Post {
   const { content = '', ...frontmatterOverrides } = overrides;
   return {
     slug,
@@ -43,7 +53,7 @@ function makePost(slug: string, overrides: Partial<PostFrontmatter> & { content?
 function setupAllPosts(posts: Post[]) {
   const fileNames = posts.map((p) => `${p.slug}.mdx`);
   vi.mocked(fs.promises.access).mockResolvedValue(undefined);
-  vi.mocked(fs.promises.readdir).mockResolvedValue(fileNames as any);
+  mockReaddir.mockResolvedValue(fileNames);
   vi.mocked(readMarkdownFile).mockImplementation(async (relativePath: string) => {
     const slug = relativePath.replace(/^posts\//, '').replace(/\.mdx?$/, '');
     const post = posts.find((p) => p.slug === slug);
@@ -65,7 +75,7 @@ describe('getAllPosts', () => {
 
   it('.md/.mdx 以外のファイルを無視する', async () => {
     vi.mocked(fs.promises.access).mockResolvedValue(undefined);
-    vi.mocked(fs.promises.readdir).mockResolvedValue(['.DS_Store', 'post-a.mdx'] as any);
+    mockReaddir.mockResolvedValue(['.DS_Store', 'post-a.mdx']);
     vi.mocked(readMarkdownFile).mockResolvedValue({
       data: { title: 'A', date: '2024-01-01', excerpt: 'e', tags: [], draft: false },
       content: '',
@@ -126,7 +136,9 @@ describe('getPaginatedPosts', () => {
   it('page 1 は最初の 6 件', async () => {
     setupAllPosts(
       Array.from({ length: 7 }, (_, i) =>
-        makePost(`post-${String(i).padStart(2, '0')}`, { date: `2024-01-${String(i + 1).padStart(2, '0')}` })
+        makePost(`post-${String(i).padStart(2, '0')}`, {
+          date: `2024-01-${String(i + 1).padStart(2, '0')}`,
+        })
       )
     );
     const posts = await getPaginatedPosts(1);
@@ -136,7 +148,9 @@ describe('getPaginatedPosts', () => {
   it('page 2 は残りの 1 件', async () => {
     setupAllPosts(
       Array.from({ length: 7 }, (_, i) =>
-        makePost(`post-${String(i).padStart(2, '0')}`, { date: `2024-01-${String(i + 1).padStart(2, '0')}` })
+        makePost(`post-${String(i).padStart(2, '0')}`, {
+          date: `2024-01-${String(i + 1).padStart(2, '0')}`,
+        })
       )
     );
     const posts = await getPaginatedPosts(2);
@@ -175,10 +189,7 @@ describe('getPostsByTag', () => {
   afterEach(() => vi.resetAllMocks());
 
   it('マッチするタグの投稿のみ返す', async () => {
-    setupAllPosts([
-      makePost('a', { tags: ['react'] }),
-      makePost('b', { tags: ['typescript'] }),
-    ]);
+    setupAllPosts([makePost('a', { tags: ['react'] }), makePost('b', { tags: ['typescript'] })]);
     const posts = await getPostsByTag('react');
     expect(posts.map((p) => p.slug)).toEqual(['a']);
   });
@@ -204,7 +215,10 @@ describe('getRelatedPosts', () => {
   });
 
   it('currentSlug の投稿を除外する', async () => {
-    setupAllPosts([makePost('current', { tags: ['react'] }), makePost('other', { tags: ['react'] })]);
+    setupAllPosts([
+      makePost('current', { tags: ['react'] }),
+      makePost('other', { tags: ['react'] }),
+    ]);
     const posts = await getRelatedPosts('current', ['react']);
     expect(posts.map((p) => p.slug)).not.toContain('current');
   });
@@ -233,5 +247,87 @@ describe('getRelatedPosts', () => {
     setupAllPosts([makePost('a', { tags: ['React'] })]);
     const posts = await getRelatedPosts('current', ['react']);
     expect(posts).toHaveLength(1);
+  });
+});
+
+describe('getPostBySlug', () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+    vi.unstubAllEnvs();
+  });
+
+  const frontmatter = {
+    title: 'Hello',
+    date: '2024-01-01',
+    excerpt: 'excerpt',
+    tags: ['react'],
+    draft: false,
+  };
+
+  it('.mdx ファイルが見つかった場合、Post を返す', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce({ data: frontmatter, content: 'body' });
+    const post = await getPostBySlug('hello');
+    expect(post).toEqual({ slug: 'hello', frontmatter, content: 'body' });
+  });
+
+  it('.mdx がなく .md が見つかった場合、Post を返す（フォールバック）', async () => {
+    vi.mocked(readMarkdownFile)
+      .mockResolvedValueOnce(undefined)
+      .mockResolvedValueOnce({ data: frontmatter, content: 'body' });
+    const post = await getPostBySlug('hello');
+    expect(post).toEqual({ slug: 'hello', frontmatter, content: 'body' });
+  });
+
+  it('.mdx も .md も存在しない場合、undefined を返す', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValue(undefined);
+    expect(await getPostBySlug('not-found')).toBeUndefined();
+  });
+
+  it('本番環境で draft:true の投稿は undefined を返す', async () => {
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce({
+      data: { ...frontmatter, draft: true },
+      content: 'body',
+    });
+    expect(await getPostBySlug('draft-post')).toBeUndefined();
+  });
+
+  it('開発環境では draft:true の投稿を返す', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce({
+      data: { ...frontmatter, draft: true },
+      content: 'body',
+    });
+    const post = await getPostBySlug('draft-post');
+    expect(post).toBeDefined();
+    expect(post?.frontmatter.draft).toBe(true);
+  });
+});
+
+describe('getMarkdownDataByPath', () => {
+  afterEach(() => vi.resetAllMocks());
+
+  const frontmatter = {
+    title: 'Hello',
+    date: '2024-01-01',
+    excerpt: 'excerpt',
+    tags: [],
+    draft: false,
+  };
+
+  it('ファイルが存在する場合、スラッグとコンテンツを含む Post を返す', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce({ data: frontmatter, content: 'body' });
+    const result = await getMarkdownDataByPath('posts/hello-world.mdx');
+    expect(result).toEqual({ slug: 'hello-world', frontmatter, content: 'body' });
+  });
+
+  it('.md 拡張子でもスラッグが正しく生成される', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce({ data: frontmatter, content: '' });
+    const result = await getMarkdownDataByPath('posts/my-post.md');
+    expect(result?.slug).toBe('my-post');
+  });
+
+  it('ファイルが存在しない場合、undefined を返す', async () => {
+    vi.mocked(readMarkdownFile).mockResolvedValueOnce(undefined);
+    expect(await getMarkdownDataByPath('posts/not-found.mdx')).toBeUndefined();
   });
 });

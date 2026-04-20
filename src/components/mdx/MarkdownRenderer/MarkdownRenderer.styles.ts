@@ -18,7 +18,13 @@ export const markdownContentStyles = css({
     mb: '5',
     color: 'text.default',
   },
-  '& h3': { fontSize: { base: 'lg', sm: 'xl' }, fontWeight: 'bold', mt: '6', mb: '4', color: 'text.default' },
+  '& h3': {
+    fontSize: { base: 'lg', sm: 'xl' },
+    fontWeight: 'bold',
+    mt: '6',
+    mb: '4',
+    color: 'text.default',
+  },
   '& p': {
     mb: '5',
     lineHeight: 'relaxed',
@@ -65,7 +71,13 @@ export const markdownContentStyles = css({
     color: 'text.muted',
     my: '6',
   },
-  '& table': { w: 'full', borderCollapse: 'collapse', mb: '8', display: 'block', overflowX: 'auto' },
+  '& table': {
+    w: 'full',
+    borderCollapse: 'collapse',
+    mb: '8',
+    display: 'block',
+    overflowX: 'auto',
+  },
   '& th': {
     borderBottom: '2px solid',
     borderColor: 'border.default',

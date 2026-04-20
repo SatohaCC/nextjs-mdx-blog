@@ -38,8 +38,9 @@ const FormSchema = z.object({
     .optional(),
 
   // Select dropdown
+
   country: z.enum(['us', 'ca', 'uk', 'other'], {
-    errorMap: () => ({ message: 'Please select a country' }),
+    error: 'Please select a country',
   }),
 
   // Checkbox
@@ -112,6 +113,7 @@ export function AccessibleFormTemplate() {
     try {
       // Replace with your API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      // eslint-disable-next-line no-console
       console.log('Form submitted:', result.data);
 
       setErrors({});
@@ -129,6 +131,7 @@ export function AccessibleFormTemplate() {
         agreeToTerms: false,
         comments: '',
       });
+      // eslint-disable-next-line unused-imports/no-unused-vars
     } catch (error) {
       setSubmitStatus({
         type: 'error',
@@ -224,7 +227,7 @@ export function AccessibleFormTemplate() {
           }`}
         />
         <p id="email-hint" className="text-sm text-gray-600 mt-1">
-          We'll never share your email with anyone else
+          We&apos;ll never share your email with anyone else
         </p>
         {errors.email && (
           <p id="email-error" role="alert" className="text-red-600 text-sm mt-1">

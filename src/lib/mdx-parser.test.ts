@@ -1,15 +1,15 @@
+import fs from 'fs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
+import { parseMarkdown, readMarkdownFile } from './mdx-parser';
 
 vi.mock('fs', () => ({
   default: {
     promises: {
-      readFile: vi.fn(),
+      readFile: vi.fn<() => Promise<string>>(),
     },
   },
 }));
-
-import fs from 'fs';
-import { parseMarkdown, readMarkdownFile } from './mdx-parser';
 
 describe('parseMarkdown', () => {
   it('front matter と本文を分離して返す', () => {
@@ -26,7 +26,7 @@ describe('parseMarkdown', () => {
   });
 
   it('複数行 YAML を正しくパースする', () => {
-    const input = "---\ntitle: Test\ntags:\n  - react\n  - typescript\n---\n# Heading";
+    const input = '---\ntitle: Test\ntags:\n  - react\n  - typescript\n---\n# Heading';
     const result = parseMarkdown(input);
     expect(result.data).toEqual({ title: 'Test', tags: ['react', 'typescript'] });
     expect(result.content).toBe('# Heading');
@@ -39,9 +39,7 @@ describe('readMarkdownFile', () => {
   });
 
   it('ファイルが存在する場合、パース結果を返す', async () => {
-    vi.mocked(fs.promises.readFile).mockResolvedValue(
-      "---\ntitle: Test Post\n---\nContent here" as any
-    );
+    vi.mocked(fs.promises.readFile).mockResolvedValue('---\ntitle: Test Post\n---\nContent here');
     const result = await readMarkdownFile<{ title: string }>('posts/test.mdx');
     expect(result).toEqual({ data: { title: 'Test Post' }, content: 'Content here' });
   });
