@@ -1,26 +1,28 @@
 ---
-title: 'Storybook 10 + Next.js 16 + PandaCSS での現代的なコンポーネント開発'
+title: 'Storybook 10 + Next.js 16 + PandaCSS でのコンポーネント開発'
 date: '2026-04-20'
 excerpt: 'このブログプロジェクトで採用している Storybook の書き方と、生産性を高めるための設計パターン（Container/Presentational 分離やインタラクションテスト）について解説します。'
 tags: ['Storybook', 'Next.js', 'PandaCSS', 'Testing', 'React']
 draft: true
 ---
 
-# Storybook 10 + Next.js 16 + PandaCSS での現代的なコンポーネント開発
+# Storybook 10 + Next.js 16 + PandaCSS でのコンポーネント開発
 
-UIコンポーネントのカタログであり、開発環境でもある Storybook。このブログでは **Storybook 10**（最新の安定版）と **Next.js 16** を組み合わせ、さらに高速なビルドを実現するために **Vite** ベースのフレームワークである **`@storybook/nextjs-vite`** を採用しています。
+UIコンポーネントのカタログであり、開発環境でもある Storybook。このブログでは **Storybook 10.2.4**（最新の安定版）と **Next.js 16.2.3** (+ **React 19.2.3**) を組み合わせ、さらに高速なビルドを実現するために **Vite 7.3.1** ベースのフレームワークである **`@storybook/nextjs-vite`** を採用しています。
 
-現在このプロジェクトで定着している「Storybook の書き方」をまとめました。
+現在このプロジェクトで採用している「Storybook の活用方法」をまとめました。
 
-## 1. Container / Presentational パターンの徹底
+## 1. Container / Presentational パターンの採用
 
-Next.js の App Router 環境では、データ取得を行う Server Component と、UIを表示する Client Component の境界を意識する必要があります。Storybook でコンポーネントを簡単に表示するために、以下の構成を標準としています。
+Next.js の App Router 環境では、データ取得を行う Server Component と、UIを表示する Client Component の境界を意識する必要があります。
+このブログでは Storybook でコンポーネントを表示しやすくするために、以下のような構成をとっています。
 
 - **`ComponentNameContainer.tsx`**: Server Component。データ取得や複雑なロジックを担当。
 - **`ComponentNamePresentational.tsx`**: Pure UI Component。Props を受け取って表示するだけ。
 - **`ComponentNamePresentational.stories.tsx`**: Storybook 用のファイル。
 
-この分離により、Storybook では「データ取得完了後の表示状態」を即座に確認でき、複雑な API モックなしでUI開発に集中できます。また、Vite ベースの環境（`@storybook/nextjs-vite`）により、HMR（Hot Module Replacement）が非常に高速で、スタイルの微調整がリアルタイムに反映されます。
+この分離により、Storybook では「データ取得完了後の表示状態」を即座に確認でき、複雑な API モックなしでUI開発に集中できます。
+また、Vite ベースの環境（`@storybook/nextjs-vite`）により、HMR（Hot Module Replacement）が非常に高速で、スタイルの微調整がリアルタイムに反映されます。
 
 ## 2. Next.js 固有機能の自動ハンドリング
 
@@ -62,7 +64,7 @@ export const Default: Story = {};
 
 Storybook は単なるカタログではなく、テストツールとしても機能します。このプロジェクトでは **`@storybook/addon-vitest`** を導入しています。
 
-これにより、`play` 関数の中で記述したインタラクションテストを、Storybook 上だけでなく Vitest のテストランナー経由でも実行できます。
+これにより、`play` 関数の中で記述したインタラクションテストを、Storybook 上だけでなく **Vitest 4.0.18** のテストランナー経由でも実行できます。
 
 参照 [https://storybook.js.org/docs/writing-stories/play-function]
 
@@ -85,7 +87,8 @@ export const ClickTab: Story = {
 
 ## 5. ダークモードと PandaCSS の統合
 
-`.storybook/preview.tsx` に共通のデコレータを設定し、ツールバーからテーマ（Light / Dark）を切り替えられるようにしています。PandaCSS のセマンティックトークンは `data-theme` 属性に連動するように設定されています。
+`.storybook/preview.tsx` に共通のデコレータを設定し、ツールバーからテーマ（Light / Dark）を切り替えられるようにしています。
+PandaCSS のセマンティックトークンは `data-theme` 属性に連動するように設定されています。
 
 ```tsx
 // .storybook/preview.tsx
@@ -122,10 +125,10 @@ export const Default: Story = {
 
 ## まとめ
 
-この Storybook 駆動開発（SDD: Storybook Driven Development）を取り入れることで、以下のメリットを感じています。
+現在、このブログではこのような構成で Storybook を活用しています。
 
-1.  **開発スピードの向上**: Vite による高速な HMR と、コンポーネント単位での疎結合な開発。
+1.  **開発効率**: Vite による高速な HMR と、コンポーネント単位での疎結合な開発。
 2.  **Next.js との親和性**: Router や Image などの複雑なモック設定からの解放。
-3.  **テストの統合**: Storybook 上の `play` 関数をそのまま Vitest として再利用できる堅牢さ。
+3.  **テストの統合**: Storybook 上の `play` 関数をそのまま Vitest として再利用できる構成。
 
 これからもこのパターンをベースに、堅牢で美しい UI を構築していきます。
