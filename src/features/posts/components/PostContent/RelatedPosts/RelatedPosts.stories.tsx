@@ -44,13 +44,22 @@ export const WithPosts: Story = {
       },
     ],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: 関連記事へのリンクが2件表示される
-    const links = within(canvasElement).getAllByRole('link');
-    await expect(links).toHaveLength(2);
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let links: HTMLElement[];
 
-    await expect(links[0]).toHaveAttribute('href', '/posts/related-post-1');
-    await expect(links[1]).toHaveAttribute('href', '/posts/related-post-2');
+    await step('Arrange: 関連記事のリンクを取得', async () => {
+      links = canvas.getAllByRole('link');
+    });
+
+    await step(
+      'Assert: 2 件の関連記事リンクが表示され、正しいパスを指していることを確認',
+      async () => {
+        await expect(links).toHaveLength(2);
+        await expect(links[0]).toHaveAttribute('href', '/posts/related-post-1');
+        await expect(links[1]).toHaveAttribute('href', '/posts/related-post-2');
+      }
+    );
   },
 };
 
@@ -63,8 +72,9 @@ export const Empty: Story = {
   args: {
     posts: [],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: postsが空のときは何もレンダリングしない
-    await expect(canvasElement.textContent?.trim()).toBe('');
+  play: async ({ canvasElement, step }) => {
+    await step('Assert: posts が空の場合は何もレンダリングされないことを確認', async () => {
+      await expect(canvasElement.textContent?.trim()).toBe('');
+    });
   },
 };

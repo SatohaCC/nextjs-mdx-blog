@@ -38,10 +38,20 @@ type Story = StoryObj<typeof meta>;
  * @summary タグが設定されていない記事の一覧表示
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: 記事へのリンクが存在する
-    const link = within(canvasElement).getByRole('link', { name: 'Hello World' });
-    await expect(link).toHaveAttribute('href', '/posts/hello-world');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
+
+    await step('Arrange: 記事リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'Hello World' });
+    });
+
+    await step(
+      'Assert: 記事タイトルがリンクとして機能し、正しいパスを指していることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/posts/hello-world');
+      }
+    );
   },
 };
 
@@ -59,13 +69,23 @@ export const WithTags: Story = {
       </TagList>
     </ArticleCard>
   ),
-  play: async ({ canvasElement }) => {
-    // Assert: 記事リンクとタグリンクが両方存在する
-    const links = within(canvasElement).getAllByRole('link');
-    await expect(links.length).toBeGreaterThanOrEqual(3);
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let links: HTMLElement[];
+    let articleLink: HTMLElement;
 
-    const articleLink = within(canvasElement).getByRole('link', { name: 'Hello World' });
-    await expect(articleLink).toHaveAttribute('href', '/posts/hello-world');
+    await step('Arrange: 記事リンクとタグリンクを取得', async () => {
+      links = canvas.getAllByRole('link');
+      articleLink = canvas.getByRole('link', { name: 'Hello World' });
+    });
+
+    await step(
+      'Assert: 記事リンクとタグリンクが両方存在し、正しいパスを指していることを確認',
+      async () => {
+        await expect(links.length).toBeGreaterThanOrEqual(3);
+        await expect(articleLink).toHaveAttribute('href', '/posts/hello-world');
+      }
+    );
   },
 };
 

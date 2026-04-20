@@ -24,15 +24,21 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { date: '2024-01-15' },
-  play: async ({ canvasElement }) => {
-    // Arrange: ISO日付文字列
-    const time = within(canvasElement).getByRole('time');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let time: HTMLElement;
 
-    // Assert: dateTime属性に元のISO文字列が入る（機械可読）
-    await expect(time).toHaveAttribute('dateTime', '2024-01-15');
+    await step('Arrange: time 要素を取得', async () => {
+      time = canvas.getByRole('time');
+    });
 
-    // Assert: 表示テキストはja-JP形式
-    await expect(time).toHaveTextContent('2024年1月15日');
+    await step(
+      'Assert: dateTime 属性が ISO 形式（2024-01-15）であり、表示テキストが ja-JP 形式であることを確認',
+      async () => {
+        await expect(time).toHaveAttribute('dateTime', '2024-01-15');
+        await expect(time).toHaveTextContent('2024年1月15日');
+      }
+    );
   },
 };
 
@@ -43,9 +49,42 @@ export const Default: Story = {
  */
 export const NewYear: Story = {
   args: { date: '2026-01-01' },
-  play: async ({ canvasElement }) => {
-    const time = within(canvasElement).getByRole('time');
-    await expect(time).toHaveAttribute('dateTime', '2026-01-01');
-    await expect(time).toHaveTextContent('2026年1月1日');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let time: HTMLElement;
+
+    await step('Arrange: time 要素を取得', async () => {
+      time = canvas.getByRole('time');
+    });
+
+    await step(
+      'Assert: 月・日が 1 桁の日付でも、正しい ja-JP 形式でフォーマットされていることを確認',
+      async () => {
+        await expect(time).toHaveAttribute('dateTime', '2026-01-01');
+        await expect(time).toHaveTextContent('2026年1月1日');
+      }
+    );
+  },
+};
+
+/**
+ * 不正な形式の日付文字列が渡された場合。
+ * catch ブロックにより、入力値がそのまま表示されることを確認する。
+ *
+ * @summary 不正な日付形式へのフォールバック確認
+ */
+export const InvalidDate: Story = {
+  args: { date: 'invalid-date' },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let time: HTMLElement;
+
+    await step('Arrange: time 要素を取得', async () => {
+      time = canvas.getByRole('time');
+    });
+
+    await step('Assert: 不正な日付の場合は、入力文字列がそのまま表示されることを確認', async () => {
+      await expect(time).toHaveTextContent('invalid-date');
+    });
   },
 };

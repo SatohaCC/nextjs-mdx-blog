@@ -58,12 +58,19 @@ type Story = StoryObj<typeof meta>;
  * @summary 記事一覧ページや記事詳細ページのサイドバーとして使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: 最新記事のリンクが表示される
-    const postLinks = within(canvasElement).getAllByRole('link', {
-      name: /Hello World|Next\.js|TypeScript/,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let postLinks: HTMLElement[];
+
+    await step('Arrange: 最新記事のリンクを取得', async () => {
+      postLinks = canvas.getAllByRole('link', {
+        name: /Hello World|Next\.js|TypeScript/,
+      });
     });
-    await expect(postLinks.length).toBeGreaterThanOrEqual(1);
+
+    await step('Assert: 最新記事のリンクが表示されていることを確認', async () => {
+      await expect(postLinks.length).toBeGreaterThanOrEqual(1);
+    });
   },
 };
 
@@ -77,13 +84,22 @@ export const FewItems: Story = {
     allTags: ['Next.js'],
     latestPosts: [mockPosts[0]],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: 記事リンクが1件表示される
-    const link = within(canvasElement).getByRole('link', { name: 'Hello World' });
-    await expect(link).toHaveAttribute('href', '/posts/hello-world');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let postLink: HTMLElement;
+    let tagLink: HTMLElement;
 
-    // Assert: タグリンクが1件表示される
-    const tagLink = within(canvasElement).getByRole('link', { name: 'Next.js' });
-    await expect(tagLink).toBeInTheDocument();
+    await step('Arrange: 記事リンクとタグリンクを取得', async () => {
+      postLink = canvas.getByRole('link', { name: 'Hello World' });
+      tagLink = canvas.getByRole('link', { name: 'Next.js' });
+    });
+
+    await step(
+      'Assert: 記事リンクとタグリンクがそれぞれ 1 件ずつ正しく表示されていることを確認',
+      async () => {
+        await expect(postLink).toHaveAttribute('href', '/posts/hello-world');
+        await expect(tagLink).toBeInTheDocument();
+      }
+    );
   },
 };

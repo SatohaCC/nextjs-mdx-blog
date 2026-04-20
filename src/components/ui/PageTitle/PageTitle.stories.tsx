@@ -23,15 +23,23 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { children: 'ブログ' },
-  play: async ({ canvasElement }) => {
-    // Arrange: サブタイトルなし
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    let heading: HTMLElement;
+    let subtitle: HTMLElement | null;
 
-    // Assert: h1 として描画される
-    await expect(canvas.getByRole('heading', { level: 1, name: 'ブログ' })).toBeInTheDocument();
+    await step('Arrange: タイトルとサブタイトルを取得', async () => {
+      heading = canvas.getByRole('heading', { level: 1, name: 'ブログ' });
+      subtitle = canvas.queryByRole('paragraph');
+    });
 
-    // Assert: サブタイトル段落は存在しない
-    await expect(canvas.queryByRole('paragraph')).not.toBeInTheDocument();
+    await step(
+      'Assert: h1 レベルの見出しとして描画され、サブタイトルが存在しないことを確認',
+      async () => {
+        await expect(heading).toBeInTheDocument();
+        await expect(subtitle).not.toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -45,12 +53,22 @@ export const WithSubtitle: Story = {
     children: 'ブログ',
     subtitle: '日々の気づきを書いています',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: サブタイトルあり
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    let heading: HTMLElement;
+    let subtitle: HTMLElement;
 
-    // Assert: h1 とサブタイトルの両方が表示される
-    await expect(canvas.getByRole('heading', { level: 1, name: 'ブログ' })).toBeInTheDocument();
-    await expect(canvas.getByText('日々の気づきを書いています')).toBeInTheDocument();
+    await step('Arrange: タイトルとサブタイトルを取得', async () => {
+      heading = canvas.getByRole('heading', { level: 1, name: 'ブログ' });
+      subtitle = canvas.getByText('日々の気づきを書いています');
+    });
+
+    await step(
+      'Assert: h1 レベルの見出しと指定したサブタイトルの両方が表示されていることを確認',
+      async () => {
+        await expect(heading).toBeInTheDocument();
+        await expect(subtitle).toBeInTheDocument();
+      }
+    );
   },
 };

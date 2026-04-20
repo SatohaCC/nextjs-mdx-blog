@@ -33,23 +33,34 @@ type Story = StoryObj<typeof meta>;
  * @summary ページ上部に表示されるナビゲーションヘッダー
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: ロゴリンクが表示される
-    const logo = within(canvasElement).getByRole('link', { name: 'Satohas Blog' });
-    await expect(logo).toHaveAttribute('href', '/');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let logo: HTMLElement;
+    let aboutLink: HTMLElement;
+    let githubLink: HTMLElement;
+    let nav: HTMLElement;
 
-    // Assert: About リンクが表示される
-    const aboutLink = within(canvasElement).getByRole('link', { name: 'About' });
-    await expect(aboutLink).toBeInTheDocument();
-
-    // Assert: GitHub リンクが表示される
-    const githubLink = within(canvasElement).getByRole('link', { name: 'GitHub' });
-    await expect(githubLink).toBeInTheDocument();
-
-    // Assert: グローバルナビゲーションが存在する
-    const nav = within(canvasElement).getByRole('navigation', {
-      name: 'グローバルナビゲーション',
+    await step('Arrange: ヘッダー要素を取得', async () => {
+      logo = canvas.getByRole('link', { name: 'Satohas Blog' });
+      aboutLink = canvas.getByRole('link', { name: 'About' });
+      githubLink = canvas.getByRole('link', { name: 'GitHub' });
+      nav = canvas.getByRole('navigation', { name: 'グローバルナビゲーション' });
     });
-    await expect(nav).toBeInTheDocument();
+
+    await step(
+      'Assert: ロゴ・About・GitHub への各リンクが正しく表示されていることを確認',
+      async () => {
+        await expect(logo).toHaveAttribute('href', '/');
+        await expect(aboutLink).toBeInTheDocument();
+        await expect(githubLink).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      'Assert: グローバルナビゲーションがアクセシブルに提供されていることを確認',
+      async () => {
+        await expect(nav).toBeInTheDocument();
+      }
+    );
   },
 };

@@ -26,14 +26,22 @@ export const InternalLink: Story = {
     href: '/about',
     children: 'Aboutページ',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: 内部リンク（/ で始まる）
-    const link = within(canvasElement).getByRole('link', { name: 'Aboutページ' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: Next.js Link として描画され、_blank やセキュリティ rel がつかない
-    await expect(link).toHaveAttribute('href', '/about');
-    await expect(link).not.toHaveAttribute('target');
-    await expect(link).not.toHaveAttribute('rel');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'Aboutページ' });
+    });
+
+    await step(
+      'Assert: 内部リンクが正しく描画され、セキュリティ属性が付与されていないことを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/about');
+        await expect(link).not.toHaveAttribute('target');
+        await expect(link).not.toHaveAttribute('rel');
+      }
+    );
   },
 };
 
@@ -47,13 +55,18 @@ export const AnchorLink: Story = {
     href: '#section-1',
     children: 'セクションへ',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: ページ内アンカー（# で始まる）
-    const link = within(canvasElement).getByRole('link', { name: 'セクションへ' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: Next.js Link は # アンカーを /#section-1 に解決する
-    await expect(link).toHaveAttribute('href', '/#section-1');
-    await expect(link).not.toHaveAttribute('target');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'セクションへ' });
+    });
+
+    await step('Assert: アンカーリンクが期待通りのパスに解決されていることを確認', async () => {
+      await expect(link).toHaveAttribute('href', '/#section-1');
+      await expect(link).not.toHaveAttribute('target');
+    });
   },
 };
 
@@ -67,14 +80,22 @@ export const ExternalLink: Story = {
     href: 'https://example.com',
     children: '外部サイト',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: 外部リンク（https:// で始まる）
-    const link = within(canvasElement).getByRole('link', { name: '外部サイト' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: セキュリティ属性が必ず付与される
-    await expect(link).toHaveAttribute('target', '_blank');
-    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
-    await expect(link).toHaveAttribute('href', 'https://example.com');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: '外部サイト' });
+    });
+
+    await step(
+      'Assert: 外部リンクとして描画され、セキュリティ属性（target="_blank", rel="noopener noreferrer"）が自動付与されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('target', '_blank');
+        await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+        await expect(link).toHaveAttribute('href', 'https://example.com');
+      }
+    );
   },
 };
 
@@ -89,11 +110,19 @@ export const ExternalRelIsNotOverridden: Story = {
     children: 'relを上書きしようとするリンク',
     rel: 'me',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: rel prop を渡しても外部リンクのセキュリティ rel は維持される
-    const link = within(canvasElement).getByRole('link', { name: 'relを上書きしようとするリンク' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: props の rel より後に rel="noopener noreferrer" が適用される
-    await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'relを上書きしようとするリンク' });
+    });
+
+    await step(
+      'Assert: rel プロパティを指定しても、セキュリティ用の rel="noopener noreferrer" が優先されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+      }
+    );
   },
 };

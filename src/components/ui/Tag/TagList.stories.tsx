@@ -29,10 +29,18 @@ export const WithItems: Story = {
       <TagLink tag="TypeScript" />
     </TagList>
   ),
-  play: async ({ canvasElement }) => {
-    // Assert: 複数のリンクが含まれるコンテナ
-    const links = within(canvasElement).getAllByRole('link');
-    await expect(links).toHaveLength(2);
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    let links: HTMLElement[];
+
+    await step('Arrange: タグリンクを取得', async () => {
+      links = canvas.getAllByRole('link');
+    });
+
+    await step('Assert: 2 つのタグリンクが表示されていることを確認', async () => {
+      await expect(links).toHaveLength(2);
+    });
   },
 };
 
@@ -44,8 +52,9 @@ export const WithItems: Story = {
  */
 export const Empty: Story = {
   args: { children: null },
-  play: async ({ canvasElement }) => {
-    // Assert: childrenがnullのときはTagListが何もレンダリングしない
-    await expect(canvasElement.textContent?.trim()).toBe('');
+  play: async ({ canvasElement, step }) => {
+    await step('Assert: children が null の場合は何もレンダリングされないことを確認', async () => {
+      await expect(canvasElement.textContent?.trim()).toBe('');
+    });
   },
 };

@@ -39,12 +39,11 @@ export const Placeholder: Story = {
       },
     },
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: ハイドレーション前（mounted=false）
-    const wrapper = canvasElement.querySelector('[aria-hidden="true"]');
-
-    // Assert: spanでATから隠されている
-    await expect(wrapper).toBeInTheDocument();
+  play: async ({ canvasElement, step }) => {
+    await step('Assert: span 要素で AT から隠されていることを確認', async () => {
+      const wrapper = canvasElement.querySelector('[aria-hidden="true"]');
+      await expect(wrapper).toBeInTheDocument();
+    });
   },
 };
 
@@ -59,12 +58,17 @@ export const LightMode: Story = {
     resolvedTheme: 'light',
     onToggle: fn(),
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: ライトモード時
-    const button = within(canvasElement).getByRole('button');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let button: HTMLElement;
 
-    // Assert: ダークモードへの切り替えラベルが表示される
-    await expect(button).toHaveAccessibleName('ダークモードに切り替え');
+    await step('Arrange: トグルボタンを取得', async () => {
+      button = canvas.getByRole('button');
+    });
+
+    await step('Assert: ダークモードへの切り替えラベルが表示されることを確認', async () => {
+      await expect(button).toHaveAccessibleName('ダークモードに切り替え');
+    });
   },
 };
 
@@ -79,12 +83,17 @@ export const DarkMode: Story = {
     resolvedTheme: 'dark',
     onToggle: fn(),
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: ダークモード時
-    const button = within(canvasElement).getByRole('button');
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let button: HTMLElement;
 
-    // Assert: ライトモードへの切り替えラベルが表示される
-    await expect(button).toHaveAccessibleName('ライトモードに切り替え');
+    await step('Arrange: トグルボタンを取得', async () => {
+      button = canvas.getByRole('button');
+    });
+
+    await step('Assert: ライトモードへの切り替えラベルが表示されることを確認', async () => {
+      await expect(button).toHaveAccessibleName('ライトモードに切り替え');
+    });
   },
 };
 
@@ -99,14 +108,21 @@ export const TogglesOnClick: Story = {
     resolvedTheme: 'light',
     onToggle: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: マウント済みのトグルボタン
-    const button = within(canvasElement).getByRole('button');
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
 
-    // Act
-    await userEvent.click(button);
+    let button: HTMLElement;
 
-    // Assert
-    await expect(args.onToggle).toHaveBeenCalledOnce();
+    await step('Arrange: トグルボタンを取得', async () => {
+      button = canvas.getByRole('button');
+    });
+
+    await step('Act: トグルボタンをクリック', async () => {
+      await userEvent.click(button);
+    });
+
+    await step('Assert: テーマ切り替え用のコールバックが呼ばれたことを確認', async () => {
+      await expect(args.onToggle).toHaveBeenCalledOnce();
+    });
   },
 };

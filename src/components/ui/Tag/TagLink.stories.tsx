@@ -23,12 +23,17 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { tag: 'Next.js' },
-  play: async ({ canvasElement }) => {
-    // Arrange: タグ名からURLスラグを生成
-    const link = within(canvasElement).getByRole('link', { name: 'Next.js' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: タグ名がそのままhrefのスラグになる
-    await expect(link).toHaveAttribute('href', '/tags/next.js');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'Next.js' });
+    });
+
+    await step('Assert: タグ名が正しく URL スラグに変換されていることを確認', async () => {
+      await expect(link).toHaveAttribute('href', '/tags/next.js');
+    });
   },
 };
 
@@ -39,12 +44,20 @@ export const Default: Story = {
  */
 export const SpaceToHyphen: Story = {
   args: { tag: 'React Hooks' },
-  play: async ({ canvasElement }) => {
-    // Arrange: スペースを含むタグ名
-    const link = within(canvasElement).getByRole('link', { name: 'React Hooks' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: スペースがハイフンに変換される
-    await expect(link).toHaveAttribute('href', '/tags/react-hooks');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'React Hooks' });
+    });
+
+    await step(
+      'Assert: スペースを含むタグ名がハイフン区切りの URL スラグに変換されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/tags/react-hooks');
+      }
+    );
   },
 };
 
@@ -55,12 +68,20 @@ export const SpaceToHyphen: Story = {
  */
 export const UpperToLower: Story = {
   args: { tag: 'TypeScript' },
-  play: async ({ canvasElement }) => {
-    // Arrange: 大文字を含むタグ名
-    const link = within(canvasElement).getByRole('link', { name: 'TypeScript' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: 小文字に変換される
-    await expect(link).toHaveAttribute('href', '/tags/typescript');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'TypeScript' });
+    });
+
+    await step(
+      'Assert: 大文字を含むタグ名が小文字の URL スラグに変換されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/tags/typescript');
+      }
+    );
   },
 };
 
@@ -71,11 +92,19 @@ export const UpperToLower: Story = {
  */
 export const CustomChildren: Story = {
   args: { tag: 'Next.js', children: 'カスタムラベル' },
-  play: async ({ canvasElement }) => {
-    // Arrange: childrenを渡すとそちらが表示される
-    const link = within(canvasElement).getByRole('link', { name: 'カスタムラベル' });
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    let link: HTMLElement;
 
-    // Assert: hrefはtagから生成される
-    await expect(link).toHaveAttribute('href', '/tags/next.js');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'カスタムラベル' });
+    });
+
+    await step(
+      'Assert: カスタムの子要素（children）が表示され、href は tag から生成されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/tags/next.js');
+      }
+    );
   },
 };

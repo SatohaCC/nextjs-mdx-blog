@@ -35,14 +35,20 @@ export const CallbackFires: Story = {
   args: {
     onBack: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: 戻るボタン
-    const button = within(canvasElement).getByRole('button', { name: '戻る' });
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    let button: HTMLElement;
 
-    // Act
-    await userEvent.click(button);
+    await step('Arrange: 戻るボタンを取得', async () => {
+      button = canvas.getByRole('button', { name: '戻る' });
+    });
 
-    // Assert
-    await expect(args.onBack).toHaveBeenCalledOnce();
+    await step('Act: 戻るボタンをクリック', async () => {
+      await userEvent.click(button);
+    });
+
+    await step('Assert: 戻る操作用のコールバックが呼ばれたことを確認', async () => {
+      await expect(args.onBack).toHaveBeenCalledOnce();
+    });
   },
 };
