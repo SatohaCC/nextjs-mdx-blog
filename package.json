@@ -19,7 +19,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@storybook/addon-mcp": "^0.6.0",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "lucide-react": "^0.562.0",
@@ -40,6 +39,7 @@
     "@pandacss/eslint-plugin": "^0.3.2",
     "@storybook/addon-a11y": "^10.2.4",
     "@storybook/addon-docs": "^10.2.4",
+    "@storybook/addon-mcp": "^0.6.0",
     "@storybook/addon-vitest": "^10.2.4",
     "@storybook/nextjs-vite": "^10.2.4",
     "@trivago/prettier-plugin-sort-imports": "^6.0.2",
