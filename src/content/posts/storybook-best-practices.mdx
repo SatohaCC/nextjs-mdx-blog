@@ -1,14 +1,14 @@
 ---
-title: 'Storybook 8 + Next.js 16 + PandaCSS での現代的なコンポーネント開発'
+title: 'Storybook 10 + Next.js 16 + PandaCSS での現代的なコンポーネント開発'
 date: '2026-04-20'
 excerpt: 'このブログプロジェクトで採用している Storybook の書き方と、生産性を高めるための設計パターン（Container/Presentational 分離やインタラクションテスト）について解説します。'
 tags: ['Storybook', 'Next.js', 'PandaCSS', 'Testing', 'React']
 draft: true
 ---
 
-# Storybook 8 + Next.js 16 + PandaCSS での現代的なコンポーネント開発
+# Storybook 10 + Next.js 16 + PandaCSS での現代的なコンポーネント開発
 
-UIコンポーネントのカタログであり、開発環境でもある Storybook。このブログでは Storybook 8 と Next.js 16 を組み合わせ、PandaCSS によるスタイリングを最大限に活かしたコンポーネント開発を行っています。
+UIコンポーネントのカタログであり、開発環境でもある Storybook。このブログでは **Storybook 10**（最新の安定版）と **Next.js 16** を組み合わせ、さらに高速なビルドを実現するために **Vite** ベースのフレームワークである **`@storybook/nextjs-vite`** を採用しています。
 
 現在このプロジェクトで定着している「Storybook の書き方」をまとめました。
 
@@ -20,9 +20,19 @@ Next.js の App Router 環境では、データ取得を行う Server Component 
 - **`ComponentNamePresentational.tsx`**: Pure UI Component。Props を受け取って表示するだけ。
 - **`ComponentNamePresentational.stories.tsx`**: Storybook 用のファイル。
 
-この分離により、Storybook では「データ取得完了後の表示状態」を即座に確認でき、複雑な API モックなしでUI開発に集中できます。
+この分離により、Storybook では「データ取得完了後の表示状態」を即座に確認でき、複雑な API モックなしでUI開発に集中できます。また、Vite ベースの環境（`@storybook/nextjs-vite`）により、HMR（Hot Module Replacement）が非常に高速で、スタイルの微調整がリアルタイムに反映されます。
 
-## 2. 型安全な Story 定義
+## 2. Next.js 固有機能の自動ハンドリング
+
+`@storybook/nextjs-vite` を使用する大きなメリットの1つは、Next.js 固有の機能が Storybook 上で特別な設定なしに動作することです。
+
+- **Router (next/navigation)**: `useRouter` や `usePathname` が自動的にモックされ、遷移の動作などを Story 内で検証できます。
+- **Image (next/image)**: 画像の最適化処理がシミュレートされ、Storybook 上でも正常に表示されます。
+- **Fonts (next/font)**: Google Fonts やローカルフォントの読み込みが Storybook に自動適用されます。
+
+これにより、以前のような複雑なプロバイダー設定が不要になり、開発効率が向上しました。
+
+## 3. 型安全な Story 定義
 
 `Meta` と `StoryObj` を使用し、最新の Storybook 形式で記述します。
 
@@ -48,9 +58,13 @@ export const Default: Story = {};
 
 `satisfies Meta` を使うことで、`meta.args` で受け取るプロパティに対して強力な型補完が効くようになります。
 
-## 3. インタラクションテスト（play 関数）の活用
+## 4. Vitest との統合（@storybook/addon-vitest）
 
-Storybook は単なるカタログではなく、テストツールとしても機能します。`play` 関数の中で `@storybook/test` (Vitest/Testing Library) を使うことで、ブラウザ上での動作を自動検証しています。
+Storybook は単なるカタログではなく、テストツールとしても機能します。このプロジェクトでは **`@storybook/addon-vitest`** を導入しています。
+
+これにより、`play` 関数の中で記述したインタラクションテストを、Storybook 上だけでなく Vitest のテストランナー経由でも実行できます。
+
+参照 [https://storybook.js.org/docs/writing-stories/play-function]
 
 ```tsx
 export const ClickTab: Story = {
@@ -61,15 +75,15 @@ export const ClickTab: Story = {
     // アクションの実行
     await userEvent.click(tab);
 
-    // 結果の検証
+    // Vitest/Testing Library 互換の assertion
     await expect(canvas.getByText('最新の記事一覧')).toBeInTheDocument();
   },
 };
 ```
 
-これにより、Storybook を開くだけでコンポーネントの最低限の動作テストが完了します。
+ブラウザ上で実際の動作を目視確認しながらテストを作成し、最終的に CI 環境などでは Vitest として高速に検証を回す、というハイブリッドな開発が可能になっています。
 
-## 4. ダークモードと PandaCSS の統合
+## 5. ダークモードと PandaCSS の統合
 
 `.storybook/preview.tsx` に共通のデコレータを設定し、ツールバーからテーマ（Light / Dark）を切り替えられるようにしています。PandaCSS のセマンティックトークンは `data-theme` 属性に連動するように設定されています。
 
@@ -89,9 +103,10 @@ decorators: [
 ],
 ```
 
-## 5. 自動ドキュメント化とアクセシビリティ
+## 6. 自動ドキュメント化とアクセシビリティ
 
-JSDoc を活用して、Storybook の `autodocs` 画面に日本語の説明を表示させています。また、`@storybook/addon-a11y` を導入し、アクセシビリティ違反がある場合にテストを失敗させるように設定しています。
+JSDoc を活用して、Storybook の `autodocs` 画面に日本語の説明を表示させています。
+また、`@storybook/addon-a11y` を導入し、アクセシビリティ違反がある場合にUI上のパネルに違反が表示しています。
 
 ```tsx
 /**
@@ -109,8 +124,8 @@ export const Default: Story = {
 
 この Storybook 駆動開発（SDD: Storybook Driven Development）を取り入れることで、以下のメリットを感じています。
 
-1.  **開発スピードの向上**: 大きなページ全体を動かさず、小さなコンポーネント単位で開発できる。
-2.  **デバッグの容易さ**: エッジケース（テキストが極端に長い場合や画像がない場合など）の表示確認が簡単。
-3.  **品質の担保**: Play 関数による動作テストと a11y チェックが自然に組み込まれる。
+1.  **開発スピードの向上**: Vite による高速な HMR と、コンポーネント単位での疎結合な開発。
+2.  **Next.js との親和性**: Router や Image などの複雑なモック設定からの解放。
+3.  **テストの統合**: Storybook 上の `play` 関数をそのまま Vitest として再利用できる堅牢さ。
 
 これからもこのパターンをベースに、堅牢で美しい UI を構築していきます。
