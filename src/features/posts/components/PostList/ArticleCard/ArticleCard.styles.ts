@@ -3,18 +3,20 @@ import { stack } from '../../../../../../styled-system/patterns';
 
 // Card Base Styles
 export const articleCardStyles = css({
-  p: { base: '4', sm: '6' },
-  borderRadius: 'card',
-  border: '1px solid',
+  py: { base: '4', sm: '6' },
+  px: { base: '0', sm: '6' },
+  borderRadius: { base: 'none', sm: 'card' },
+  borderWidth: { base: '0', sm: '1px' },
+  borderStyle: 'solid',
   borderColor: 'border.default',
-  bg: 'bg.default',
+  bg: { base: 'transparent', sm: 'bg.default' },
   transitionProperty: 'border-color, transform, box-shadow',
   transitionDuration: 'slow',
-  boxShadow: 'card.default',
+  boxShadow: { base: 'none', sm: 'card.default' },
   _hover: {
-    borderColor: 'accent.default',
-    transform: 'translateY(-4px)',
-    boxShadow: 'card.hover',
+    borderColor: { sm: 'accent.default' },
+    transform: { sm: 'translateY(-4px)' },
+    boxShadow: { sm: 'card.hover' },
   },
 });
 
