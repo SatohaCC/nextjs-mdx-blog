@@ -70,12 +70,13 @@ npm run start
 ```
 src/
 ├── app/                          # Next.js App Router（ルーティング・FW層）
-│   ├── page.tsx                 # ホームページ（記事一覧）
+│   ├── page.tsx                 # ホームページ
 │   ├── layout.tsx               # ルートレイアウト
 │   ├── about/                   # Aboutページ
-│   ├── page/[num]/              # ページネーション
+│   ├── page/                    # ページネーション用ルート
+│   │   └── [num]/
 │   ├── posts/[slug]/            # 記事詳細
-│   ├── search/                  # 検索結果ページ
+│   ├── search/                  # 検索画面
 │   ├── tags/[tag]/              # タグ別一覧
 │   └── feed.xml/                # RSS フィード
 │
@@ -84,6 +85,14 @@ src/
 │   │   ├── AppLink/            # リンクコンポーネント
 │   │   ├── BackButton/         # 戻るボタン
 │   │   ├── Button/             # ボタン
+│   │   ├── CopyrightYear/      # コピーライト表示
+│   │   ├── FormattedDate/      # 日付フォーマット
+│   │   ├── GithubIcon/         # GitHubアイコン
+│   │   ├── PageTitle/          # ページタイトル
+│   │   ├── ScrollToTop/        # トップへ戻る
+│   │   ├── Skeleton/           # スケルトンUI
+│   │   ├── SkipLink/           # スキップリンク
+│   │   ├── StatusPage/         # エラー・404ページ
 │   │   ├── Tag/                # タグラベル
 │   │   ├── ThemeToggle/        # テーマ切り替え
 │   │   └── providers/          # Providers（テーマ等）
@@ -95,25 +104,22 @@ src/
 │       └── MarkdownRenderer.tsx
 │
 ├── features/                     # 機能スライス（Vertical Slice）
-│   ├── posts/                   # 記事機能
-│   │   ├── domain/             # [エンジニア] 型・インターフェース定義
-│   │   │   ├── Post.ts         # Post 型
-│   │   │   └── IPostRepository.ts
+│   ├── posts/                   # 記事機能（検索含む）
+│   │   ├── types.ts            # [エンジニア] 型・インターフェース定義
 │   │   ├── api/                # [エンジニア] データ取得・ビジネスロジック
-│   │   │   ├── postRepository.ts   # Markdownファイル読み込み（React.cache済み）
-│   │   │   ├── postUsecase.ts      # ソート・ページネーション・タグ等のロジック
-│   │   │   ├── toc-generator.ts    # 目次生成
-│   │   │   └── index.ts
+│   │   │   ├── posts.ts        # Markdown読み込み・取得ロジック（React.cache済み）
+│   │   │   ├── search.ts       # 検索ロジック
+│   │   │   └── toc-generator.ts # 目次生成
 │   │   └── components/         # [デザイナー/エンジニア] 記事専用UI
-│   │       ├── PostList/       # 記事一覧（カード、タイトル）
-│   │       ├── PostContent/    # 記事詳細（目次、引用ブロック、関連記事）
+│   │       ├── PostList/       # 記事一覧
+│   │       ├── PostContent/    # 記事詳細
 │   │       ├── TagPage/        # タグ別ページ
-│   │       └── Pagination/     # ページネーション
-│   ├── search/                  # 検索機能
-│   │   └── components/SearchBox/
+│   │       ├── Pagination/     # ページネーション
+│   │       ├── Search/         # 検索結果
+│   │       └── SearchBox/      # 検索入力
 │   └── about/                   # プロフィール機能
-│       ├── api/                # [エンジニア] データ取得
-│       │   └── aboutRepository.ts
+│       ├── types.ts            # 型定義
+│       ├── api/                # データ取得
 │       └── components/About/
 │
 ├── lib/                          # 機能非依存のユーティリティ
@@ -133,7 +139,7 @@ src/
 | ------------------------------ | ----------------------------------------------------- |
 | ボタンのデザインを変えたい     | `src/components/ui/Button/`                           |
 | 記事一覧カードのUIを変えたい   | `src/features/posts/components/PostList/ArticleCard/` |
-| 記事取得のロジックを変えたい   | `src/features/posts/api/postUsecase.ts`               |
+| 記事取得のロジックを変えたい   | `src/features/posts/api/posts.ts`                     |
 | ヘッダーのレイアウトを変えたい | `src/components/layouts/Header/`                      |
 
 ### デザイナーとエンジニアの分業
@@ -143,18 +149,27 @@ src/
 
 ## コンポーネント設計
 
-Container/Presentational パターンを採用しています：
+Container/Presentational パターンを採用しています（※一部のシンプルなUI系コンポーネントを除く）：
 
-- **Container** (`*Container.tsx`): ロジック・状態管理・データ取得
-- **Presentational** (`*Presentational.tsx`): 表示のみ、純粋なReactコンポーネント
-- **styles** (`*Presentational.styles.ts`): PandaCSSスタイル定義
+- **Container** (`*Container.tsx`): ロジック・状態管理・データ取得（Server Component など）
+- **Presentational** (`*Presentational.tsx`): 表示のみ、純粋なReactコンポーネント（Client Component など）
+- **styles** (`styles.ts` または `*Presentational.styles.ts`): PandaCSSスタイル定義
 
+#### 基本的なコンポーネント構成（Feature components 等）
 ```
-ComponentName/
-├── ComponentNameContainer.tsx              # Server Component / データ取得
-├── ComponentNamePresentational.tsx          # Client Component / 表示
-├── ComponentNamePresentational.styles.ts    # PandaCSS スタイル
-└── index.ts                                 # re-export
+Component/
+├── ComponentContainer.tsx              # Logic / Data Fetching
+├── ComponentPresentational.tsx          # UI
+├── ComponentPresentational.styles.ts    # Styles
+└── index.ts                             # re-export
+```
+
+#### シンプルなコンポーネント構成（UI primitives 等）
+```
+Component/
+├── Component.tsx                        # UI + Logic
+├── styles.ts                            # Styles
+└── index.ts
 ```
 
 ## 記事の書き方
