@@ -1,0 +1,235 @@
+---
+title: 'Vitest でのテストの書き方：このブログで使っているパターン集'
+date: '2026-04-20'
+excerpt: 'vi.mock・vi.hoisted・makePost ファクトリなど、実際のコードベースで使っているテストパターンをまとめる。'
+tags: ['Vitest', 'TypeScript', 'テスト']
+draft: true
+---
+
+# Vitest でのテストの書き方：このブログで使っているパターン集
+
+このブログのバックエンドロジック（投稿一覧・検索・TOC生成など）には Vitest でユニットテストを書いている。テストファイルが増えてきたので、使っているパターンをまとめておく。
+
+## セットアップ：2 種類のテストプロジェクト
+
+`vitest.config.ts` では `projects` を使って **unit** と **storybook** を分離している。
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        // Storybook コンポーネントテスト（ブラウザ環境）
+        plugins: [storybookTest({ configDir: '.storybook' })],
+        test: {
+          name: 'storybook',
+          browser: { enabled: true, provider: playwright({}) },
+        },
+      },
+      {
+        // ユニットテスト（Node.js 環境）
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+        },
+      },
+    ],
+  },
+});
+```
+
+`npm run test` で両方まとめて実行される。ファイルシステムを触るロジックは `environment: 'node'` 側で動く。
+
+## モジュールのモック：`vi.mock()`
+
+テスト対象が `fs` や別モジュールに依存している場合は `vi.mock()` でまるごと差し替える。
+
+```ts
+vi.mock('fs', () => ({
+  default: {
+    promises: {
+      access: vi.fn(),
+      readFile: vi.fn<() => Promise<string>>(),
+    },
+  },
+}));
+
+vi.mock('@/lib/mdx-parser');
+```
+
+`vi.fn<() => Promise<string>>()` のように型引数を渡すと、後で `mockResolvedValue()` を呼んだときに型が合う。
+
+型引数を省略した `vi.fn()` だと、TypeScript がオーバーロード解決を誤ることがある（後述）。
+
+## `vi.hoisted()` でオーバーロード関数を正しく型付けする
+
+`fs.promises.readdir` は複数のオーバーロードを持つ。TypeScript は最後のオーバーロード（`Dirent[]` を返すもの）を採用するため、`vi.mocked(fs.promises.readdir).mockResolvedValue(stringArray)` がコンパイルエラーになる。
+
+`vi.hoisted()` で型付きモックを先に定義し、ファクトリ内で参照することで解決する。
+
+```ts
+// vi.mock より前に評価されるよう hoisted で定義
+const { mockReaddir } = vi.hoisted(() => ({
+  mockReaddir: vi.fn<() => Promise<string[]>>(),
+}));
+
+vi.mock('fs', () => ({
+  default: {
+    promises: {
+      access: vi.fn(),
+      readdir: mockReaddir, // 型付きモックを使う
+    },
+  },
+}));
+```
+
+テスト内では `vi.mocked()` を介さず `mockReaddir` を直接操作する。
+
+```ts
+mockReaddir.mockResolvedValue(['post-a.mdx', 'post-b.mdx']);
+```
+
+`vi.mock` は Vitest によってファイル先頭にホイスティングされる。`vi.hoisted()` はそれより前に実行されるため、ファクトリから参照できる。
+
+## テストデータはファクトリ関数で作る
+
+各テストに生のオブジェクトリテラルを書き並べると、フィールドが増えたときに全修正が必要になる。ファクトリ関数でデフォルト値を持たせ、差分だけ上書きする。
+
+```ts
+function makePost(
+  slug: string,
+  overrides: Partial<PostFrontmatter> & { content?: string } = {}
+): Post {
+  const { content = '', ...frontmatterOverrides } = overrides;
+  return {
+    slug,
+    frontmatter: {
+      title: `Post ${slug}`,
+      date: '2024-01-01',
+      excerpt: `Excerpt for ${slug}`,
+      tags: ['react'],
+      draft: false,
+      ...frontmatterOverrides,
+    },
+    content,
+  };
+}
+```
+
+使うときはこう。
+
+```ts
+makePost('hello'); // デフォルト値で作る
+makePost('draft', { draft: true }); // draft だけ上書き
+makePost('old', { date: '2023-01-01' }); // 日付だけ変える
+```
+
+## セットアップヘルパーで複数モックをまとめる
+
+投稿一覧に関わるテストは毎回 `access` / `readdir` / `readMarkdownFile` の 3 つをセットする必要がある。セットアップヘルパーにまとめると各テストがスリムになる。
+
+```ts
+function setupAllPosts(posts: Post[]) {
+  const fileNames = posts.map((p) => `${p.slug}.mdx`);
+  vi.mocked(fs.promises.access).mockResolvedValue(undefined);
+  mockReaddir.mockResolvedValue(fileNames);
+  vi.mocked(readMarkdownFile).mockImplementation(async (relativePath) => {
+    const slug = relativePath.replace(/^posts\//, '').replace(/\.mdx?$/, '');
+    const post = posts.find((p) => p.slug === slug);
+    if (!post) return undefined;
+    return { data: post.frontmatter, content: post.content };
+  });
+}
+```
+
+テストはこうなる。
+
+```ts
+it('日付降順にソートされる', async () => {
+  setupAllPosts([makePost('old', { date: '2023-01-01' }), makePost('new', { date: '2024-06-01' })]);
+  const posts = await getSortedPostsData();
+  expect(posts.map((p) => p.slug)).toEqual(['new', 'old']);
+});
+```
+
+## `afterEach` でモックをリセットする
+
+テスト間でモックの状態が漏れると順番依存のバグになる。`afterEach` に `vi.resetAllMocks()` を置く。
+
+```ts
+describe('getAllPosts', () => {
+  afterEach(() => {
+    vi.resetAllMocks();
+    vi.unstubAllEnvs(); // stubEnv を使った場合はこちらも
+  });
+
+  // ...
+});
+```
+
+`vi.resetAllMocks()` はモックの呼び出し履歴・戻り値・実装をすべてリセットする。`vi.clearAllMocks()` は履歴のみで実装は残るので、テスト間の独立性を保つには `reset` のほうが安全。
+
+## 環境変数のモック：`vi.stubEnv()`
+
+`NODE_ENV` など環境変数によって挙動が変わるコードは `vi.stubEnv()` で差し替える。
+
+```ts
+it('本番環境では draft 記事を除外する', async () => {
+  vi.stubEnv('NODE_ENV', 'production');
+  setupAllPosts([makePost('published', { draft: false }), makePost('draft-post', { draft: true })]);
+  const posts = await getAllPosts();
+  expect(posts.map((p) => p.slug)).toEqual(['published']);
+});
+```
+
+`afterEach` に `vi.unstubAllEnvs()` を入れておくと次のテストに影響しない。
+
+## パラメータ化テスト：`it.each()`
+
+同じロジックを複数の入力値で確認したいときは `it.each()` を使う。
+
+```ts
+it.each([
+  [0, 0],
+  [6, 1],
+  [7, 2],
+  [12, 2],
+  [13, 3],
+])('%i 件 → %i ページ', async (count, expected) => {
+  setupAllPosts(Array.from({ length: count }, (_, i) => makePost(`post-${i}`)));
+  expect(await getTotalPages()).toBe(expected);
+});
+```
+
+境界値（0・6・7・12・13）をまとめて書けるのでテストの意図が伝わりやすい。
+
+## `mockResolvedValue` vs `mockResolvedValueOnce`
+
+- **`mockResolvedValue`** — 以降のすべての呼び出しで同じ値を返す。セットアップヘルパー向き。
+- **`mockResolvedValueOnce`** — 次の 1 回だけ有効。フォールバックのシーケンスを表現できる。
+
+```ts
+it('.mdx がなく .md が見つかった場合、Post を返す', async () => {
+  vi.mocked(readMarkdownFile)
+    .mockResolvedValueOnce(undefined) // 1 回目（.mdx）→ 見つからない
+    .mockResolvedValueOnce({ data: frontmatter, content: 'body' }); // 2 回目（.md）→ 成功
+  const post = await getPostBySlug('hello');
+  expect(post).toBeDefined();
+});
+```
+
+## まとめ
+
+| パターン                          | 使いどころ                                 |
+| --------------------------------- | ------------------------------------------ |
+| `vi.mock()` + 型付き `vi.fn<T>()` | モジュール全体を差し替える                 |
+| `vi.hoisted()`                    | オーバーロード関数を正しく型付けする       |
+| `vi.mocked()`                     | モック関数に型安全にアクセスする           |
+| ファクトリ関数 `makePost()`       | デフォルト値付きテストデータを量産する     |
+| セットアップヘルパー              | 複数モックをまとめて各テストをスリムに保つ |
+| `afterEach(vi.resetAllMocks)`     | テスト間の状態漏れを防ぐ                   |
+| `vi.stubEnv()`                    | 環境変数依存のコードをテストする           |
+| `it.each()`                       | 境界値を網羅的にテストする                 |
+| `mockResolvedValueOnce`           | 呼び出し順に応じた戻り値のシーケンス       |

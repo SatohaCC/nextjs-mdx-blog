@@ -1,0 +1,116 @@
+---
+title: 'Storybook 8 + Next.js 16 + PandaCSS での現代的なコンポーネント開発'
+date: '2026-04-20'
+excerpt: 'このブログプロジェクトで採用している Storybook の書き方と、生産性を高めるための設計パターン（Container/Presentational 分離やインタラクションテスト）について解説します。'
+tags: ['Storybook', 'Next.js', 'PandaCSS', 'Testing', 'React']
+draft: true
+---
+
+# Storybook 8 + Next.js 16 + PandaCSS での現代的なコンポーネント開発
+
+UIコンポーネントのカタログであり、開発環境でもある Storybook。このブログでは Storybook 8 と Next.js 16 を組み合わせ、PandaCSS によるスタイリングを最大限に活かしたコンポーネント開発を行っています。
+
+現在このプロジェクトで定着している「Storybook の書き方」をまとめました。
+
+## 1. Container / Presentational パターンの徹底
+
+Next.js の App Router 環境では、データ取得を行う Server Component と、UIを表示する Client Component の境界を意識する必要があります。Storybook でコンポーネントを簡単に表示するために、以下の構成を標準としています。
+
+- **`ComponentNameContainer.tsx`**: Server Component。データ取得や複雑なロジックを担当。
+- **`ComponentNamePresentational.tsx`**: Pure UI Component。Props を受け取って表示するだけ。
+- **`ComponentNamePresentational.stories.tsx`**: Storybook 用のファイル。
+
+この分離により、Storybook では「データ取得完了後の表示状態」を即座に確認でき、複雑な API モックなしでUI開発に集中できます。
+
+## 2. 型安全な Story 定義
+
+`Meta` と `StoryObj` を使用し、最新の Storybook 形式で記述します。
+
+```tsx
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+
+import { PostListPresentational } from './PostListPresentational';
+
+const meta = {
+  title: 'Features/Post/PostList',
+  component: PostListPresentational,
+  tags: ['autodocs'],
+  args: {
+    posts: mockPosts,
+  },
+} satisfies Meta<typeof PostListPresentational>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {};
+```
+
+`satisfies Meta` を使うことで、`meta.args` で受け取るプロパティに対して強力な型補完が効くようになります。
+
+## 3. インタラクションテスト（play 関数）の活用
+
+Storybook は単なるカタログではなく、テストツールとしても機能します。`play` 関数の中で `@storybook/test` (Vitest/Testing Library) を使うことで、ブラウザ上での動作を自動検証しています。
+
+```tsx
+export const ClickTab: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const tab = canvas.getByRole('tab', { name: '最新記事' });
+
+    // アクションの実行
+    await userEvent.click(tab);
+
+    // 結果の検証
+    await expect(canvas.getByText('最新の記事一覧')).toBeInTheDocument();
+  },
+};
+```
+
+これにより、Storybook を開くだけでコンポーネントの最低限の動作テストが完了します。
+
+## 4. ダークモードと PandaCSS の統合
+
+`.storybook/preview.tsx` に共通のデコレータを設定し、ツールバーからテーマ（Light / Dark）を切り替えられるようにしています。PandaCSS のセマンティックトークンは `data-theme` 属性に連動するように設定されています。
+
+```tsx
+// .storybook/preview.tsx
+decorators: [
+  (Story, context) => {
+    const theme = context.globals.theme || 'light';
+    return (
+      <Box data-theme={theme} color="text.default" bg="bg.default">
+        <div style={{ padding: '2rem' }}>
+          <Story />
+        </div>
+      </Box>
+    );
+  },
+],
+```
+
+## 5. 自動ドキュメント化とアクセシビリティ
+
+JSDoc を活用して、Storybook の `autodocs` 画面に日本語の説明を表示させています。また、`@storybook/addon-a11y` を導入し、アクセシビリティ違反がある場合にテストを失敗させるように設定しています。
+
+```tsx
+/**
+ * 記事の詳細を表示するメインコンポーネント。
+ * @summary 記事タイトル、目次、本文、関連記事を含む
+ */
+export const Default: Story = {
+  parameters: {
+    a11y: { test: 'error' }, // A11y違反があればエラーとして報告
+  },
+};
+```
+
+## まとめ
+
+この Storybook 駆動開発（SDD: Storybook Driven Development）を取り入れることで、以下のメリットを感じています。
+
+1.  **開発スピードの向上**: 大きなページ全体を動かさず、小さなコンポーネント単位で開発できる。
+2.  **デバッグの容易さ**: エッジケース（テキストが極端に長い場合や画像がない場合など）の表示確認が簡単。
+3.  **品質の担保**: Play 関数による動作テストと a11y チェックが自然に組み込まれる。
+
+これからもこのパターンをベースに、堅牢で美しい UI を構築していきます。
