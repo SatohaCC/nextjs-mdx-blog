@@ -1,6 +1,6 @@
 ---
 name: blog-coding-conventions
-description: このブログプロジェクトのコーディング規約。コンポーネント作成時やスタイル定義時に参照すること。新しいコンポーネントを追加する際はこのスキルに従う。
+description: このブログプロジェクトの全体規約（アーキテクチャ・コンポーネント・スタイル・非同期処理・キャッシュ戦略）。新規コンポーネント追加・データ取得関数の実装・スタイル定義時に参照すること。
 ---
 
 # コーディング規約
@@ -22,15 +22,15 @@ src/
 │   ├── ui/         # [デザイナー領域] プリミティブUI（Button, Tag, AppLink 等）
 │   ├── layouts/    # Header, Footer, Sidebar
 │   └── mdx/        # MDXコンポーネント集約 (Renderer, Blockquote等)
-└── features/       # 機能スライス（Vertical Slice）
-    ├── posts/      # 記事一覧・詳細・検索機能
-    │   ├── types/      # 型定義（Post型）・インターフェース
-    │   ├── api/        # データ取得・ビジネスロジック（usecase, repository）
-    │   └── components/ # 記事・検索専用UI（PostList, SearchBox等）
-    └── about/      # 固定ページ（プロフィール等）
-        ├── api/        # データ取得
-        └── components/
-├── lib/            # 機能非依存のユーティリティ
+├── features/       # 機能スライス（Vertical Slice）
+│   ├── posts/      # 記事一覧・詳細・検索機能
+│   │   ├── types.ts    # 型定義（Post型）・インターフェース（ファイル、ディレクトリではない）
+│   │   ├── api/        # データ取得・ビジネスロジック（usecase, repository）
+│   │   └── components/ # 記事・検索専用UI（PostList, SearchBox等）
+│   └── about/      # 固定ページ（プロフィール等）
+│       ├── api/        # データ取得
+│       └── components/
+└── lib/            # 機能非依存のユーティリティ
 ```
 
 ### 新しいコンポーネントをどこに置くか
@@ -42,6 +42,20 @@ src/
 | 特定の機能専用UI                         | `src/features/<feature>/components/<ComponentName>/` |
 | 記事取得・ロジック                       | `src/features/posts/api/`                            |
 | 型定義・インターフェース                 | `src/features/posts/types.ts`                        |
+
+### インポート制約（ESLint `boundaries/dependencies`）
+
+フィーチャー間の直接インポートは **ESLint エラー** になります。
+
+| インポート元 → 先 | 可否 |
+| --- | --- |
+| `features/A` → `features/A`（同一フィーチャー内） | ✅ 許可 |
+| `features/A` → `features/B`（別フィーチャー） | ❌ 禁止 |
+| `features/*` → `src/components/*` | ✅ 許可 |
+| `features/*` → `src/lib/*` | ✅ 許可 |
+| `components/ui/*` → `features/*` | ❌ 禁止 |
+
+別フィーチャーのデータが必要な場合は、呼び出し元（`app/` 層など）で両フィーチャーの関数をそれぞれ呼んで結合してください。フィーチャー内で共有したい型は同一フィーチャーの `types.ts` に定義します。
 
 ---
 
@@ -166,15 +180,31 @@ Server Components およびそれに準ずるデータ取得関数（`src/featur
 
 プロジェクトでは Next.js 16+ の **Cache Components** を活用し、データ取得の高速化とサーバー負荷の低減を図ります。
 
+> **`'use cache'` vs React `cache()`**: このプロジェクトでは**クロスリクエストキャッシュに `'use cache'`（Next.js 16+）を使用**します。React の `cache()` はリクエストスコープの重複排除専用であり、`api/` レイヤーの関数には使用しません。
+
 ### 基本ルール
 
-1. **`'use cache'` の適用**: クロスリクエストでキャッシュすべきデータ取得関数（`api/` 内）には `'use cache'` 指令を付与してください。
+1. **`'use cache'` の適用**: クロスリクエストでキャッシュすべきデータ取得関数（`api/` 内）には `'use cache'` 指令を付与してください。指令は**関数 body の先頭 1 行目**に文字列リテラルとして記述します（ファイル先頭のモジュールスコープには置かない）。`cacheLife` / `cacheTag` は `'next/cache'` からインポートします（`unstable_` プレフィックスは不要）。
+
+   ```typescript
+   import { cacheLife, cacheTag } from 'next/cache';
+
+   export const getAllPosts = async (): Promise<Post[]> => {
+     'use cache';        // ← 関数 body の先頭
+     cacheLife('days');
+     cacheTag('posts');
+     // ... 本処理
+   };
+   ```
+
 2. **キャッシュ寿命 (`cacheLife`)**: データの更新頻度に合わせて適切に設定してください。
    - 記事データ (`posts`): `cacheLife('days')`（または `hours`）
    - 固定ページ (`about`): `cacheLife('weeks')`
+   - 新規フィーチャーの基準: 更新頻度が記事と同等なら `'days'`、ほぼ変わらない静的データなら `'weeks'`
 3. **タグ管理 (`cacheTag`)**: 特定のデータ群をグループ化し、一括で無効化できるように `cacheTag` を使用してください。
    - 記事全般: `cacheTag('posts')`
    - 個別記事: `cacheTag('posts', `post-${slug}`)`
+   - 新規フィーチャーのタグ名は `cacheTag('<feature>')` の形式で統一します（例: `cacheTag('tags')`）。
 4. **ランタイム制約**: `'use cache'` 内では `cookies()`, `headers()`, `searchParams` に直接アクセスできません（エラーになります）。必要な場合は引数として外部から渡してください。
 
 ### メリット
@@ -191,12 +221,14 @@ Server Components およびそれに準ずるデータ取得関数（`src/featur
 
 ```
 ComponentName/
-├── ComponentNameContainer.tsx               # Server Component / データ取得
+├── ComponentNameContainer.tsx               # Server Component / データ取得（スタイルファイルなし）
 ├── ComponentNamePresentational.tsx          # Client Component / 表示
 ├── ComponentNamePresentational.styles.ts    # Presentational のスタイル
 ├── ComponentNamePresentational.stories.tsx  # (任意) Storybookカタログ・Vitestテスト対象
 └── index.ts
 ```
+
+**Container はスタイルファイルを持ちません。** スタイルはすべて Presentational 側に定義します。
 
 ---
 
@@ -216,16 +248,46 @@ ComponentName/
 1. `src/components/ui/<ComponentName>/` フォルダを作成
 2. `styles.ts` を先に作成し、必要なスタイルを定義
 3. `ComponentName.tsx` を作成し、スタイルをインポート
-4. `index.ts` でエクスポート
+4. `index.ts` でエクスポート（wildcard re-export）
+   ```typescript
+   // index.ts
+   export * from './ComponentName';
+   ```
 
 ### 機能専用コンポーネント（`src/features/<feature>/components/`）の場合
 
+#### データ取得あり（Container/Presentational パターンを使う場合）
+
 1. `src/features/<feature>/components/<ComponentName>/` フォルダを作成
-2. データ取得が必要なら `ComponentNameContainer.tsx` を作成（Server Component）
+2. `ComponentNameContainer.tsx` を作成（Server Component・データ取得）
 3. `ComponentNamePresentational.styles.ts` でスタイルを定義
 4. `ComponentNamePresentational.tsx` を作成し、スタイルをインポート
 5. UIカタログやテストが必要な場合は `ComponentNamePresentational.stories.tsx` を作成
-6. `index.ts` でエクスポート
+6. `index.ts` で **Container と Presentational の両方** を named export する
+   ```typescript
+   // index.ts
+   export { ComponentNameContainer } from './ComponentNameContainer';
+   export { ComponentNamePresentational } from './ComponentNamePresentational';
+   ```
+   Container を外部向けの簡潔な名前で公開したい場合はエイリアスを使います:
+   ```typescript
+   export { ComponentNameContainer as ComponentName } from './ComponentNameContainer';
+   export { ComponentNamePresentational } from './ComponentNamePresentational';
+   ```
+
+#### データ取得なし（UIのみのコンポーネント）
+
+Container/Presentational パターンは使わず、`ComponentName` をそのままファイル名にします。
+
+1. `src/features/<feature>/components/<ComponentName>/` フォルダを作成
+2. `ComponentName.styles.ts` でスタイルを定義
+3. `ComponentName.tsx` を作成し、スタイルをインポート
+4. UIカタログやテストが必要な場合は `ComponentName.stories.tsx` を作成
+5. `index.ts` で named export する
+   ```typescript
+   // index.ts
+   export { ComponentName } from './ComponentName';
+   ```
 
 ---
 
