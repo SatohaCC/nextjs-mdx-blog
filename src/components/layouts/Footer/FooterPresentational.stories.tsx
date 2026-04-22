@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { FooterPresentational } from './FooterPresentational';
 
@@ -22,12 +22,21 @@ type Story = StoryObj<typeof meta>;
  * @summary 全ページ共通フッターとして使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: ナビゲーションリンクが2件表示される
-    const homeLink = within(canvasElement).getByRole('link', { name: 'ホーム' });
-    await expect(homeLink).toHaveAttribute('href', '/');
+  play: async ({ canvas, step }) => {
+    let homeLink: HTMLElement;
+    let aboutLink: HTMLElement;
 
-    const aboutLink = within(canvasElement).getByRole('link', { name: 'About' });
-    await expect(aboutLink).toBeInTheDocument();
+    await step('Arrange: フッターのリンクを取得', async () => {
+      homeLink = canvas.getByRole('link', { name: 'ホーム' });
+      aboutLink = canvas.getByRole('link', { name: 'About' });
+    });
+
+    await step(
+      'Assert: ホームおよび About への各ナビゲーションリンクが正しく表示されていることを確認',
+      async () => {
+        await expect(homeLink).toHaveAttribute('href', '/');
+        await expect(aboutLink).toBeInTheDocument();
+      }
+    );
   },
 };

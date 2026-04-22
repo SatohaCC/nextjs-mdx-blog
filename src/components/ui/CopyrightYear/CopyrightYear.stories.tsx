@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { CopyrightYear } from './CopyrightYear';
 
@@ -23,9 +23,16 @@ type Story = StoryObj<typeof meta>;
  * @summary フッターの © 年表示として使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: 現在の西暦年が表示される
-    const currentYear = String(new Date().getFullYear());
-    await expect(within(canvasElement).getByText(currentYear)).toBeInTheDocument();
+  play: async ({ canvas, step }) => {
+    let yearText: HTMLElement;
+
+    await step('Arrange: 現在の西暦年を取得', async () => {
+      const currentYear = String(new Date().getFullYear());
+      yearText = canvas.getByText(currentYear);
+    });
+
+    await step('Assert: 現在の西暦年が表示されていることを確認', async () => {
+      await expect(yearText).toBeInTheDocument();
+    });
   },
 };

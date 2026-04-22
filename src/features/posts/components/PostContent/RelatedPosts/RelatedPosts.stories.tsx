@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { RelatedPosts } from './RelatedPosts';
 
@@ -8,7 +8,6 @@ const meta = {
   component: RelatedPosts,
   parameters: {
     layout: 'padded',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof RelatedPosts>;
@@ -44,13 +43,22 @@ export const WithPosts: Story = {
       },
     ],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: 関連記事へのリンクが2件表示される
-    const links = within(canvasElement).getAllByRole('link');
-    await expect(links).toHaveLength(2);
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let links: HTMLElement[];
 
-    await expect(links[0]).toHaveAttribute('href', '/posts/related-post-1');
-    await expect(links[1]).toHaveAttribute('href', '/posts/related-post-2');
+    await step('Arrange: 関連記事のリンクを取得', async () => {
+      links = await canvas.findAllByRole('link');
+    });
+
+    await step(
+      'Assert: 2 件の関連記事リンクが表示され、正しいパスを指していることを確認',
+      async () => {
+        await expect(links).toHaveLength(2);
+        await expect(links[0]).toHaveAttribute('href', '/posts/related-post-1');
+        await expect(links[1]).toHaveAttribute('href', '/posts/related-post-2');
+      }
+    );
   },
 };
 
@@ -63,8 +71,13 @@ export const Empty: Story = {
   args: {
     posts: [],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: postsが空のときは何もレンダリングしない
-    await expect(canvasElement.textContent?.trim()).toBe('');
+  tags: ['!manifest'],
+  play: async ({ canvasElement, step }) => {
+    await step('Assert: posts が空の場合は何もレンダリングされないことを確認', async () => {
+      // デコレーターの div 内に、スクリプトタグ以外の要素が存在しないことを確認
+      const innerContainer = canvasElement.querySelector('div[style*="padding: 2rem"]');
+      const component = innerContainer?.querySelector('*:not(script)');
+      await expect(component).toBeNull();
+    });
   },
 };

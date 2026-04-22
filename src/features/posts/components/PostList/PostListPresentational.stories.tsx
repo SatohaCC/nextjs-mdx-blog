@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { PostListPresentational } from './PostListPresentational';
 
@@ -59,10 +59,16 @@ type Story = StoryObj<typeof meta>;
  * @summary トップページや1ページ分の記事一覧表示
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: 記事タイトルへのリンクが表示される
-    const link = within(canvasElement).getByRole('link', { name: 'Next.js App Router 入門' });
-    await expect(link).toHaveAttribute('href', '/posts/nextjs-app-router');
+  play: async ({ canvas, step }) => {
+    let link: HTMLElement;
+
+    await step('Arrange: 記事リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'Next.js App Router 入門' });
+    });
+
+    await step('Assert: 記事タイトルへのリンクが表示され、正しい遷移先を持っている', async () => {
+      await expect(link).toHaveAttribute('href', '/posts/nextjs-app-router');
+    });
   },
 };
 
@@ -77,10 +83,16 @@ export const WithCustomTitle: Story = {
     subtitle: '2 件の記事',
     posts: mockPosts.slice(0, 2),
   },
-  play: async ({ canvasElement }) => {
-    // Assert: カスタムタイトルが表示される
-    const heading = within(canvasElement).getByRole('heading', { name: 'タグ：Next.js' });
-    await expect(heading).toBeInTheDocument();
+  play: async ({ canvas, step }) => {
+    let heading: HTMLElement;
+
+    await step('Arrange: タイトル要素を取得', async () => {
+      heading = canvas.getByRole('heading', { name: 'タグ：Next.js' });
+    });
+
+    await step('Assert: カスタムタイトルがヘッダーとして表示される', async () => {
+      await expect(heading).toBeInTheDocument();
+    });
   },
 };
 
@@ -94,9 +106,15 @@ export const WithPagination: Story = {
     totalPages: 5,
     currentPage: 1,
   },
-  play: async ({ canvasElement }) => {
-    // Assert: ページネーションが表示される
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
-    await expect(nav).toBeInTheDocument();
+  play: async ({ canvas, step }) => {
+    let nav: HTMLElement;
+
+    await step('Arrange: ページネーション要素を取得', async () => {
+      nav = canvas.getByRole('navigation', { name: 'Pagination' });
+    });
+
+    await step('Assert: ページネーション（ナビゲーション）が表示される', async () => {
+      await expect(nav).toBeInTheDocument();
+    });
   },
 };

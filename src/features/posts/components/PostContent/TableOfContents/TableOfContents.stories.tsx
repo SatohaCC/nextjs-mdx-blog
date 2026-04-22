@@ -8,7 +8,6 @@ const meta = {
   component: TableOfContents,
   parameters: {
     layout: 'padded',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof TableOfContents>;
@@ -29,15 +28,22 @@ export const HeadingsOnly: Story = {
       { id: 'conclusion', text: 'まとめ', level: 2 },
     ],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: '目次' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let links: HTMLElement[];
 
-    // Assert: 見出しリンクが3件表示される
-    const links = within(nav).getAllByRole('link');
-    await expect(links).toHaveLength(3);
+    await step('Arrange: 目次要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: '目次' });
+      links = within(nav).getAllByRole('link');
+    });
 
-    // Assert: 最初の見出しリンクが正しいアンカーを持つ
-    await expect(links[0]).toHaveAttribute('href', '#introduction');
+    await step(
+      'Assert: 3 つの見出しリンクが表示され、最初のリンクが正しいアンカーを指していることを確認',
+      async () => {
+        await expect(links).toHaveLength(3);
+        await expect(links[0]).toHaveAttribute('href', '#introduction');
+      }
+    );
   },
 };
 
@@ -58,12 +64,21 @@ export const MixedLevels: Story = {
       { id: 'conclusion', text: 'まとめ', level: 2 },
     ],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: '目次' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let links: HTMLElement[];
 
-    // Assert: 全リンクが表示される
-    const links = within(nav).getAllByRole('link');
-    await expect(links).toHaveLength(7);
+    await step('Arrange: 目次要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: '目次' });
+      links = within(nav).getAllByRole('link');
+    });
+
+    await step(
+      'Assert: h2・h3 が混在する全 7 件のリンクが正しく表示されていることを確認',
+      async () => {
+        await expect(links).toHaveLength(7);
+      }
+    );
   },
 };
 
@@ -76,8 +91,12 @@ export const Empty: Story = {
   args: {
     toc: [],
   },
-  play: async ({ canvasElement }) => {
-    // Assert: tocが空のときは何もレンダリングしない
-    await expect(canvasElement.textContent?.trim()).toBe('');
+  play: async ({ canvasElement, step }) => {
+    await step('Assert: toc が空の場合は何もレンダリングされないことを確認', async () => {
+      // デコレーターの div 内に、スクリプトタグ以外の要素が存在しないことを確認
+      const innerContainer = canvasElement.querySelector('div[style*="padding: 2rem"]');
+      const component = innerContainer?.querySelector('*:not(script)');
+      await expect(component).toBeNull();
+    });
   },
 };

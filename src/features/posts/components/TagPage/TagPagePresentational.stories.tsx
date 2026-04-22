@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagPagePresentational } from './TagPagePresentational';
 
@@ -53,14 +53,22 @@ type Story = StoryObj<typeof meta>;
  * @summary タグに紐づく記事の一覧表示
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: タグ名のタイトルが表示される
-    const heading = within(canvasElement).getByRole('heading', { name: 'タグ：Next.js' });
-    await expect(heading).toBeInTheDocument();
+  play: async ({ canvas, step }) => {
+    let heading: HTMLElement;
+    let backLink: HTMLElement;
 
-    // Assert: ホームへのリンクが表示される
-    const backLink = within(canvasElement).getByRole('link', { name: '← すべての記事に戻る' });
-    await expect(backLink).toHaveAttribute('href', '/');
+    await step('Arrange: ヘッダーと戻るリンクを取得', async () => {
+      heading = canvas.getByRole('heading', { name: 'タグ：Next.js' });
+      backLink = canvas.getByRole('link', { name: '← すべての記事に戻る' });
+    });
+
+    await step(
+      'Assert: タグタイトルが表示され、ホームへの戻るリンクが正しいことを確認',
+      async () => {
+        await expect(heading).toBeInTheDocument();
+        await expect(backLink).toHaveAttribute('href', '/');
+      }
+    );
   },
 };
 
@@ -74,10 +82,19 @@ export const SinglePost: Story = {
     posts: [mockPosts[0]],
     totalCount: 1,
   },
-  play: async ({ canvasElement }) => {
-    // Assert: 1件の記事リンクが表示される
-    const link = within(canvasElement).getByRole('link', { name: 'Next.js App Router 入門' });
-    await expect(link).toHaveAttribute('href', '/posts/nextjs-app-router');
+  play: async ({ canvas, step }) => {
+    let link: HTMLElement;
+
+    await step('Arrange: 記事リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'Next.js App Router 入門' });
+    });
+
+    await step(
+      'Assert: 記事が 1 件のみの場合でも、正しいリンクが表示されていることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '/posts/nextjs-app-router');
+      }
+    );
   },
 };
 
@@ -92,9 +109,18 @@ export const WithPagination: Story = {
     currentPage: 1,
     totalCount: 15,
   },
-  play: async ({ canvasElement }) => {
-    // Assert: ページネーションが表示される
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
-    await expect(nav).toBeInTheDocument();
+  play: async ({ canvas, step }) => {
+    let nav: HTMLElement;
+
+    await step('Arrange: ページネーション要素を取得', async () => {
+      nav = canvas.getByRole('navigation', { name: 'Pagination' });
+    });
+
+    await step(
+      'Assert: 複数ページにおよぶ場合、ページネーションが表示されることを確認',
+      async () => {
+        await expect(nav).toBeInTheDocument();
+      }
+    );
   },
 };

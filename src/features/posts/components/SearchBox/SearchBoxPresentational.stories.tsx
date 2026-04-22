@@ -3,6 +3,11 @@ import { fn } from 'storybook/test';
 
 import { SearchBoxPresentational } from './SearchBoxPresentational';
 
+/**
+ * 記事検索のキーワード入力を行うUIコンポーネント。
+ *
+ * @summary 記事検索の入力フォーム
+ */
 const meta = {
   title: 'Features/SearchBox',
   component: SearchBoxPresentational,
@@ -10,10 +15,7 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  args: {
-    onQueryChange: fn(),
-    onSubmit: fn(),
-  },
+
   argTypes: {
     query: {
       control: 'text',
@@ -27,6 +29,10 @@ const meta = {
       action: 'submitted',
       description: 'フォームが送信されたときのコールバック',
     },
+  },
+  args: {
+    onQueryChange: fn(),
+    onSubmit: fn(),
   },
 } satisfies Meta<typeof SearchBoxPresentational>;
 

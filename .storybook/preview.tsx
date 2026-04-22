@@ -1,6 +1,8 @@
 // PandaCSS styles
 // Global styles
 import type { Preview } from '@storybook/nextjs-vite';
+import { ThemeProvider } from 'next-themes';
+import { fn } from 'storybook/test';
 
 import '../src/app/globals.css';
 import { Box } from '../styled-system/jsx';
@@ -15,10 +17,14 @@ const preview: Preview = {
       },
     },
 
+    args: {
+      onToggle: fn(),
+      onSubmit: fn(),
+      onQueryChange: fn(),
+      onPress: fn(),
+    },
+
     a11y: {
-      // 'todo' - show a11y violations in the test UI only
-      // 'error' - fail CI on a11y violations
-      // 'off' - skip a11y checks entirely
       test: 'error',
     },
 
@@ -48,17 +54,19 @@ const preview: Preview = {
     (Story, context) => {
       const theme = context.globals.theme || 'light';
       return (
-        <Box
-          data-theme={theme}
-          color="text.default"
-          bg="bg.default"
-          transitionProperty="background-color, color"
-          transitionDuration="normal"
-        >
-          <div style={{ padding: '2rem' }}>
-            <Story />
-          </div>
-        </Box>
+        <ThemeProvider attribute="class" forcedTheme={theme} enableSystem={false}>
+          <Box
+            data-theme={theme}
+            color="text.default"
+            bg="bg.default"
+            transitionProperty="background-color, color"
+            transitionDuration="normal"
+          >
+            <div style={{ padding: '2rem' }}>
+              <Story />
+            </div>
+          </Box>
+        </ThemeProvider>
       );
     },
   ],

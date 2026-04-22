@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { Button } from './Button';
 
@@ -8,11 +8,11 @@ const meta = {
   component: Button,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
   args: {
     children: 'ボタン',
+    onPress: fn(),
   },
 } satisfies Meta<typeof Button>;
 
@@ -90,8 +90,6 @@ export const Large: Story = {
   args: { size: 'lg' },
 };
 
-// ── インタラクションテスト ───────────────────────────────────────────────────
-
 /**
  * クリック時に `onPress` コールバックが呼ばれることを検証する。
  *
@@ -100,17 +98,23 @@ export const Large: Story = {
 export const ClickCallbackFires: Story = {
   args: {
     children: 'クリック',
-    onPress: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: クリック可能なボタン
-    const button = within(canvasElement).getByRole('button', { name: 'クリック' });
 
-    // Act
-    await userEvent.click(button);
+  tags: ['!manifest'],
+  play: async ({ canvas, args, userEvent, step }) => {
+    let button: HTMLElement;
 
-    // Assert
-    await expect(args.onPress).toHaveBeenCalledOnce();
+    await step('Arrange: ボタンを取得', async () => {
+      button = await canvas.findByRole('button', { name: 'クリック' });
+    });
+
+    await step('Act: ボタンをクリック', async () => {
+      await userEvent.click(button);
+    });
+
+    await step('Assert: コールバックが1回呼ばれていることを確認', async () => {
+      await expect(args.onPress).toHaveBeenCalledOnce();
+    });
   },
 };
 
@@ -122,18 +126,22 @@ export const ClickCallbackFires: Story = {
 export const KeyboardActivationEnter: Story = {
   args: {
     children: 'Enterキー',
-    onPress: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: フォーカス可能なボタン
-    within(canvasElement).getByRole('button', { name: 'Enterキー' });
 
-    // Act: タブでフォーカス → Enterで実行
-    await userEvent.tab();
-    await userEvent.keyboard('{Enter}');
+  tags: ['!manifest'],
+  play: async ({ canvas, args, userEvent, step }) => {
+    await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
+      await canvas.findByRole('button', { name: 'Enterキー' });
+    });
 
-    // Assert
-    await expect(args.onPress).toHaveBeenCalledOnce();
+    await step('Act: Tabキーでフォーカスし、Enterキーを押下', async () => {
+      await userEvent.tab();
+      await userEvent.keyboard('{Enter}');
+    });
+
+    await step('Assert: コールバックが呼ばれていることを確認', async () => {
+      await expect(args.onPress).toHaveBeenCalledOnce();
+    });
   },
 };
 
@@ -145,18 +153,22 @@ export const KeyboardActivationEnter: Story = {
 export const KeyboardActivationSpace: Story = {
   args: {
     children: 'スペースキー',
-    onPress: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: フォーカス可能なボタン
-    within(canvasElement).getByRole('button', { name: 'スペースキー' });
 
-    // Act: タブでフォーカス → Spaceで実行（ARIAボタン仕様）
-    await userEvent.tab();
-    await userEvent.keyboard(' ');
+  tags: ['!manifest'],
+  play: async ({ canvas, args, userEvent, step }) => {
+    await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
+      await canvas.findByRole('button', { name: 'スペースキー' });
+    });
 
-    // Assert
-    await expect(args.onPress).toHaveBeenCalledOnce();
+    await step('Act: Tabキーでフォーカスし、Spaceキーを押下', async () => {
+      await userEvent.tab();
+      await userEvent.keyboard(' ');
+    });
+
+    await step('Assert: コールバックが呼ばれていることを確認', async () => {
+      await expect(args.onPress).toHaveBeenCalledOnce();
+    });
   },
 };
 
@@ -170,13 +182,18 @@ export const Disabled: Story = {
     isDisabled: true,
     children: '無効なボタン',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: disabled状態のボタン
-    const button = within(canvasElement).getByRole('button', { name: '無効なボタン' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let button: HTMLElement;
 
-    // Assert: react-aria-components は data-disabled と native disabled の両方を付与する
-    await expect(button).toHaveAttribute('data-disabled');
-    await expect(button).toHaveAttribute('disabled');
+    await step('Arrange: ボタンを取得', async () => {
+      button = await canvas.findByRole('button', { name: '無効なボタン' });
+    });
+
+    await step('Assert: data-disabled および disabled 属性が付与されていることを確認', async () => {
+      await expect(button).toHaveAttribute('data-disabled');
+      await expect(button).toHaveAttribute('disabled');
+    });
   },
 };
 
@@ -189,17 +206,23 @@ export const DisabledDoesNotFire: Story = {
   args: {
     isDisabled: true,
     children: '押せないボタン',
-    onPress: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: disabled状態のボタン
-    const button = within(canvasElement).getByRole('button', { name: '押せないボタン' });
 
-    // Act: クリックを試みる
-    await userEvent.click(button);
+  tags: ['!manifest'],
+  play: async ({ canvas, args, userEvent, step }) => {
+    let button: HTMLElement;
 
-    // Assert: コールバックは呼ばれない
-    await expect(args.onPress).not.toHaveBeenCalled();
+    await step('Arrange: disabled 状態のボタンを取得', async () => {
+      button = await canvas.findByRole('button', { name: '押せないボタン' });
+    });
+
+    await step('Act: クリックを試みる', async () => {
+      await userEvent.click(button);
+    });
+
+    await step('Assert: コールバックが呼ばれないことを確認', async () => {
+      await expect(args.onPress).not.toHaveBeenCalled();
+    });
   },
 };
 
@@ -212,14 +235,23 @@ export const FocusVisible: Story = {
   args: {
     children: 'フォーカス確認',
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: フォーカス可能なボタン
-    const button = within(canvasElement).getByRole('button', { name: 'フォーカス確認' });
+  tags: ['!manifest'],
+  play: async ({ canvas, userEvent, step }) => {
+    let button: HTMLElement;
 
-    // Act: キーボードでフォーカス
-    await userEvent.tab();
+    await step('Arrange: フォーカス可能なボタンを取得', async () => {
+      button = await canvas.findByRole('button', { name: 'フォーカス確認' });
+    });
 
-    // Assert: キーボードフォーカス時に data-focus-visible が付与される
-    await expect(button).toHaveAttribute('data-focus-visible');
+    await step('Act: キーボードでフォーカスを移動', async () => {
+      await userEvent.tab();
+    });
+
+    await step(
+      'Assert: キーボードフォーカス時に data-focus-visible 属性が付与されることを確認',
+      async () => {
+        await expect(button).toHaveAttribute('data-focus-visible');
+      }
+    );
   },
 };

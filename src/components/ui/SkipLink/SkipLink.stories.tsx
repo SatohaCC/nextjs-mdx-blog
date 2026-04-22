@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { SkipLink } from './SkipLink';
 
@@ -31,11 +31,18 @@ type Story = StoryObj<typeof meta>;
  * @summary WCAG 2.4.1 準拠のスキップリンクとして全ページで使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Arrange: キーボードナビゲーション用スキップリンク
-    const link = within(canvasElement).getByRole('link', { name: 'メインコンテンツへスキップ' });
+  play: async ({ canvas, step }) => {
+    let link: HTMLElement;
 
-    // Assert: #main-content にアンカーしている
-    await expect(link).toHaveAttribute('href', '#main-content');
+    await step('Arrange: リンクを取得', async () => {
+      link = canvas.getByRole('link', { name: 'メインコンテンツへスキップ' });
+    });
+
+    await step(
+      'Assert: スキップリンクが表示され、#main-content を指していることを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '#main-content');
+      }
+    );
   },
 };

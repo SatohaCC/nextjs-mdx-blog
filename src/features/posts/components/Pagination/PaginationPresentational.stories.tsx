@@ -10,7 +10,6 @@ const meta = {
   component: PaginationPresentational,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
   args: {
@@ -32,16 +31,24 @@ export const FirstPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let currentLink: HTMLElement;
+    let nextLink: HTMLElement;
 
-    // Assert: 現在ページに aria-current="page" が付与されている
-    const currentLink = within(nav).getByRole('link', { name: '1' });
-    await expect(currentLink).toHaveAttribute('aria-current', 'page');
+    await step('Arrange: ページネーション要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      currentLink = within(nav).getByRole('link', { name: 'ページ 1' });
+      nextLink = within(nav).getByRole('link', { name: '次のページ' });
+    });
 
-    // Assert: 次ページへのリンクが存在する
-    const nextLink = within(nav).getByRole('link', { name: '次のページ' });
-    await expect(nextLink).toBeInTheDocument();
+    await step(
+      'Assert: 1 ページ目が現在ページとしてマークされ、次のページへのリンクが存在することを確認',
+      async () => {
+        await expect(currentLink).toHaveAttribute('aria-current', 'page');
+        await expect(nextLink).toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -56,16 +63,27 @@ export const MiddlePage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let currentLink: HTMLElement;
+    let prevLink: HTMLElement;
+    let nextLink: HTMLElement;
 
-    // Assert: 現在ページに aria-current="page" が付与されている
-    const currentLink = within(nav).getByRole('link', { name: '3' });
-    await expect(currentLink).toHaveAttribute('aria-current', 'page');
+    await step('Arrange: ページネーション要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      currentLink = within(nav).getByRole('link', { name: 'ページ 3' });
+      prevLink = within(nav).getByRole('link', { name: '前のページ' });
+      nextLink = within(nav).getByRole('link', { name: '次のページ' });
+    });
 
-    // Assert: 前後のページへのリンクが両方存在する
-    await expect(within(nav).getByRole('link', { name: '前のページ' })).toBeInTheDocument();
-    await expect(within(nav).getByRole('link', { name: '次のページ' })).toBeInTheDocument();
+    await step(
+      'Assert: 3 ページ目が現在ページとしてマークされ、前後両方のページへのリンクが存在することを確認',
+      async () => {
+        await expect(currentLink).toHaveAttribute('aria-current', 'page');
+        await expect(prevLink).toBeInTheDocument();
+        await expect(nextLink).toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -80,15 +98,24 @@ export const LastPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let currentLink: HTMLElement;
+    let prevLink: HTMLElement;
 
-    // Assert: 現在ページに aria-current="page" が付与されている
-    const currentLink = within(nav).getByRole('link', { name: '5' });
-    await expect(currentLink).toHaveAttribute('aria-current', 'page');
+    await step('Arrange: ページネーション要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
+      prevLink = within(nav).getByRole('link', { name: '前のページ' });
+    });
 
-    // Assert: 前のページへのリンクが存在する
-    await expect(within(nav).getByRole('link', { name: '前のページ' })).toBeInTheDocument();
+    await step(
+      'Assert: 最終ページが現在ページとしてマークされ、前のページへのリンクのみ存在することを確認',
+      async () => {
+        await expect(currentLink).toHaveAttribute('aria-current', 'page');
+        await expect(prevLink).toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -103,11 +130,20 @@ export const WithEllipsis: Story = {
     totalPages: 10,
     pages: [1, 'ellipsis', 4, 5, 6, 'ellipsis', 10],
   },
-  play: async ({ canvasElement }) => {
-    const nav = within(canvasElement).getByRole('navigation', { name: 'Pagination' });
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let currentLink: HTMLElement;
 
-    // Assert: 現在ページに aria-current="page" が付与されている
-    const currentLink = within(nav).getByRole('link', { name: '5' });
-    await expect(currentLink).toHaveAttribute('aria-current', 'page');
+    await step('Arrange: ページネーション要素とリンクを取得', async () => {
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
+    });
+
+    await step(
+      'Assert: 省略記号を含む多ページ構成で、現在ページが正しくマークされていることを確認',
+      async () => {
+        await expect(currentLink).toHaveAttribute('aria-current', 'page');
+      }
+    );
   },
 };

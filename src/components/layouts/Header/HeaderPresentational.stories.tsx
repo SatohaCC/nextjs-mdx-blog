@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { ThemeProvider } from 'next-themes';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { HeaderPresentational } from './HeaderPresentational';
 
@@ -9,19 +8,11 @@ const meta = {
   component: HeaderPresentational,
   parameters: {
     layout: 'fullscreen',
-    a11y: { test: 'error' },
     nextjs: {
       appDirectory: true,
     },
   },
   tags: ['autodocs'],
-  decorators: [
-    (Story) => (
-      <ThemeProvider attribute="data-theme">
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 } satisfies Meta<typeof HeaderPresentational>;
 
 export default meta;
@@ -33,23 +24,34 @@ type Story = StoryObj<typeof meta>;
  * @summary ページ上部に表示されるナビゲーションヘッダー
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Assert: ロゴリンクが表示される
-    const logo = within(canvasElement).getByRole('link', { name: 'Satohas Blog' });
-    await expect(logo).toHaveAttribute('href', '/');
+  tags: ['!manifest'],
+  play: async ({ canvas, step }) => {
+    let logo: HTMLElement;
+    let aboutLink: HTMLElement;
+    let githubLink: HTMLElement;
+    let nav: HTMLElement;
 
-    // Assert: About リンクが表示される
-    const aboutLink = within(canvasElement).getByRole('link', { name: 'About' });
-    await expect(aboutLink).toBeInTheDocument();
-
-    // Assert: GitHub リンクが表示される
-    const githubLink = within(canvasElement).getByRole('link', { name: 'GitHub' });
-    await expect(githubLink).toBeInTheDocument();
-
-    // Assert: グローバルナビゲーションが存在する
-    const nav = within(canvasElement).getByRole('navigation', {
-      name: 'グローバルナビゲーション',
+    await step('Arrange: ヘッダー要素を取得', async () => {
+      logo = await canvas.findByRole('link', { name: 'Satohas Blog' });
+      aboutLink = await canvas.findByRole('link', { name: 'About' });
+      githubLink = await canvas.findByRole('link', { name: 'GitHub' });
+      nav = await canvas.findByRole('navigation', { name: 'グローバルナビゲーション' });
     });
-    await expect(nav).toBeInTheDocument();
+
+    await step(
+      'Assert: ロゴ・About・GitHub への各リンクが正しく表示されていることを確認',
+      async () => {
+        await expect(logo).toHaveAttribute('href', '/');
+        await expect(aboutLink).toBeInTheDocument();
+        await expect(githubLink).toBeInTheDocument();
+      }
+    );
+
+    await step(
+      'Assert: グローバルナビゲーションがアクセシブルに提供されていることを確認',
+      async () => {
+        await expect(nav).toBeInTheDocument();
+      }
+    );
   },
 };

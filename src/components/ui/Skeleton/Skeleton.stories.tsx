@@ -23,11 +23,18 @@ type Story = StoryObj<typeof meta>;
  * @summary Suspense フォールバックやローディング状態の表示に使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement }) => {
-    // Arrange: ローディングプレースホルダー
-    const skeleton = canvasElement.querySelector('[aria-hidden]');
+  play: async ({ canvas, step }) => {
+    let skeleton: HTMLElement | null;
 
-    // Assert: スクリーンリーダーから隠されている
-    await expect(skeleton).toHaveAttribute('aria-hidden', 'true');
+    await step('Arrange: スケルトン要素を取得', async () => {
+      skeleton = canvas.getByTestId('skeleton');
+    });
+
+    await step(
+      'Assert: スクリーンリーダーから隠されている（aria-hidden="true"）ことを確認',
+      async () => {
+        await expect(skeleton).toHaveAttribute('aria-hidden', 'true');
+      }
+    );
   },
 };

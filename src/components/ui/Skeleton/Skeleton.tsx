@@ -13,5 +13,5 @@ type SkeletonProps = {
  * @summary データフェッチ中のローディング表示に使用する
  */
 export const Skeleton = ({ className }: SkeletonProps) => (
-  <div className={cx(skeletonStyles, className)} aria-hidden="true" />
+  <div className={cx(skeletonStyles, className)} aria-hidden="true" data-testid="skeleton" />
 );

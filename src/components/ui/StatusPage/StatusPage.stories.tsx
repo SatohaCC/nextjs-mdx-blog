@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { StatusPage } from './StatusPage';
 
@@ -27,15 +27,22 @@ type Story = StoryObj<typeof meta>;
  * @summary 再試行手段がないエラー表示に使用する
  */
 export const WithoutReset: Story = {
-  play: async ({ canvasElement }) => {
-    // Arrange: onReset なし（再試行ボタンなし）
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
+    let backLink: HTMLElement;
+    let resetButton: HTMLElement | null;
 
-    // Assert: トップページへ戻るリンクは常に表示
-    await expect(canvas.getByRole('link', { name: 'トップページへ戻る' })).toBeInTheDocument();
+    await step('Arrange: リンクとボタンを取得', async () => {
+      backLink = canvas.getByRole('link', { name: 'トップページへ戻る' });
+      resetButton = canvas.queryByRole('button', { name: '再試行する' });
+    });
 
-    // Assert: 再試行ボタンは表示されない
-    await expect(canvas.queryByRole('button', { name: '再試行する' })).not.toBeInTheDocument();
+    await step(
+      'Assert: トップページへ戻るリンクが表示され、再試行ボタンが表示されないことを確認',
+      async () => {
+        await expect(backLink).toBeInTheDocument();
+        await expect(resetButton).not.toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -48,15 +55,22 @@ export const WithReset: Story = {
   args: {
     onReset: fn(),
   },
-  play: async ({ canvasElement }) => {
-    // Arrange: onReset あり（再試行ボタンあり）
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
+    let resetButton: HTMLElement;
+    let backLink: HTMLElement;
 
-    // Assert: 再試行ボタンが表示される
-    await expect(canvas.getByRole('button', { name: '再試行する' })).toBeInTheDocument();
+    await step('Arrange: リンクとボタンを取得', async () => {
+      resetButton = canvas.getByRole('button', { name: '再試行する' });
+      backLink = canvas.getByRole('link', { name: 'トップページへ戻る' });
+    });
 
-    // Assert: トップページへ戻るリンクも表示
-    await expect(canvas.getByRole('link', { name: 'トップページへ戻る' })).toBeInTheDocument();
+    await step(
+      'Assert: 再試行ボタンとトップページへ戻るリンクの両方が表示されることを確認',
+      async () => {
+        await expect(resetButton).toBeInTheDocument();
+        await expect(backLink).toBeInTheDocument();
+      }
+    );
   },
 };
 
@@ -69,15 +83,20 @@ export const ResetCallbackFires: Story = {
   args: {
     onReset: fn(),
   },
-  play: async ({ canvasElement, args }) => {
-    // Arrange: 再試行ボタンあり
-    const button = within(canvasElement).getByRole('button', { name: '再試行する' });
+  play: async ({ canvas, args, userEvent, step }) => {
+    let button: HTMLElement;
 
-    // Act
-    await userEvent.click(button);
+    await step('Arrange: 再試行ボタンを取得', async () => {
+      button = canvas.getByRole('button', { name: '再試行する' });
+    });
 
-    // Assert
-    await expect(args.onReset).toHaveBeenCalledOnce();
+    await step('Act: 再試行ボタンをクリック', async () => {
+      await userEvent.click(button);
+    });
+
+    await step('Assert: コールバックが呼ばれたことを確認', async () => {
+      await expect(args.onReset).toHaveBeenCalledOnce();
+    });
   },
 };
 

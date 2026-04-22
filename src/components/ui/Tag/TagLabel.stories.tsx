@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagLabel } from './Tag';
 
@@ -23,12 +23,19 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { children: 'Next.js' },
-  play: async ({ canvasElement }) => {
-    // Arrange: クリック不可のラベルタグ
-    const tag = within(canvasElement).getByText('Next.js');
+  play: async ({ canvas, step }) => {
+    let tag: HTMLElement;
 
-    // Assert: リンクではなくspan、クリック不可マーク付き
-    await expect(tag.tagName.toLowerCase()).toBe('span');
-    await expect(tag).toHaveAttribute('data-clickable', 'false');
+    await step('Arrange: タグ要素を取得', async () => {
+      tag = canvas.getByText('Next.js');
+    });
+
+    await step(
+      'Assert: リンクではなく span 要素として描画され、クリック不可属性が付与されていることを確認',
+      async () => {
+        await expect(tag.tagName.toLowerCase()).toBe('span');
+        await expect(tag).toHaveAttribute('data-clickable', 'false');
+      }
+    );
   },
 };

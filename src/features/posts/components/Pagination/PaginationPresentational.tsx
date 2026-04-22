@@ -46,8 +46,8 @@ export const PaginationPresentational = ({
       <div className={pageNumbersStyles}>
         {pages.map((page, index) =>
           page === 'ellipsis' ? (
-            <span key={`ellipsis-${index}`} className={ellipsisStyles} aria-hidden="true">
-              <MoreHorizontal size={16} />
+            <span key={`ellipsis-${index}`} className={ellipsisStyles} aria-label="..." role="img">
+              <MoreHorizontal size={16} aria-hidden="true" />
             </span>
           ) : (
             <AppLink
@@ -55,6 +55,7 @@ export const PaginationPresentational = ({
               href={getPageUrl(page)}
               className={pageNumberRecipe({ active: currentPage === page })}
               aria-current={currentPage === page ? 'page' : undefined}
+              aria-label={`ページ ${page}`}
             >
               {page}
             </AppLink>
