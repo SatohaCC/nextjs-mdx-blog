@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { fn } from 'storybook/test';
 
 import { SearchBoxPresentational } from './SearchBoxPresentational';
 
@@ -28,6 +29,10 @@ const meta = {
       action: 'submitted',
       description: 'フォームが送信されたときのコールバック',
     },
+  },
+  args: {
+    onQueryChange: fn(),
+    onSubmit: fn(),
   },
 } satisfies Meta<typeof SearchBoxPresentational>;
 
