@@ -62,7 +62,7 @@ export const ManyPagesStart: Story = {
     await step('Arrange: ページリンクと省略記号を取得', async () => {
       firstPage = canvas.getByRole('link', { name: 'ページ 1' });
       fourthPage = canvas.getByRole('link', { name: 'ページ 4' });
-      ellipsis = canvas.getByText('...');
+      ellipsis = canvas.getByLabelText('...');
       lastPage = canvas.getByRole('link', { name: 'ページ 10' });
     });
 
@@ -98,7 +98,7 @@ export const ManyPagesMiddle: Story = {
       firstPage = canvas.getByRole('link', { name: 'ページ 1' });
       middlePage = canvas.getByRole('link', { name: 'ページ 5' });
       lastPage = canvas.getByRole('link', { name: 'ページ 10' });
-      ellipses = canvas.getAllByText('...');
+      ellipses = canvas.getAllByLabelText('...');
     });
 
     await step('Assert: 先頭・末尾の両方に省略記号が表示されていることを確認', async () => {
@@ -130,7 +130,7 @@ export const ManyPagesEnd: Story = {
       firstPage = canvas.getByRole('link', { name: 'ページ 1' });
       seventhPage = canvas.getByRole('link', { name: 'ページ 7' });
       lastPage = canvas.getByRole('link', { name: 'ページ 10' });
-      ellipsis = canvas.getByText('...');
+      ellipsis = canvas.getByLabelText('...');
     });
 
     await step('Assert: 先頭が省略され、末尾数ページが表示されていることを確認', async () => {

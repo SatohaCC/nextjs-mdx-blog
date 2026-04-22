@@ -14,7 +14,7 @@ const meta = {
   tags: ['autodocs'],
   decorators: [
     (Story) => (
-      <ThemeProvider attribute="data-theme">
+      <ThemeProvider attribute="class">
         <Story />
       </ThemeProvider>
     ),
