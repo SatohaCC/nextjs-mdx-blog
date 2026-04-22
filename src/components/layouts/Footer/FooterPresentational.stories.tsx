@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { FooterPresentational } from './FooterPresentational';
 
@@ -22,8 +22,7 @@ type Story = StoryObj<typeof meta>;
  * @summary 全ページ共通フッターとして使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let homeLink: HTMLElement;
     let aboutLink: HTMLElement;
 

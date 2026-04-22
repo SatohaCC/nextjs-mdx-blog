@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { MarkdownBlockquote } from './MarkdownBlockquote';
 
@@ -57,8 +57,7 @@ export const NoteAlert: Story = {
       <p>[!NOTE] これは補足情報です。読者が知っておくと役立つ内容を記載します。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
 
@@ -88,8 +87,7 @@ export const TipAlert: Story = {
       <p>[!TIP] これは実践的なヒントです。より良い使い方を提案します。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
 
@@ -119,8 +117,7 @@ export const ImportantAlert: Story = {
       <p>[!IMPORTANT] これは重要な情報です。必ず確認してください。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
 
@@ -150,8 +147,7 @@ export const WarningAlert: Story = {
       <p>[!WARNING] この操作には副作用があります。実行前に必ずバックアップを取ってください。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
 
@@ -181,8 +177,7 @@ export const CautionAlert: Story = {
       <p>[!CAUTION] この操作は元に戻せません。十分に確認してから実行してください。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
 
@@ -213,8 +208,7 @@ export const UnknownMarker: Story = {
       <p>[!UNKNOWN] これはサポートされていないマーカーです。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let blockquote: HTMLElement | null;
     let markerText: HTMLElement;
 
@@ -243,8 +237,7 @@ export const MarkerInSecondParagraph: Story = {
       <p>[!NOTE] 2番目の段落にマーカーがあります。</p>
     </MarkdownBlockquote>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvasElement, canvas, step }) => {
     let alert: HTMLElement | null;
     let label: HTMLElement;
     let firstParagraph: HTMLElement;

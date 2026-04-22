@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { FormattedDate } from './FormattedDate';
 
@@ -24,8 +24,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { date: '2024-01-15' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let time: HTMLElement;
 
     await step('Arrange: time 要素を取得', async () => {
@@ -49,8 +48,7 @@ export const Default: Story = {
  */
 export const NewYear: Story = {
   args: { date: '2026-01-01' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let time: HTMLElement;
 
     await step('Arrange: time 要素を取得', async () => {
@@ -75,8 +73,7 @@ export const NewYear: Story = {
  */
 export const InvalidDate: Story = {
   args: { date: 'invalid-date' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let time: HTMLElement;
 
     await step('Arrange: time 要素を取得', async () => {

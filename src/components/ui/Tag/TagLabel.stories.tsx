@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagLabel } from './Tag';
 
@@ -23,8 +23,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { children: 'Next.js' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let tag: HTMLElement;
 
     await step('Arrange: タグ要素を取得', async () => {

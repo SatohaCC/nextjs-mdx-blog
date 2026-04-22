@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { SidebarPresentational } from './SidebarPresentational';
 
@@ -58,8 +58,7 @@ type Story = StoryObj<typeof meta>;
  * @summary 記事一覧ページや記事詳細ページのサイドバーとして使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let postLinks: HTMLElement[];
 
     await step('Arrange: 最新記事のリンクを取得', async () => {
@@ -84,8 +83,7 @@ export const FewItems: Story = {
     allTags: ['Next.js'],
     latestPosts: [mockPosts[0]],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let postLink: HTMLElement;
     let tagLink: HTMLElement;
 

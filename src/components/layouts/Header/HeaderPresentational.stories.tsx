@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { ThemeProvider } from 'next-themes';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { HeaderPresentational } from './HeaderPresentational';
 
@@ -33,8 +33,7 @@ type Story = StoryObj<typeof meta>;
  * @summary ページ上部に表示されるナビゲーションヘッダー
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let logo: HTMLElement;
     let aboutLink: HTMLElement;
     let githubLink: HTMLElement;

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { SearchBoxContainer } from './SearchBoxContainer';
 
@@ -24,8 +24,7 @@ type Story = StoryObj<typeof meta>;
  * クエリの変更とフォーム送信のロジックを検証する。
  */
 export const SearchInteraction: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent, step }) => {
     let input: HTMLElement;
 
     await step('Arrange: 検索入力要素を取得', async () => {
@@ -52,8 +51,7 @@ export const SearchInteraction: Story = {
  * 空白のみの場合は送信（ルーティング）が発生しないロジックを確認する。
  */
 export const EmptySubmit: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent, step }) => {
     let input: HTMLElement;
 
     await step('Arrange: 検索入力要素を取得', async () => {

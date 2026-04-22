@@ -29,8 +29,7 @@ export const HeadingsOnly: Story = {
       { id: 'conclusion', text: 'まとめ', level: 2 },
     ],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let links: HTMLElement[];
 
     await step('Arrange: 目次要素とリンクを取得', async () => {
@@ -65,8 +64,7 @@ export const MixedLevels: Story = {
       { id: 'conclusion', text: 'まとめ', level: 2 },
     ],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let links: HTMLElement[];
 
     await step('Arrange: 目次要素とリンクを取得', async () => {

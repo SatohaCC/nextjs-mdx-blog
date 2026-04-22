@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagLink, TagList } from './Tag';
 
@@ -29,9 +29,7 @@ export const WithItems: Story = {
       <TagLink tag="TypeScript" />
     </TagList>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
+  play: async ({ canvas, step }) => {
     let links: HTMLElement[];
 
     await step('Arrange: タグリンクを取得', async () => {

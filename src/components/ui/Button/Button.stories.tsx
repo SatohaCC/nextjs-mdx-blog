@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { Button } from './Button';
 
@@ -102,8 +102,7 @@ export const ClickCallbackFires: Story = {
     children: 'クリック',
     onPress: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: ボタンを取得', async () => {
@@ -130,8 +129,7 @@ export const KeyboardActivationEnter: Story = {
     children: 'Enterキー',
     onPress: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
       canvas.getByRole('button', { name: 'Enterキー' });
     });
@@ -157,8 +155,7 @@ export const KeyboardActivationSpace: Story = {
     children: 'スペースキー',
     onPress: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
       canvas.getByRole('button', { name: 'スペースキー' });
     });
@@ -184,8 +181,7 @@ export const Disabled: Story = {
     isDisabled: true,
     children: '無効なボタン',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: ボタンを取得', async () => {
@@ -210,8 +206,7 @@ export const DisabledDoesNotFire: Story = {
     children: '押せないボタン',
     onPress: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: disabled 状態のボタンを取得', async () => {
@@ -237,8 +232,7 @@ export const FocusVisible: Story = {
   args: {
     children: 'フォーカス確認',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: フォーカス可能なボタンを取得', async () => {

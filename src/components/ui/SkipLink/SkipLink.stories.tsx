@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { SkipLink } from './SkipLink';
 
@@ -31,8 +31,7 @@ type Story = StoryObj<typeof meta>;
  * @summary WCAG 2.4.1 準拠のスキップリンクとして全ページで使用する
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {

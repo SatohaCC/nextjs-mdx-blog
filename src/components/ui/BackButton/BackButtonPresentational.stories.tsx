@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { BackButtonPresentational } from './BackButtonPresentational';
 
@@ -35,8 +35,7 @@ export const CallbackFires: Story = {
   args: {
     onBack: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: 戻るボタンを取得', async () => {

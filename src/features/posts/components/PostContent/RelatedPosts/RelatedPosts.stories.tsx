@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { RelatedPosts } from './RelatedPosts';
 
@@ -44,8 +44,7 @@ export const WithPosts: Story = {
       },
     ],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let links: HTMLElement[];
 
     await step('Arrange: 関連記事のリンクを取得', async () => {

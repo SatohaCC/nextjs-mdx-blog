@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { StatusPage } from './StatusPage';
 
@@ -27,8 +27,7 @@ type Story = StoryObj<typeof meta>;
  * @summary 再試行手段がないエラー表示に使用する
  */
 export const WithoutReset: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let backLink: HTMLElement;
     let resetButton: HTMLElement | null;
 
@@ -56,8 +55,7 @@ export const WithReset: Story = {
   args: {
     onReset: fn(),
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let resetButton: HTMLElement;
     let backLink: HTMLElement;
 
@@ -85,8 +83,7 @@ export const ResetCallbackFires: Story = {
   args: {
     onReset: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: 再試行ボタンを取得', async () => {

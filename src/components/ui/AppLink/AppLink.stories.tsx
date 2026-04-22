@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { AppLink } from './AppLink';
 
@@ -26,8 +26,7 @@ export const InternalLink: Story = {
     href: '/about',
     children: 'Aboutページ',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -55,8 +54,7 @@ export const AnchorLink: Story = {
     href: '#section-1',
     children: 'セクションへ',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -80,8 +78,7 @@ export const ExternalLink: Story = {
     href: 'https://example.com',
     children: '外部サイト',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -110,8 +107,7 @@ export const ExternalRelIsNotOverridden: Story = {
     children: 'relを上書きしようとするリンク',
     rel: 'me',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {

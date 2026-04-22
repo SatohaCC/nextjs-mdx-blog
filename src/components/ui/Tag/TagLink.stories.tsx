@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagLink } from './Tag';
 
@@ -23,8 +23,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { tag: 'Next.js' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -44,8 +43,7 @@ export const Default: Story = {
  */
 export const SpaceToHyphen: Story = {
   args: { tag: 'React Hooks' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -68,8 +66,7 @@ export const SpaceToHyphen: Story = {
  */
 export const UpperToLower: Story = {
   args: { tag: 'TypeScript' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {
@@ -92,8 +89,7 @@ export const UpperToLower: Story = {
  */
 export const CustomChildren: Story = {
   args: { tag: 'Next.js', children: 'カスタムラベル' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: リンクを取得', async () => {

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { ThemeProvider } from 'next-themes';
-import { expect, userEvent, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { ThemeToggleContainer } from './ThemeToggleContainer';
 
@@ -29,8 +29,7 @@ type Story = StoryObj<typeof meta>;
  * ボタンクリックにより handleToggle が実行され、テーマが変更されることを確認する。
  */
 export const ToggleInteraction: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: 切り替えボタンを取得', async () => {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { PostListPresentational } from './PostListPresentational';
 
@@ -59,8 +59,7 @@ type Story = StoryObj<typeof meta>;
  * @summary トップページや1ページ分の記事一覧表示
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: 記事リンクを取得', async () => {
@@ -84,8 +83,7 @@ export const WithCustomTitle: Story = {
     subtitle: '2 件の記事',
     posts: mockPosts.slice(0, 2),
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let heading: HTMLElement;
 
     await step('Arrange: タイトル要素を取得', async () => {
@@ -108,8 +106,7 @@ export const WithPagination: Story = {
     totalPages: 5,
     currentPage: 1,
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let nav: HTMLElement;
 
     await step('Arrange: ページネーション要素を取得', async () => {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { TagLink, TagList } from '@/components/ui/Tag';
 
@@ -38,8 +38,7 @@ type Story = StoryObj<typeof meta>;
  * @summary タグが設定されていない記事の一覧表示
  */
 export const Default: Story = {
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let link: HTMLElement;
 
     await step('Arrange: 記事リンクを取得', async () => {
@@ -69,8 +68,7 @@ export const WithTags: Story = {
       </TagList>
     </ArticleCard>
   ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let links: HTMLElement[];
     let articleLink: HTMLElement;
 

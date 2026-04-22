@@ -32,8 +32,7 @@ export const FirstPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let nextLink: HTMLElement;
 
@@ -64,8 +63,7 @@ export const MiddlePage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let prevLink: HTMLElement;
     let nextLink: HTMLElement;
@@ -99,8 +97,7 @@ export const LastPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let prevLink: HTMLElement;
 
@@ -131,8 +128,7 @@ export const WithEllipsis: Story = {
     totalPages: 10,
     pages: [1, 'ellipsis', 4, 5, 6, 'ellipsis', 10],
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { PaginationContainer } from './PaginationContainer';
 
@@ -25,8 +25,7 @@ export const FewPages: Story = {
     currentPage: 1,
     totalPages: 5,
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     const pageLinks: HTMLElement[] = [];
 
     await step('Arrange: すべてのページリンクを取得', async () => {
@@ -52,8 +51,7 @@ export const ManyPagesStart: Story = {
     currentPage: 1,
     totalPages: 10,
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let fourthPage: HTMLElement;
     let ellipsis: HTMLElement;
@@ -87,8 +85,7 @@ export const ManyPagesMiddle: Story = {
     currentPage: 5,
     totalPages: 10,
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let middlePage: HTMLElement;
     let lastPage: HTMLElement;
@@ -119,8 +116,7 @@ export const ManyPagesEnd: Story = {
     currentPage: 10,
     totalPages: 10,
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let seventhPage: HTMLElement;
     let lastPage: HTMLElement;

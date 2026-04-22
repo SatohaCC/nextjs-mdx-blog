@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn } from 'storybook/test';
 
 import { ThemeTogglePresentational } from './ThemeTogglePresentational';
 
@@ -58,8 +58,7 @@ export const LightMode: Story = {
     resolvedTheme: 'light',
     onToggle: fn(),
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {
@@ -83,8 +82,7 @@ export const DarkMode: Story = {
     resolvedTheme: 'dark',
     onToggle: fn(),
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {
@@ -108,9 +106,7 @@ export const TogglesOnClick: Story = {
     resolvedTheme: 'light',
     onToggle: fn(),
   },
-  play: async ({ canvasElement, args, step }) => {
-    const canvas = within(canvasElement);
-
+  play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {

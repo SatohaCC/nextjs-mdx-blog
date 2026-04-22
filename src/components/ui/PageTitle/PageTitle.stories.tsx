@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
+import { expect } from 'storybook/test';
 
 import { PageTitle } from './PageTitle';
 
@@ -23,8 +23,7 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: { children: 'ブログ' },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let heading: HTMLElement;
     let subtitle: HTMLElement | null;
 
@@ -53,8 +52,7 @@ export const WithSubtitle: Story = {
     children: 'ブログ',
     subtitle: '日々の気づきを書いています',
   },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
+  play: async ({ canvas, step }) => {
     let heading: HTMLElement;
     let subtitle: HTMLElement;
 
