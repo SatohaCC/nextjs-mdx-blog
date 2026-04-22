@@ -8,7 +8,6 @@ const meta = {
   component: RelatedPosts,
   parameters: {
     layout: 'padded',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof RelatedPosts>;
@@ -44,11 +43,12 @@ export const WithPosts: Story = {
       },
     ],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let links: HTMLElement[];
 
     await step('Arrange: 関連記事のリンクを取得', async () => {
-      links = canvas.getAllByRole('link');
+      links = await canvas.findAllByRole('link');
     });
 
     await step(
@@ -71,9 +71,13 @@ export const Empty: Story = {
   args: {
     posts: [],
   },
+  tags: ['!manifest'],
   play: async ({ canvasElement, step }) => {
     await step('Assert: posts が空の場合は何もレンダリングされないことを確認', async () => {
-      await expect(canvasElement.textContent?.trim()).toBe('');
+      // デコレーターの div 内に、スクリプトタグ以外の要素が存在しないことを確認
+      const innerContainer = canvasElement.querySelector('div[style*="padding: 2rem"]');
+      const component = innerContainer?.querySelector('*:not(script)');
+      await expect(component).toBeNull();
     });
   },
 };

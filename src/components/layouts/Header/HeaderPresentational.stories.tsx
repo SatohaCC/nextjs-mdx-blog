@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { ThemeProvider } from 'next-themes';
 import { expect } from 'storybook/test';
 
 import { HeaderPresentational } from './HeaderPresentational';
@@ -9,19 +8,11 @@ const meta = {
   component: HeaderPresentational,
   parameters: {
     layout: 'fullscreen',
-    a11y: { test: 'error' },
     nextjs: {
       appDirectory: true,
     },
   },
   tags: ['autodocs'],
-  decorators: [
-    (Story) => (
-      <ThemeProvider attribute="data-theme">
-        <Story />
-      </ThemeProvider>
-    ),
-  ],
 } satisfies Meta<typeof HeaderPresentational>;
 
 export default meta;
@@ -33,6 +24,7 @@ type Story = StoryObj<typeof meta>;
  * @summary ページ上部に表示されるナビゲーションヘッダー
  */
 export const Default: Story = {
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let logo: HTMLElement;
     let aboutLink: HTMLElement;
@@ -40,10 +32,10 @@ export const Default: Story = {
     let nav: HTMLElement;
 
     await step('Arrange: ヘッダー要素を取得', async () => {
-      logo = canvas.getByRole('link', { name: 'Satohas Blog' });
-      aboutLink = canvas.getByRole('link', { name: 'About' });
-      githubLink = canvas.getByRole('link', { name: 'GitHub' });
-      nav = canvas.getByRole('navigation', { name: 'グローバルナビゲーション' });
+      logo = await canvas.findByRole('link', { name: 'Satohas Blog' });
+      aboutLink = await canvas.findByRole('link', { name: 'About' });
+      githubLink = await canvas.findByRole('link', { name: 'GitHub' });
+      nav = await canvas.findByRole('navigation', { name: 'グローバルナビゲーション' });
     });
 
     await step(

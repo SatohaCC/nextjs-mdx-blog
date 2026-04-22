@@ -8,9 +8,11 @@ const meta = {
   component: ThemeTogglePresentational,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
+  args: {
+    onToggle: fn(),
+  },
 } satisfies Meta<typeof ThemeTogglePresentational>;
 
 export default meta;
@@ -25,8 +27,8 @@ export const Placeholder: Story = {
   args: {
     mounted: false,
     resolvedTheme: undefined,
-    onToggle: fn(),
   },
+
   parameters: {
     a11y: {
       test: 'error',
@@ -39,6 +41,7 @@ export const Placeholder: Story = {
       },
     },
   },
+  tags: ['!manifest'],
   play: async ({ canvasElement, step }) => {
     await step('Assert: span 要素で AT から隠されていることを確認', async () => {
       const wrapper = canvasElement.querySelector('[aria-hidden="true"]');
@@ -56,13 +59,14 @@ export const LightMode: Story = {
   args: {
     mounted: true,
     resolvedTheme: 'light',
-    onToggle: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {
-      button = canvas.getByRole('button');
+      button = await canvas.findByRole('button');
     });
 
     await step('Assert: ダークモードへの切り替えラベルが表示されることを確認', async () => {
@@ -80,13 +84,14 @@ export const DarkMode: Story = {
   args: {
     mounted: true,
     resolvedTheme: 'dark',
-    onToggle: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {
-      button = canvas.getByRole('button');
+      button = await canvas.findByRole('button');
     });
 
     await step('Assert: ライトモードへの切り替えラベルが表示されることを確認', async () => {
@@ -104,13 +109,14 @@ export const TogglesOnClick: Story = {
   args: {
     mounted: true,
     resolvedTheme: 'light',
-    onToggle: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: トグルボタンを取得', async () => {
-      button = canvas.getByRole('button');
+      button = await canvas.findByRole('button');
     });
 
     await step('Act: トグルボタンをクリック', async () => {

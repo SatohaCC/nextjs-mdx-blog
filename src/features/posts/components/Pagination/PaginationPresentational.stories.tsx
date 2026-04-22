@@ -10,7 +10,6 @@ const meta = {
   component: PaginationPresentational,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
   args: {
@@ -32,12 +31,13 @@ export const FirstPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let nextLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 1' });
       nextLink = within(nav).getByRole('link', { name: '次のページ' });
     });
@@ -63,13 +63,14 @@ export const MiddlePage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let prevLink: HTMLElement;
     let nextLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 3' });
       prevLink = within(nav).getByRole('link', { name: '前のページ' });
       nextLink = within(nav).getByRole('link', { name: '次のページ' });
@@ -97,12 +98,13 @@ export const LastPage: Story = {
     totalPages: 5,
     pages: [1, 2, 3, 4, 5],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
     let prevLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
       prevLink = within(nav).getByRole('link', { name: '前のページ' });
     });
@@ -128,11 +130,12 @@ export const WithEllipsis: Story = {
     totalPages: 10,
     pages: [1, 'ellipsis', 4, 5, 6, 'ellipsis', 10],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let currentLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
     });
 

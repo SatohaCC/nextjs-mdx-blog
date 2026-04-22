@@ -40,9 +40,9 @@ const meta = {
   component: SidebarPresentational,
   parameters: {
     layout: 'padded',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
+
   args: {
     allTags: mockTags,
     latestPosts: mockPosts,
@@ -58,11 +58,12 @@ type Story = StoryObj<typeof meta>;
  * @summary 記事一覧ページや記事詳細ページのサイドバーとして使用する
  */
 export const Default: Story = {
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let postLinks: HTMLElement[];
 
     await step('Arrange: 最新記事のリンクを取得', async () => {
-      postLinks = canvas.getAllByRole('link', {
+      postLinks = await canvas.findAllByRole('link', {
         name: /Hello World|Next\.js|TypeScript/,
       });
     });
@@ -83,13 +84,14 @@ export const FewItems: Story = {
     allTags: ['Next.js'],
     latestPosts: [mockPosts[0]],
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let postLink: HTMLElement;
     let tagLink: HTMLElement;
 
     await step('Arrange: 記事リンクとタグリンクを取得', async () => {
-      postLink = canvas.getByRole('link', { name: 'Hello World' });
-      tagLink = canvas.getByRole('link', { name: 'Next.js' });
+      postLink = await canvas.findByRole('link', { name: 'Hello World' });
+      tagLink = await canvas.findByRole('link', { name: 'Next.js' });
     });
 
     await step(

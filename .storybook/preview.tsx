@@ -1,6 +1,8 @@
 // PandaCSS styles
 // Global styles
 import type { Preview } from '@storybook/nextjs-vite';
+import { ThemeProvider } from 'next-themes';
+import { fn } from 'storybook/test';
 
 import '../src/app/globals.css';
 import { Box } from '../styled-system/jsx';
@@ -13,6 +15,13 @@ const preview: Preview = {
         color: /(background|color)$/i,
         date: /Date$/i,
       },
+    },
+
+    args: {
+      onToggle: fn(),
+      onSubmit: fn(),
+      onQueryChange: fn(),
+      onPress: fn(),
     },
 
     a11y: {
@@ -45,17 +54,19 @@ const preview: Preview = {
     (Story, context) => {
       const theme = context.globals.theme || 'light';
       return (
-        <Box
-          data-theme={theme}
-          color="text.default"
-          bg="bg.default"
-          transitionProperty="background-color, color"
-          transitionDuration="normal"
-        >
-          <div style={{ padding: '2rem' }}>
-            <Story />
-          </div>
-        </Box>
+        <ThemeProvider attribute="class" forcedTheme={theme} enableSystem={false}>
+          <Box
+            data-theme={theme}
+            color="text.default"
+            bg="bg.default"
+            transitionProperty="background-color, color"
+            transitionDuration="normal"
+          >
+            <div style={{ padding: '2rem' }}>
+              <Story />
+            </div>
+          </Box>
+        </ThemeProvider>
       );
     },
   ],

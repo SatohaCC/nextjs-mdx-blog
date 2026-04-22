@@ -1,8 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { fn } from 'storybook/test';
 
 import { SearchBoxPresentational } from './SearchBoxPresentational';
 
+/**
+ * 記事検索のキーワード入力を行うUIコンポーネント。
+ *
+ * @summary 記事検索の入力フォーム
+ */
 const meta = {
   title: 'Features/SearchBox',
   component: SearchBoxPresentational,
@@ -10,10 +14,7 @@ const meta = {
     layout: 'centered',
   },
   tags: ['autodocs'],
-  args: {
-    onQueryChange: fn(),
-    onSubmit: fn(),
-  },
+
   argTypes: {
     query: {
       control: 'text',

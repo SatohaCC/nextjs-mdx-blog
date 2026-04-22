@@ -8,7 +8,6 @@ const meta = {
   component: SearchBoxContainer,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
     nextjs: {
       appDirectory: true,
     },
@@ -24,11 +23,12 @@ type Story = StoryObj<typeof meta>;
  * クエリの変更とフォーム送信のロジックを検証する。
  */
 export const SearchInteraction: Story = {
+  tags: ['!manifest'],
   play: async ({ canvas, userEvent, step }) => {
     let input: HTMLElement;
 
     await step('Arrange: 検索入力要素を取得', async () => {
-      input = canvas.getByRole('searchbox');
+      input = await canvas.findByRole('searchbox');
     });
 
     await step('Act: 検索キーワードを入力', async () => {
@@ -51,11 +51,12 @@ export const SearchInteraction: Story = {
  * 空白のみの場合は送信（ルーティング）が発生しないロジックを確認する。
  */
 export const EmptySubmit: Story = {
+  tags: ['!manifest'],
   play: async ({ canvas, userEvent, step }) => {
     let input: HTMLElement;
 
     await step('Arrange: 検索入力要素を取得', async () => {
-      input = canvas.getByRole('searchbox');
+      input = await canvas.findByRole('searchbox');
     });
 
     await step('Act: 空白のみを入力してSubmit', async () => {

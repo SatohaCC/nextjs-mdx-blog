@@ -8,7 +8,6 @@ const meta = {
   component: PaginationContainer,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof PaginationContainer>;
@@ -25,12 +24,13 @@ export const FewPages: Story = {
     currentPage: 1,
     totalPages: 5,
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     const pageLinks: HTMLElement[] = [];
 
     await step('Arrange: すべてのページリンクを取得', async () => {
       for (let i = 1; i <= 5; i++) {
-        pageLinks.push(canvas.getByRole('link', { name: `ページ ${i}` }));
+        pageLinks.push(await canvas.findByRole('link', { name: `ページ ${i}` }));
       }
     });
 
@@ -51,6 +51,7 @@ export const ManyPagesStart: Story = {
     currentPage: 1,
     totalPages: 10,
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let fourthPage: HTMLElement;
@@ -58,10 +59,10 @@ export const ManyPagesStart: Story = {
     let lastPage: HTMLElement;
 
     await step('Arrange: ページリンクと省略記号を取得', async () => {
-      firstPage = canvas.getByRole('link', { name: 'ページ 1' });
-      fourthPage = canvas.getByRole('link', { name: 'ページ 4' });
-      ellipsis = canvas.getByLabelText('...');
-      lastPage = canvas.getByRole('link', { name: 'ページ 10' });
+      firstPage = await canvas.findByRole('link', { name: 'ページ 1' });
+      fourthPage = await canvas.findByRole('link', { name: 'ページ 4' });
+      ellipsis = await canvas.findByLabelText('...');
+      lastPage = await canvas.findByRole('link', { name: 'ページ 10' });
     });
 
     await step(
@@ -85,6 +86,7 @@ export const ManyPagesMiddle: Story = {
     currentPage: 5,
     totalPages: 10,
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let middlePage: HTMLElement;
@@ -92,10 +94,10 @@ export const ManyPagesMiddle: Story = {
     let ellipses: HTMLElement[];
 
     await step('Arrange: ページリンクと省略記号を取得', async () => {
-      firstPage = canvas.getByRole('link', { name: 'ページ 1' });
-      middlePage = canvas.getByRole('link', { name: 'ページ 5' });
-      lastPage = canvas.getByRole('link', { name: 'ページ 10' });
-      ellipses = canvas.getAllByLabelText('...');
+      firstPage = await canvas.findByRole('link', { name: 'ページ 1' });
+      middlePage = await canvas.findByRole('link', { name: 'ページ 5' });
+      lastPage = await canvas.findByRole('link', { name: 'ページ 10' });
+      ellipses = await canvas.findAllByLabelText('...');
     });
 
     await step('Assert: 先頭・末尾の両方に省略記号が表示されていることを確認', async () => {
@@ -116,6 +118,7 @@ export const ManyPagesEnd: Story = {
     currentPage: 10,
     totalPages: 10,
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let firstPage: HTMLElement;
     let seventhPage: HTMLElement;
@@ -123,10 +126,10 @@ export const ManyPagesEnd: Story = {
     let ellipsis: HTMLElement;
 
     await step('Arrange: ページリンクと省略記号を取得', async () => {
-      firstPage = canvas.getByRole('link', { name: 'ページ 1' });
-      seventhPage = canvas.getByRole('link', { name: 'ページ 7' });
-      lastPage = canvas.getByRole('link', { name: 'ページ 10' });
-      ellipsis = canvas.getByLabelText('...');
+      firstPage = await canvas.findByRole('link', { name: 'ページ 1' });
+      seventhPage = await canvas.findByRole('link', { name: 'ページ 7' });
+      lastPage = await canvas.findByRole('link', { name: 'ページ 10' });
+      ellipsis = await canvas.findByLabelText('...');
     });
 
     await step('Assert: 先頭が省略され、末尾数ページが表示されていることを確認', async () => {

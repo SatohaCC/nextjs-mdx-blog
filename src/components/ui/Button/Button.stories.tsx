@@ -8,11 +8,11 @@ const meta = {
   component: Button,
   parameters: {
     layout: 'centered',
-    a11y: { test: 'error' },
   },
   tags: ['autodocs'],
   args: {
     children: 'ボタン',
+    onPress: fn(),
   },
 } satisfies Meta<typeof Button>;
 
@@ -90,8 +90,6 @@ export const Large: Story = {
   args: { size: 'lg' },
 };
 
-// ── インタラクションテスト ───────────────────────────────────────────────────
-
 /**
  * クリック時に `onPress` コールバックが呼ばれることを検証する。
  *
@@ -100,13 +98,14 @@ export const Large: Story = {
 export const ClickCallbackFires: Story = {
   args: {
     children: 'クリック',
-    onPress: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: ボタンを取得', async () => {
-      button = canvas.getByRole('button', { name: 'クリック' });
+      button = await canvas.findByRole('button', { name: 'クリック' });
     });
 
     await step('Act: ボタンをクリック', async () => {
@@ -127,11 +126,12 @@ export const ClickCallbackFires: Story = {
 export const KeyboardActivationEnter: Story = {
   args: {
     children: 'Enterキー',
-    onPress: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, args, userEvent, step }) => {
     await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
-      canvas.getByRole('button', { name: 'Enterキー' });
+      await canvas.findByRole('button', { name: 'Enterキー' });
     });
 
     await step('Act: Tabキーでフォーカスし、Enterキーを押下', async () => {
@@ -153,11 +153,12 @@ export const KeyboardActivationEnter: Story = {
 export const KeyboardActivationSpace: Story = {
   args: {
     children: 'スペースキー',
-    onPress: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, args, userEvent, step }) => {
     await step('Arrange: フォーカス可能なボタンが存在することを確認', async () => {
-      canvas.getByRole('button', { name: 'スペースキー' });
+      await canvas.findByRole('button', { name: 'スペースキー' });
     });
 
     await step('Act: Tabキーでフォーカスし、Spaceキーを押下', async () => {
@@ -181,11 +182,12 @@ export const Disabled: Story = {
     isDisabled: true,
     children: '無効なボタン',
   },
+  tags: ['!manifest'],
   play: async ({ canvas, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: ボタンを取得', async () => {
-      button = canvas.getByRole('button', { name: '無効なボタン' });
+      button = await canvas.findByRole('button', { name: '無効なボタン' });
     });
 
     await step('Assert: data-disabled および disabled 属性が付与されていることを確認', async () => {
@@ -204,13 +206,14 @@ export const DisabledDoesNotFire: Story = {
   args: {
     isDisabled: true,
     children: '押せないボタン',
-    onPress: fn(),
   },
+
+  tags: ['!manifest'],
   play: async ({ canvas, args, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: disabled 状態のボタンを取得', async () => {
-      button = canvas.getByRole('button', { name: '押せないボタン' });
+      button = await canvas.findByRole('button', { name: '押せないボタン' });
     });
 
     await step('Act: クリックを試みる', async () => {
@@ -232,11 +235,12 @@ export const FocusVisible: Story = {
   args: {
     children: 'フォーカス確認',
   },
+  tags: ['!manifest'],
   play: async ({ canvas, userEvent, step }) => {
     let button: HTMLElement;
 
     await step('Arrange: フォーカス可能なボタンを取得', async () => {
-      button = canvas.getByRole('button', { name: 'フォーカス確認' });
+      button = await canvas.findByRole('button', { name: 'フォーカス確認' });
     });
 
     await step('Act: キーボードでフォーカスを移動', async () => {

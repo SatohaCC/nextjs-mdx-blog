@@ -52,7 +52,10 @@ export const Empty: Story = {
   args: { children: null },
   play: async ({ canvasElement, step }) => {
     await step('Assert: children が null の場合は何もレンダリングされないことを確認', async () => {
-      await expect(canvasElement.textContent?.trim()).toBe('');
+      // デコレーターの div 内に、スクリプトタグ以外の要素が存在しないことを確認
+      const innerContainer = canvasElement.querySelector('div[style*="padding: 2rem"]');
+      const component = innerContainer?.querySelector('*:not(script)');
+      await expect(component).toBeNull();
     });
   },
 };
