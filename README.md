@@ -10,7 +10,7 @@ Next.js、PandaCSS、React Aria を使用した、Satoha（[satoha.net](https://
 - **コンテンツ**: MDX (`next-mdx-remote-client`)
 - **テーマ**: [next-themes](https://github.com/pacocoursey/next-themes) (ダークモード対応)
 - **UIカタログ**: [Storybook](https://storybook.js.org/)
-- **テスト**: [Vitest](https://vitest.dev/) (ブラウザテスト/Storybook 統合)
+- **テスト**: [Vitest](https://vitest.dev/) (ユニット/Storybook統合), [Playwright](https://playwright.dev/) (E2Eテスト)
 
 ## 機能
 
@@ -61,6 +61,8 @@ npm run start
 | `npm run format:check` | フォーマットチェック    |
 | `npm run storybook`    | Storybook 起動          |
 | `npm run test`         | Vitest によるテスト実行 |
+| `npm run test:e2e`     | Playwright による E2E テスト実行 |
+| `npm run test:ui`      | Playwright UI モードでのテスト実行 |
 | `npm run prepare`      | PandaCSS コード生成     |
 
 ## ディレクトリ構成

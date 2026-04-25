@@ -1,105 +1,102 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { cx } from '../../../../styled-system/css';
-import * as styles from './Typography.styles';
+import { Typography } from './Typography';
 
-/**
- * デザインシステムで定義されているタイポグラフィトークンのカタログです。
- * `panda.config.ts` で定義されたフォントサイズ、ウェイト、行高、字間、フォントファミリーを確認できます。
- */
-const meta: Meta = {
-  title: 'Design System/Typography',
-  parameters: {
-    layout: 'padded',
+const meta: Meta<typeof Typography> = {
+  title: 'UI/Typography',
+  component: Typography,
+  tags: ['autodocs'],
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'bodyL', 'body', 'bodyS', 'bodyXS', 'code'],
+    },
+    textColor: {
+      control: 'select',
+      options: ['primary', 'muted', 'inverted', 'accent'],
+    },
+    as: {
+      control: 'text',
+    },
   },
 };
 
 export default meta;
+type Story = StoryObj<typeof Typography>;
 
-type Story = StoryObj;
+export const Default: Story = {
+  args: {
+    children: 'The quick brown fox jumps over the lazy dog',
+    variant: 'body',
+  },
+};
 
-const SampleText =
-  'The quick brown fox jumps over the lazy dog. どんぐりころころ、どんぐりこ。漢字の練習。';
-
-export const AllTokens: Story = {
+/**
+ * すべてのバリエーションを確認できるカタログ。
+ */
+export const Catalog: Story = {
   render: () => (
-    <div className={styles.containerStyles}>
-      <h1 className={styles.pageTitleStyles}>Typography Tokens</h1>
-
-      <section>
-        <h2 className={styles.sectionTitleStyles}>Headings (Semantic)</h2>
-        <p className={cx(styles.bodyStyles.small, styles.labelStyles)}>
-          レスポンシブ対応（画面幅に応じてサイズが変化します）
-        </p>
-        <div className={styles.itemStackStyles}>
-          {(Object.keys(styles.headingStyles) as Array<keyof typeof styles.headingStyles>).map(
-            (level) => (
-              <div key={level} className={styles.rowStyles}>
-                <span className={styles.labelStyles}>{`heading.${level}`}</span>
-                <h1 className={styles.headingStyles[level]}>{SampleText}</h1>
-              </div>
-            )
-          )}
-        </div>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'flex-start' }}
+    >
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="bodyXS" textColor="muted">
+          Headings
+        </Typography>
+        <Typography variant="h1">Heading 1 (3xl/4xl)</Typography>
+        <Typography variant="h2">Heading 2 (2xl/3xl)</Typography>
+        <Typography variant="h3">Heading 3 (xl/2xl)</Typography>
+        <Typography variant="h4">Heading 4 (lg/xl)</Typography>
+        <Typography variant="h5">Heading 5 (base/lg)</Typography>
+        <Typography variant="h6">Heading 6 (sm/base)</Typography>
       </section>
 
-      <section>
-        <h2 className={styles.sectionTitleStyles}>Body Text (Semantic)</h2>
-        <div className={styles.itemStackStyles}>
-          {(Object.keys(styles.bodyStyles) as Array<keyof typeof styles.bodyStyles>).map((size) => (
-            <div key={size} className={styles.rowStyles}>
-              <span className={styles.labelStyles}>{`body.${size}`}</span>
-              <p className={styles.bodyStyles[size]}>{SampleText}</p>
-            </div>
-          ))}
-        </div>
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="bodyXS" textColor="muted">
+          Body Text
+        </Typography>
+        <Typography variant="bodyL">Body Large (lg) - 読みやすい大きめの本文</Typography>
+        <Typography variant="body">Body Base (base) - 標準的な本文テキスト</Typography>
+        <Typography variant="bodyS">Body Small (sm) - 補足説明やキャプション用</Typography>
+        <Typography variant="bodyXS">Body XS (xs) - 最小のテキストスタイル</Typography>
       </section>
 
-      <section>
-        <h2 className={styles.sectionTitleStyles}>Font Families</h2>
-        <div className={styles.itemStackStyles}>
-          {(
-            Object.keys(styles.fontFamilyStyles) as Array<keyof typeof styles.fontFamilyStyles>
-          ).map((family) => (
-            <div key={family} className={styles.rowStyles}>
-              <span className={styles.labelStyles}>{family}</span>
-              <p className={styles.fontFamilyStyles[family]}>
-                ABCDEFGHIJKLMN abcdefghijklmn 0123456789 あいうえお 漢字
-              </p>
-            </div>
-          ))}
-        </div>
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="bodyXS" textColor="muted">
+          Colors
+        </Typography>
+        <Typography variant="body" textColor="primary">
+          Default Color (chocolate.900)
+        </Typography>
+        <Typography variant="body" textColor="muted">
+          Muted Color (chocolate.700)
+        </Typography>
+        <Typography variant="body" textColor="accent">
+          Accent Color (bamboo.900)
+        </Typography>
       </section>
 
-      <section>
-        <h2 className={styles.sectionTitleStyles}>Font Weights</h2>
-        <div className={styles.weightStackStyles}>
-          {(
-            Object.keys(styles.fontWeightStyles) as Array<keyof typeof styles.fontWeightStyles>
-          ).map((weight) => (
-            <div key={weight} className={styles.rowStyles}>
-              <span className={styles.labelStyles}>{weight}</span>
-              <p className={styles.fontWeightStyles[weight]}>{SampleText}</p>
-            </div>
-          ))}
-        </div>
+      <section style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <Typography variant="bodyXS" textColor="muted">
+          Special
+        </Typography>
+        <Typography variant="body">
+          You can use <Typography variant="code">inline code</Typography> styles.
+        </Typography>
       </section>
+    </div>
+  ),
+};
 
-      <section>
-        <h2 className={styles.sectionTitleStyles}>Letter Spacings</h2>
-        <div className={styles.weightStackStyles}>
-          {(
-            Object.keys(styles.letterSpacingStyles) as Array<
-              keyof typeof styles.letterSpacingStyles
-            >
-          ).map((spacing) => (
-            <div key={spacing} className={styles.rowStyles}>
-              <span className={styles.labelStyles}>{spacing}</span>
-              <p className={styles.letterSpacingStyles[spacing]}>{SampleText}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+export const SemanticTags: Story = {
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <Typography as="h1" variant="h3">
+        Visual H3 but Semantic H1
+      </Typography>
+      <Typography as="span" variant="bodyS" textColor="accent">
+        Inline span with small accent text
+      </Typography>
     </div>
   ),
 };
