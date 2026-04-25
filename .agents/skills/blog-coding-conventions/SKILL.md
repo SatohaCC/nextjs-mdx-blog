@@ -47,13 +47,13 @@ src/
 
 フィーチャー間の直接インポートは **ESLint エラー** になります。
 
-| インポート元 → 先 | 可否 |
-| --- | --- |
+| インポート元 → 先                                 | 可否    |
+| ------------------------------------------------- | ------- |
 | `features/A` → `features/A`（同一フィーチャー内） | ✅ 許可 |
-| `features/A` → `features/B`（別フィーチャー） | ❌ 禁止 |
-| `features/*` → `src/components/*` | ✅ 許可 |
-| `features/*` → `src/lib/*` | ✅ 許可 |
-| `components/ui/*` → `features/*` | ❌ 禁止 |
+| `features/A` → `features/B`（別フィーチャー）     | ❌ 禁止 |
+| `features/*` → `src/components/*`                 | ✅ 許可 |
+| `features/*` → `src/lib/*`                        | ✅ 許可 |
+| `components/ui/*` → `features/*`                  | ❌ 禁止 |
 
 別フィーチャーのデータが必要な場合は、呼び出し元（`app/` 層など）で両フィーチャーの関数をそれぞれ呼んで結合してください。フィーチャー内で共有したい型は同一フィーチャーの `types.ts` に定義します。
 
@@ -133,27 +133,26 @@ export const getItemStyles = (isActive: boolean) => css({
 - `overlay`: オーバーレイ背景 (1300)
 - `modal`: モーダルウィンドウ (1400)
 
-
 ---
 
 ## PandaCSS トークン
 
 ### 使用すべきトークン
 
-| カテゴリ         | トークン例                                   | 説明                       |
-| ---------------- | -------------------------------------------- | -------------------------- |
-| **カラー**       | `text.default`, `accent.default`, `bg.muted` | セマンティックカラー       |
-| **スペーシング** | `layout.gutter`, `section.gap`               | レイアウト用共通余白       |
-| **z-index**      | `docked`, `sticky`, `overlay`, `modal`       | 重なり順の定義             |
-| **シャドウ**     | `sm`, `md`, `lg`, `card.default`             | 影の強さ・コンポーネント影 |
-| **ボーダー幅**   | `thin`, `medium`, `thick`                    | 1px / 2px / 4px            |
-| **サイズ**       | `sidebar`, `searchBox`, `accentBar`          | 特定のUIサイズ             |
+| カテゴリ           | トークン例                                   | 説明                       |
+| ------------------ | -------------------------------------------- | -------------------------- |
+| **カラー**         | `text.default`, `accent.default`, `bg.muted` | セマンティックカラー       |
+| **スペーシング**   | `layout.gutter`, `section.gap`               | レイアウト用共通余白       |
+| **z-index**        | `docked`, `sticky`, `overlay`, `modal`       | 重なり順の定義             |
+| **シャドウ**       | `sm`, `md`, `lg`, `card.default`             | 影の強さ・コンポーネント影 |
+| **ボーダー幅**     | `thin`, `medium`, `thick`                    | 1px / 2px / 4px            |
+| **サイズ**         | `sidebar`, `searchBox`, `accentBar`          | 特定のUIサイズ             |
+| **タイポグラフィ** | `heading.h1`, `body.base`, `sans`            | フォント、サイズ、行高     |
 
 ### トークンの定義場所
 
 すべてのトークンは `panda.config.ts` で定義されています。新しいトークンを追加する場合はこのファイルを編集してください。
 特にカラーは「たけのこの里」をモチーフにした `takenoko.bamboo` や `takenoko.chocolate` パレットに基づいています。
-
 
 ---
 
@@ -173,7 +172,6 @@ Server Components およびそれに準ずるデータ取得関数（`src/featur
 - **Next.js の最適化**: Streaming, PPR (Partial Prerendering), ISR (Incremental Static Regeneration) などの機能を最大限に活かすために、データ取得の非同期化は必須のプラクティスです。
 - **開発体験**: `npm run dev` 環境においても、メインスレッドのブロッキングを避けることで、ページ遷移やホットリロードの応答性が向上します。
 
-
 ---
 
 ## キャッシュ戦略 (Next.js 16+ Cache Components)
@@ -190,7 +188,7 @@ Server Components およびそれに準ずるデータ取得関数（`src/featur
    import { cacheLife, cacheTag } from 'next/cache';
 
    export const getAllPosts = async (): Promise<Post[]> => {
-     'use cache';        // ← 関数 body の先頭
+     'use cache'; // ← 関数 body の先頭
      cacheLife('days');
      cacheTag('posts');
      // ... 本処理
@@ -211,7 +209,6 @@ Server Components およびそれに準ずるデータ取得関数（`src/featur
 
 - **リクエスト間キャッシュ**: 一度取得したデータが複数のユーザー間で共有されるため、サーバーの I/O 負荷が劇的に減少します。
 - **PPR (Partial Prerendering) との連携**: 動的な要素（Suspense 内）のみをオリジンサーバーで処理し、静的な部分はキャッシュから即時にストリーミングできます。
-
 
 ---
 
@@ -332,31 +329,98 @@ ESLintの `react/forbid-component-props` ルールも、このファイルに限
 AIエージェント（Storybook MCP等）がコンポーネントを正しく理解し、自律的にコード生成やテストを行えるようにするため、以下のルールを遵守してください。
 
 ### 0. 既存コンポーネントの優先再利用 (最優先)
+
 新規にコンポーネントを構築する場合、ネイティブな HTML 要素（button, input, a 等）を使用する前に、必ず `src/components/ui` 等に既存のプリミティブがないか Storybook を参照して確認してください。
+
 - **一貫性の維持**: デザインシステムに基づいた既存コンポーネントを再利用することで、プロジェクト全体の視覚的な一貫性とアクセシビリティを保ちます。
 - **AIの責務**: AIエージェントは、既存コンポーネントの Story を「仕様書」として読み込み、正しい Props で呼び出してください。
 
 ### 1. 詳細なJSDoc（AIへの指示書）
+
 コンポーネントおよび Props には、AIが役割を誤認しないよう詳細な JSDoc を記述してください。
+
 - **Component**: 「何」だけでなく「なぜ」「いつ」使うべきか（例：Primaryは最重要アクションにのみ使用する）。
 - **Props**: デフォルト値、期待される動作、制約事項。
 
 ### 2. インタラクションテストの標凖化
+
 ユーザー操作（クリック、入力、送信など）を伴う全コンポーネントには、`play` 関数によるテストを必須とします。
+
 - **ステップの明示**: `step` 関数を使用し、`Arrange`, `Act`, `Assert` のラベルを付与。
 - **アクセシビリティ検証**: ステップ内で a11y 違反をチェックするアサーション（必要に応じて）を含める。
 
 ### 3. ストーリーの網羅性
+
 `Default` 以外のエッジケースをストーリーとして明示的に定義してください。
+
 - **共通状態**: `Loading`, `Error`, `Empty`, `Disabled`
 - **データ量**: `LongContent`, `MultipleItems`
 - **成功体験**: `Success` / `Submitted`
 
 ### 4. 自動 a11y チェック
+
 ストーリーの `parameters` に以下を設定し、アクセシビリティを常に監視してください。
+
 ```typescript
 parameters: {
   a11y: { test: 'error' },
 }
 ```
 
+---
+
+## タイポグラフィ・ガイドライン
+
+デザインの一貫性を保つため、タイポグラフィには必ず定義されたトークンを使用してください。
+
+### 1. フォントファミリー (`fonts`)
+
+| トークン | 説明                                             |
+| :------- | :----------------------------------------------- |
+| `sans`   | メインのサンセリフ体 (Geist Sans + Noto Sans JP) |
+| `mono`   | コード・等幅フォント (Geist Mono)                |
+| `serif`  | 補助的なセリフ体 (Noto Serif JP)                 |
+
+### 2. フォントサイズ (`fontSizes`)
+
+直接 `fontSizes.xl` などを使うのではなく、可能な限りセマンティックトークン（`heading.*` / `body.*`）を使用してください。
+
+#### セマンティックトークン (推奨)
+
+| 役割       | トークン     | サイズ (Desktop / Mobile) |
+| :--------- | :----------- | :------------------------ |
+| 見出し1    | `heading.h1` | 36px / 30px               |
+| 見出し2    | `heading.h2` | 30px / 24px               |
+| 見出し3    | `heading.h3` | 24px / 20px               |
+| 本文(大)   | `body.large` | 18px / 16px               |
+| 本文(標準) | `body.base`  | 16px / 16px               |
+| 本文(小)   | `body.small` | 14px / 14px               |
+
+#### プリミティブスケール
+
+- `xs` (12px), `sm` (14px), `base` (16px), `lg` (18px), `xl` (20px), `2xl` (24px), `3xl` (30px), `4xl` (36px), `5xl` (48px)...
+
+### 3. 行高 (`lineHeights`)
+
+| 役割     | トークン  | 値              |
+| :------- | :-------- | :-------------- |
+| 見出し用 | `heading` | 1.25            |
+| 本文用   | `body`    | 1.625 (relaxed) |
+
+### 使用例
+
+```typescript
+// styles.ts
+export const titleStyles = css({
+  fontSize: 'heading.h1',
+  lineHeight: 'heading',
+  fontWeight: 'bold',
+  letterSpacing: 'tight',
+});
+
+export const contentStyles = css({
+  fontSize: 'body.base',
+  lineHeight: 'body',
+  color: 'text.default',
+});
+```

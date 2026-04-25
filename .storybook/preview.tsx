@@ -59,6 +59,7 @@ const preview: Preview = {
             data-theme={theme}
             color="text.default"
             bg="bg.default"
+            isolation="isolate"
             transitionProperty="background-color, color"
             transitionDuration="normal"
           >

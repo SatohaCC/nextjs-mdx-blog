@@ -8,7 +8,7 @@ import {
   statusPageStatusStyles,
   statusPageTitleStyles,
   statusPageWrapperStyles,
-} from './StatusPage.styles';
+} from './styles';
 
 type StatusPageProps = {
   /** 表示するステータスコード（例: `"404"`, `"500"`） */

@@ -10,6 +10,7 @@ Full form with labels, error handling, and live region announcements.
 
 ```tsx
 import { useState } from 'react';
+
 import { z } from 'zod';
 
 const FormSchema = z.object({
@@ -139,7 +140,10 @@ export function AccessibleForm() {
             className="mt-1 w-5 h-5"
           />
           <span>
-            I agree to the <a href="/terms" className="text-blue-600 underline">terms and conditions</a>
+            I agree to the{' '}
+            <a href="/terms" className="text-blue-600 underline">
+              terms and conditions
+            </a>
             <span aria-label="required"> *</span>
           </span>
         </label>
@@ -163,6 +167,7 @@ export function AccessibleForm() {
 ```
 
 **Key accessibility features:**
+
 - All inputs have associated labels with `htmlFor`
 - Required fields marked with `aria-required="true"`
 - Invalid fields marked with `aria-invalid="true"`
@@ -181,7 +186,9 @@ Modal with focus trap, Esc to close, and backdrop click handling.
 
 ```tsx
 import { useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+
+import { AnimatePresence, motion } from 'motion/react';
+
 import { modalBackdrop, modalContent } from '@/lib/animations';
 
 interface ModalProps {
@@ -320,6 +327,7 @@ export function AccessibleModal({ isOpen, onClose, title, children }: ModalProps
 ```
 
 **Key accessibility features:**
+
 - `role="dialog"` and `aria-modal="true"`
 - Title linked with `aria-labelledby`
 - Focus trapped within modal
@@ -338,10 +346,7 @@ Allow keyboard users to bypass repeated navigation.
 ```tsx
 export function SkipLink() {
   return (
-    <a
-      href="#main-content"
-      className="skip-link"
-    >
+    <a href="#main-content" className="skip-link">
       Skip to main content
     </a>
   );
@@ -353,9 +358,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <>
       <SkipLink />
       <header>
-        <nav>
-          {/* Navigation links */}
-        </nav>
+        <nav>{/* Navigation links */}</nav>
       </header>
       <main id="main-content" tabIndex={-1}>
         {children}
@@ -390,7 +393,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 Tabs with keyboard navigation (arrow keys, Home, End).
 
 ```tsx
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface TabProps {
   tabs: { id: string; label: string; content: React.ReactNode }[];
@@ -480,6 +483,7 @@ export function AccessibleTabs({ tabs }: TabProps) {
 ```
 
 **Key accessibility features:**
+
 - `role="tablist"`, `role="tab"`, `role="tabpanel"`
 - `aria-selected` indicates active tab
 - `aria-controls` links tab to panel
@@ -495,7 +499,7 @@ export function AccessibleTabs({ tabs }: TabProps) {
 Custom dropdown with roving tabindex.
 
 ```tsx
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface DropdownProps {
   label: string;
@@ -565,7 +569,9 @@ export function AccessibleDropdown({ label, options, value, onChange }: Dropdown
         aria-labelledby="dropdown-label"
         className="w-full px-4 py-2 text-left bg-white border border-gray-300 rounded focus-visible:outline focus-visible:outline-2"
       >
-        <span id="dropdown-label" className="sr-only">{label}</span>
+        <span id="dropdown-label" className="sr-only">
+          {label}
+        </span>
         {value}
       </button>
 
@@ -602,6 +608,7 @@ export function AccessibleDropdown({ label, options, value, onChange }: Dropdown
 ```
 
 **Key accessibility features:**
+
 - `role="listbox"` and `role="option"`
 - `aria-haspopup="listbox"` on trigger
 - `aria-expanded` indicates open/closed state
@@ -618,7 +625,7 @@ export function AccessibleDropdown({ label, options, value, onChange }: Dropdown
 Announce changes to screen reader users without interrupting.
 
 ```tsx
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export function ShoppingCart() {
   const [items, setItems] = useState<string[]>([]);
@@ -640,12 +647,7 @@ export function ShoppingCart() {
       <h2>Shopping Cart</h2>
 
       {/* Live region for status updates */}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        className="sr-only"
-      >
+      <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
         {statusMessage}
       </div>
 
@@ -681,6 +683,7 @@ export function ShoppingCart() {
 ```
 
 **Key accessibility features:**
+
 - `role="status"` with `aria-live="polite"` announces changes
 - `aria-atomic="true"` ensures entire message is read
 - `.sr-only` class hides visual duplicate
@@ -734,6 +737,7 @@ export function ErrorSummary({ errors }: ErrorSummaryProps) {
 ```
 
 **Key accessibility features:**
+
 - `role="alert"` announces errors immediately
 - Links to fields with errors
 - Clicking link focuses the field

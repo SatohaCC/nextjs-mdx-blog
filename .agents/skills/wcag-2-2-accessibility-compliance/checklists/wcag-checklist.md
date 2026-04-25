@@ -54,6 +54,7 @@ Before submitting any component for review:
 - [ ] No loss of content when text spacing increased (line-height: 1.5)
 
 **Tools:**
+
 - WebAIM Contrast Checker: [https://webaim.org/resources/contrastchecker/](https://webaim.org/resources/contrastchecker/)
 - Chrome DevTools: Inspect > Color picker > Contrast ratio
 
@@ -148,13 +149,16 @@ Before submitting any component for review:
 Test with at least one screen reader:
 
 ### Windows
+
 - [ ] NVDA (free) - [nvaccess.org](https://www.nvaccess.org/)
 - [ ] JAWS (commercial) - [freedomscientific.com](https://www.freedomscientific.com/)
 
 ### macOS/iOS
+
 - [ ] VoiceOver (built-in) - Cmd+F5 to enable
 
 ### Android
+
 - [ ] TalkBack (built-in)
 
 ### Verification Steps
@@ -184,8 +188,8 @@ Run these tools before manual testing:
 **Example Playwright test:**
 
 ```typescript
-import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
 
 test('should not have any automatically detectable accessibility issues', async ({ page }) => {
   await page.goto('/');
@@ -198,18 +202,18 @@ test('should not have any automatically detectable accessibility issues', async 
 
 ## Common Issues and Fixes
 
-| Issue | Fix |
-|-------|-----|
-| Missing alt text | Add `alt` attribute to all images |
-| Low contrast | Darken text or lighten background to meet 4.5:1 ratio |
-| Missing label | Add `<label>` with `htmlFor` or `aria-label` |
-| Keyboard trap | Add `onKeyDown` handler to detect Esc key |
-| No focus indicator | Add `:focus-visible { outline: 3px solid #0052cc; }` |
-| Div button | Replace with `<button>` or add `role="button"` + keyboard handler |
-| Empty link | Add descriptive text or `aria-label` |
-| Small touch target | Increase `min-width` and `min-height` to 24px (44px for touch) |
-| Non-semantic HTML | Replace divs with `<nav>`, `<main>`, `<article>`, `<button>`, etc. |
-| Color-only status | Add icon or text label alongside color |
+| Issue              | Fix                                                                |
+| ------------------ | ------------------------------------------------------------------ |
+| Missing alt text   | Add `alt` attribute to all images                                  |
+| Low contrast       | Darken text or lighten background to meet 4.5:1 ratio              |
+| Missing label      | Add `<label>` with `htmlFor` or `aria-label`                       |
+| Keyboard trap      | Add `onKeyDown` handler to detect Esc key                          |
+| No focus indicator | Add `:focus-visible { outline: 3px solid #0052cc; }`               |
+| Div button         | Replace with `<button>` or add `role="button"` + keyboard handler  |
+| Empty link         | Add descriptive text or `aria-label`                               |
+| Small touch target | Increase `min-width` and `min-height` to 24px (44px for touch)     |
+| Non-semantic HTML  | Replace divs with `<nav>`, `<main>`, `<article>`, `<button>`, etc. |
+| Color-only status  | Add icon or text label alongside color                             |
 
 ---
 
@@ -265,7 +269,7 @@ test('should not have any automatically detectable accessibility issues', async 
 
 ## Compliance Sign-Off
 
-Component/Page: ____________________
+Component/Page: ********\_\_\_\_********
 
 - [ ] Automated tests passed (axe, Lighthouse, WAVE)
 - [ ] Manual keyboard testing completed
@@ -274,8 +278,8 @@ Component/Page: ____________________
 - [ ] Semantic HTML used throughout
 - [ ] All checklist items above verified
 
-Reviewed by: ____________________
-Date: ____________________
+Reviewed by: ********\_\_\_\_********
+Date: ********\_\_\_\_********
 
 ---
 
