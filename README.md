@@ -24,6 +24,15 @@ Next.js、PandaCSS、React Aria を使用した、Satoha（[satoha.net](https://
 - ✅ **GFM対応**: テーブル、タスクリスト、取り消し線など
 - 📑 **目次自動生成**: 見出しから目次を自動生成
 - 🔗 **関連記事**: タグに基づく関連記事の表示
+- 🗺️ **サイトマップ/RSS**: XML形式での自動生成
+
+## ドキュメント
+
+プロジェクトの設計思想やガイドラインの詳細は、以下のドキュメントを参照してください。
+
+- 🎨 **[デザインガイドライン (docs/DESIGN.md)](docs/DESIGN.md)**: デザインシステム、Panda CSS の使用方法、コンポーネント設計。
+- ✅ **[テストガイドライン (docs/TESTING.md)](docs/TESTING.md)**: テストの使い分け（Vitest / Storybook / Playwright）、実装パターン。
+- 🎬 **[アニメーションガイドライン (docs/ANIMATIONS.md)](docs/ANIMATIONS.md)**: モーション設計、Framer Motion / Panda CSS による実装方法。
 
 ## はじめに
 
