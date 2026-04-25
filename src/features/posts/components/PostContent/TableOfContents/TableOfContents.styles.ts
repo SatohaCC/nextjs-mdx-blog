@@ -1,26 +1,15 @@
-import { css, cva } from '../../../../../../styled-system/css';
+import { css, cva, cx } from '../../../../../../styled-system/css';
+import { sectionHeadingBaseStyles } from '../../../../../styles/common.styles';
 
 export const tocContainerStyles = css({
   mb: '12',
   py: '4',
 });
 
-export const tocHeadingStyles = css({
-  fontSize: 'md',
-  fontWeight: 'bold',
-  mb: '4',
-  color: 'text.default',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '2',
-  _before: {
-    content: '""',
-    w: 'accentBar',
-    h: '1em',
-    bg: 'accent.default',
-    borderRadius: 'full',
-  },
-});
+export const tocHeadingStyles = cx(
+  sectionHeadingBaseStyles,
+  css({ fontSize: 'md', mb: '4' })
+);
 
 export const tocListStyles = css({ listStyle: 'none', p: 0, m: 0 });
 

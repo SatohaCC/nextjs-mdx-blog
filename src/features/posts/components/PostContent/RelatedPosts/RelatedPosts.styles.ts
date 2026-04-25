@@ -1,5 +1,6 @@
-import { css } from '../../../../../../styled-system/css';
+import { css, cx } from '../../../../../../styled-system/css';
 import { grid } from '../../../../../../styled-system/patterns';
+import { sectionHeadingBaseStyles } from '../../../../../styles/common.styles';
 
 export const relatedPostsContainerStyles = css({
   mt: '12',
@@ -8,22 +9,10 @@ export const relatedPostsContainerStyles = css({
   borderColor: 'border.default',
 });
 
-export const relatedPostsHeadingStyles = css({
-  fontSize: 'lg',
-  fontWeight: 'bold',
-  mb: '6',
-  color: 'text.default',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '2',
-  _before: {
-    content: '""',
-    w: 'accentBar',
-    h: '1em',
-    bg: 'accent.default',
-    borderRadius: 'full',
-  },
-});
+export const relatedPostsHeadingStyles = cx(
+  sectionHeadingBaseStyles,
+  css({ fontSize: 'lg', mb: '6' })
+);
 
 export const relatedPostsGridStyles = grid({ columns: { base: 1, sm: 3 }, gap: '4' });
 
@@ -35,7 +24,7 @@ export const relatedPostCardStyles = css({
   borderColor: 'border.default',
   textDecoration: 'none',
   transitionProperty: 'border-color, transform, box-shadow',
-  transitionDuration: 'normal',
+  transitionDuration: 'slow',
   _hover: {
     borderColor: 'accent.default',
     transform: 'translateY(-2px)',

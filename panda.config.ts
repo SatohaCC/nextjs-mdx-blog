@@ -81,6 +81,7 @@ export default defineConfig({
         // イージングトークン
         easings: {
           standard: { value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+          spring: { value: 'cubic-bezier(0.34, 0, 0.22, 2.45)' },
         },
         // デュレーショントークン
         durations: {
