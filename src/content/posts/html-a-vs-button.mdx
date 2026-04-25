@@ -97,10 +97,8 @@ import Link from 'next/link';
 推奨パターンは `<a>` を残したまま `aria-disabled="true"` を付与する方法だ。
 
 ```html
-<!-- 有効なとき → <a> でリンク -->
 <a href="/posts/page/1" aria-label="前のページ">‹</a>
 
-<!-- 無効なとき → href を外し aria-disabled で無効を伝える -->
 <a aria-disabled="true" aria-label="前のページ（現在最初のページです）">‹</a>
 ```
 
@@ -118,7 +116,11 @@ import Link from 'next/link';
 
 ### 検索の「検索」ボタン
 
-フォームの送信として実装する場合は `<button type="submit">` が正しい。一方、テキスト入力のたびに URL を更新してリアルタイム絞り込みを行うような実装では、`<a>` ではなく入力イベントに応じたルーティング処理になる。いずれにしても、`<button>` を `<a>` の代わりにして検索結果ページに飛ばす設計は避けるべきだ。
+検索キーワードを入力して結果ページ（例: `/search?q=keyword`）へ遷移する場合、これは「フォームデータの送信」というアクションなので、`<form>` と `<button type="submit">` を使うのが正しい。「URLが変わるなら `<a>`」という原則に縛られて、送信ボタンを無理やり `<a>` で実装するのは誤りだ。
+
+一方で、入力欄などがなく単に「検索専用ページはこちら」という固定URLへのリンクを設置したい場合は、ナビゲーションなので `<a href="/search">` を使うべきだ。「見た目をボタンにしたいから」という理由で、`<button onclick="location.href='/search'">` のようにJavaScriptでページ遷移させるのはアクセシビリティを損なうため避けるべきだ。
+
+なお、テキスト入力のたびに画面遷移なしでリアルタイム絞り込みを行うような実装（インクリメンタルサーチ）では、フォーム送信をJavaScriptで制御しつつ、入力イベントに応じた非同期処理（API通信など）を行う形になる。
 
 ## 6. 結論：ページネーションはどうすべき？
 
@@ -142,7 +144,7 @@ import Link from 'next/link';
 
 ## 参考
 
-- [MDN: `<button>`: ボタン要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/button)
-- [MDN: `<a>`: アンカー要素](https://developer.mozilla.org/ja/docs/Web/HTML/Element/a)
+- [MDN: `<button>`: ボタン要素](<[https://developer.mozilla.org/ja/docs/Web/HTML/Element/button](https://developer.mozilla.org/ja/docs/Web/HTML/Element/button)>)
+- [MDN: `<a>`: アンカー要素](<[https://developer.mozilla.org/ja/docs/Web/HTML/Element/a](https://developer.mozilla.org/ja/docs/Web/HTML/Element/a)>)
 - [デジタル庁デザインシステム](https://www.digital.go.jp/policies/servicedesign/designsystem)
 - [Next.js Documentation: Link Component](https://nextjs.org/docs/pages/api-reference/components/link)
