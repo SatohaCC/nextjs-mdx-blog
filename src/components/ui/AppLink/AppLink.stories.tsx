@@ -61,10 +61,13 @@ export const AnchorLink: Story = {
       link = canvas.getByRole('link', { name: 'セクションへ' });
     });
 
-    await step('Assert: アンカーリンクが期待通りのパスに解決されていることを確認', async () => {
-      await expect(link).toHaveAttribute('href', '/#section-1');
-      await expect(link).not.toHaveAttribute('target');
-    });
+    await step(
+      'Assert: アンカーリンクが href をそのまま保持し、target 属性が付与されていないことを確認',
+      async () => {
+        await expect(link).toHaveAttribute('href', '#section-1');
+        await expect(link).not.toHaveAttribute('target');
+      }
+    );
   },
 };
 

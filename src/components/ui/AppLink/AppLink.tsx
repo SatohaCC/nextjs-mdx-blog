@@ -6,7 +6,7 @@ import { cx } from '../../../../styled-system/css';
 import { appLinkStyles } from './styles';
 
 export type AppLinkProps = ComponentPropsWithoutRef<'a'> & {
-  /** リンク先URL。内部パス（`/`・`#`始まり）は Next.js Link、外部URLは `<a>` にルーティングされる */
+  /** リンク先URL。`/` 始まりは Next.js Link、`#` 始まりは plain `<a>`、外部URLは `<a target="_blank">` にルーティングされる */
   href: string;
 };
 
@@ -17,18 +17,26 @@ export type AppLinkProps = ComponentPropsWithoutRef<'a'> & {
  * @summary ページ遷移・外部サイトへのリンクに使用する
  */
 export const AppLink = ({ href, children, className, ...props }: AppLinkProps) => {
-  // 内部リンク（ルート相対パス、またはページ内アンカー）かどうかを判定
-  const isInternal = href.startsWith('/') || href.startsWith('#');
-
-  if (isInternal) {
+  if (href.startsWith('/')) {
     return (
       /**
-       * 内部リンクの場合は Next.js の Link コンポーネントを使用。
+       * ルート相対パスは Next.js の Link コンポーネントを使用。
        * クライアントサイド・ナビゲーションとプリフェッチによる高速化の恩恵を受ける。
        */
       <NextLink href={href} className={cx(appLinkStyles, className)} {...props}>
         {children}
       </NextLink>
+    );
+  }
+
+  if (href.startsWith('#')) {
+    // ページ内アンカーは NextLink に渡さない。
+    // NextLink は現在のパス名を補完するため `#section` が `/current-path#section` に変わり、
+    // Storybook 等の環境でパスが意図せず変化する。
+    return (
+      <a href={href} className={cx(appLinkStyles, className)} {...props}>
+        {children}
+      </a>
     );
   }
 
