@@ -251,7 +251,7 @@ export default defineConfig({
             default: {
               value: {
                 base: '{colors.takenoko.bamboo.900}',
-                _dark: '{colors.takenoko.bamboo.400}',
+                _dark: '{colors.takenoko.bamboo.300}',
               },
             },
             solid: {
@@ -263,13 +263,13 @@ export default defineConfig({
             hover: {
               value: {
                 base: '{colors.takenoko.bamboo.700}',
-                _dark: '{colors.takenoko.bamboo.300}',
+                _dark: '{colors.takenoko.bamboo.200}',
               },
             },
             focusRing: {
               value: {
                 base: '{colors.takenoko.bamboo.900}',
-                _dark: '{colors.takenoko.bamboo.400}',
+                _dark: '{colors.takenoko.bamboo.300}',
               },
             },
           },
@@ -283,7 +283,7 @@ export default defineConfig({
             hover: {
               value: {
                 base: '{colors.takenoko.bamboo.700}',
-                _dark: '{colors.takenoko.bamboo.300}',
+                _dark: '{colors.takenoko.bamboo.200}',
               },
             },
           },
