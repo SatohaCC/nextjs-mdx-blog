@@ -79,7 +79,10 @@ export default defineConfig({
           spring: { value: 'cubic-bezier(0.34, 0, 0.22, 2.45)' },
         },
         durations: {
+          fast: { value: '100ms' },
+          normal: { value: '200ms' },
           medium: { value: '250ms' },
+          slow: { value: '400ms' },
         },
         fontSizes: {
           xs: { value: '0.75rem' },
@@ -121,6 +124,32 @@ export default defineConfig({
           current: { value: 'currentColor' },
           white: { value: '#ffffff' },
           black: { value: '#000000' },
+          neutral: {
+            50: { value: '#f8f9fa' },
+            100: { value: '#f1f3f5' },
+            200: { value: '#e9ecef' },
+            300: { value: '#dee2e6' },
+            400: { value: '#ced4da' },
+            500: { value: '#adb5bd' },
+            600: { value: '#868e96' },
+            700: { value: '#495057' },
+            800: { value: '#343a40' },
+            900: { value: '#212529' },
+            950: { value: '#121417' },
+          },
+          dark: {
+            50: { value: '#f4f4f5' },
+            100: { value: '#e4e4e7' },
+            200: { value: '#d4d4d8' },
+            300: { value: '#a1a1aa' },
+            400: { value: '#71717a' },
+            500: { value: '#52525b' },
+            600: { value: '#3f3f46' },
+            700: { value: '#27272a' },
+            800: { value: '#18181b' },
+            900: { value: '#09090b' },
+            950: { value: '#050507' },
+          },
           takenoko: {
             chocolate: {
               50: { value: '#EFEBE9' },
@@ -185,22 +214,26 @@ export default defineConfig({
         },
         colors: {
           bg: {
-            default: { value: { base: '{colors.white}', _dark: '#09090b' } },
-            muted: { value: { base: '{colors.takenoko.bamboo.50}', _dark: '#18181b' } },
-            subtle: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '#27272a' } },
-            active: { value: { base: '{colors.takenoko.bamboo.900}', _dark: '#27272a' } },
+            default: { value: { base: '{colors.white}', _dark: '{colors.dark.900}' } },
+            muted: { value: { base: '{colors.takenoko.bamboo.50}', _dark: '{colors.dark.800}' } },
+            subtle: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '{colors.dark.700}' } },
+            active: { value: { base: '{colors.takenoko.bamboo.900}', _dark: '{colors.dark.700}' } },
           },
           text: {
             default: {
-              value: { base: '{colors.takenoko.chocolate.900}', _dark: '{colors.white}' },
+              value: { base: '{colors.takenoko.chocolate.900}', _dark: '{colors.dark.100}' },
             },
-            muted: { value: { base: '{colors.takenoko.chocolate.700}', _dark: '{colors.white}' } },
-            inverted: { value: { base: '{colors.white}', _dark: '{colors.white}' } },
+            muted: {
+              value: { base: '{colors.takenoko.chocolate.700}', _dark: '{colors.dark.300}' },
+            },
+            inverted: { value: { base: '{colors.white}', _dark: '{colors.dark.100}' } },
             onAccent: { value: { base: '{colors.white}', _dark: '{colors.white}' } },
           },
           border: {
-            default: { value: { base: '{colors.takenoko.bamboo.200}', _dark: '#27272a' } },
-            muted: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '#18181b' } },
+            default: {
+              value: { base: '{colors.takenoko.bamboo.200}', _dark: '{colors.dark.700}' },
+            },
+            muted: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '{colors.dark.800}' } },
           },
           accent: {
             default: {
@@ -229,7 +262,9 @@ export default defineConfig({
             },
           },
           link: {
-            default: { value: { base: '{colors.takenoko.bamboo.900}', _dark: '{colors.white}' } },
+            default: {
+              value: { base: '{colors.takenoko.bamboo.900}', _dark: '{colors.dark.100}' },
+            },
             hover: {
               value: {
                 base: '{colors.takenoko.bamboo.700}',
@@ -327,6 +362,119 @@ export default defineConfig({
         bodyS: { value: { fontSize: 'body.small', lineHeight: 'body' } },
         bodyXS: { value: { fontSize: 'body.xs', lineHeight: 'body' } },
         code: { value: { fontFamily: 'mono', fontSize: 'code' } },
+      },
+      recipes: {
+        button: {
+          className: 'button',
+          description: 'The styles for the Button component',
+          jsx: ['Button', 'AppLink'],
+          base: {
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '2',
+            borderRadius: 'button',
+            fontWeight: 'medium',
+            cursor: 'pointer',
+            transitionProperty: 'background-color, color, border-color, opacity',
+            transitionDuration: 'normal',
+            border: 'none',
+            outline: 'none',
+            _focusVisible: {
+              outline: '2px solid',
+              outlineColor: 'accent.focusRing',
+              outlineOffset: '2px',
+            },
+            _disabled: {
+              opacity: 0.5,
+              cursor: 'not-allowed',
+            },
+          },
+          variants: {
+            variant: {
+              primary: {
+                bg: 'accent.solid',
+                color: 'text.onAccent',
+                _hover: { opacity: 0.9 },
+              },
+              outline: {
+                bg: 'transparent',
+                border: '1px solid',
+                borderColor: 'border.default',
+                color: 'text.default',
+                _hover: { bg: 'bg.subtle' },
+              },
+              ghost: {
+                bg: 'transparent',
+                color: 'text.default',
+                _hover: { bg: 'bg.subtle' },
+              },
+              'ghost-accent': {
+                bg: 'transparent',
+                color: 'accent.default',
+                _hover: { bg: 'bg.subtle' },
+              },
+            },
+            size: {
+              sm: { px: '3', py: '2', fontSize: 'sm' },
+              md: { px: '4', py: '2', fontSize: 'md' },
+              lg: { px: '6', py: '3', fontSize: 'lg' },
+            },
+          },
+          defaultVariants: {
+            variant: 'primary',
+            size: 'md',
+          },
+        },
+        tag: {
+          className: 'tag',
+          description: 'The styles for the Tag component',
+          jsx: ['TagLabel', 'TagLink'],
+          base: {
+            display: 'inline-flex',
+            alignItems: 'center',
+            px: '3',
+            py: '1',
+            borderRadius: 'full',
+            fontSize: 'xs',
+            fontWeight: 'semibold',
+            bg: 'bg.muted',
+            border: '1px solid',
+            borderColor: 'border.muted',
+            color: 'text.muted',
+            position: 'relative',
+            zIndex: '1',
+            transitionProperty: 'all',
+            transitionDuration: 'medium',
+            transitionTimingFunction: 'standard',
+            textDecoration: 'none',
+            cursor: 'pointer',
+            _hover: {
+              borderColor: 'accent.default',
+              color: 'accent.default',
+              bg: 'bg.default',
+              transform: 'translateY(-1px)',
+              boxShadow: 'sm',
+            },
+          },
+          variants: {
+            clickable: {
+              false: {
+                cursor: 'default',
+                _hover: {
+                  borderColor: 'border.muted',
+                  color: 'text.muted',
+                  bg: 'bg.muted',
+                  transform: 'none',
+                  boxShadow: 'none',
+                },
+              },
+            },
+          },
+          defaultVariants: {
+            clickable: true,
+          },
+        },
       },
     },
   },

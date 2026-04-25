@@ -3,6 +3,8 @@ import { css } from '../../styled-system/css';
 export const bodyStyles = css({
   bg: 'bg.default',
   color: 'text.default',
+  transitionProperty: 'background-color, color',
+  transitionDuration: 'normal',
 });
 
 export const pageWrapperStyles = css({
