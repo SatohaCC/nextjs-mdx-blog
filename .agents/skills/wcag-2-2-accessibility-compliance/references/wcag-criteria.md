@@ -96,19 +96,20 @@ Form fields must have autocomplete attributes:
 **1.4.3 Contrast (Minimum) (Level AA)**
 
 Text contrast ratios:
+
 - Normal text (< 18pt / < 14pt bold): **4.5:1 minimum**
 - Large text (≥ 18pt / ≥ 14pt bold): **3:1 minimum**
 
 ```css
 /* ✅ High contrast for normal text */
 :root {
-  --text-on-white: #1a1a1a;    /* 16.1:1 */
-  --text-secondary: #595959;   /* 7.0:1 */
+  --text-on-white: #1a1a1a; /* 16.1:1 */
+  --text-secondary: #595959; /* 7.0:1 */
 }
 
 /* ❌ Insufficient contrast */
 :root {
-  --text-gray: #b3b3b3;        /* 2.1:1 - FAIL */
+  --text-gray: #b3b3b3; /* 2.1:1 - FAIL */
 }
 ```
 
@@ -176,6 +177,7 @@ p {
 **1.4.13 Content on Hover or Focus (Level AA)**
 
 Additional content triggered by hover/focus must be:
+
 - Dismissible (Esc key)
 - Hoverable (pointer can move over it)
 - Persistent (doesn't disappear until dismissed)
@@ -241,7 +243,7 @@ import { Dialog } from '@radix-ui/react-dialog';
       <Dialog.Close>Close</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog.Root>;
 ```
 
 **2.1.4 Character Key Shortcuts (Level A)**
@@ -417,7 +419,9 @@ Interactive elements must be at least **24x24 CSS pixels** (except inline links)
 
 ```css
 /* ✅ Minimum target size */
-button, a[role="button"], input[type="checkbox"] {
+button,
+a[role='button'],
+input[type='checkbox'] {
   min-width: 24px;
   min-height: 24px;
 }
@@ -444,7 +448,7 @@ Information and operation of user interface must be understandable.
 Page language must be specified:
 
 ```html
-<html lang="en">
+<html lang="en"></html>
 ```
 
 **3.1.2 Language of Parts (Level AA)**
@@ -452,7 +456,9 @@ Page language must be specified:
 Changes in language must be marked:
 
 ```tsx
-<p>The French phrase <span lang="fr">Je ne sais quoi</span> means...</p>
+<p>
+  The French phrase <span lang="fr">Je ne sais quoi</span> means...
+</p>
 ```
 
 ### 3.2 Predictable
@@ -521,18 +527,20 @@ Errors must be identified and described:
 
 ```tsx
 // ✅ Error message with role="alert"
-{error && (
-  <p id="email-error" role="alert" className="text-error">
-    {error}
-  </p>
-)}
+{
+  error && (
+    <p id="email-error" role="alert" className="text-error">
+      {error}
+    </p>
+  );
+}
 
 <input
   id="email"
   type="email"
   aria-invalid={!!error}
-  aria-describedby={error ? "email-error" : undefined}
-/>
+  aria-describedby={error ? 'email-error' : undefined}
+/>;
 ```
 
 **3.3.2 Labels or Instructions (Level A)**
@@ -553,11 +561,13 @@ Form fields must have clear labels:
 Provide correction suggestions when possible:
 
 ```tsx
-{error === 'EMAIL_INVALID' && (
-  <p id="email-error" role="alert">
-    Please enter a valid email address (example: user@example.com)
-  </p>
-)}
+{
+  error === 'EMAIL_INVALID' && (
+    <p id="email-error" role="alert">
+      Please enter a valid email address (example: user@example.com)
+    </p>
+  );
+}
 ```
 
 **3.3.4 Error Prevention (Legal, Financial, Data) (Level AA)**
@@ -572,9 +582,7 @@ Provide confirmation before critical actions:
   <Dialog.Portal>
     <Dialog.Content>
       <Dialog.Title>Confirm deletion</Dialog.Title>
-      <Dialog.Description>
-        This action cannot be undone. Are you sure?
-      </Dialog.Description>
+      <Dialog.Description>This action cannot be undone. Are you sure?</Dialog.Description>
       <button onClick={handleDelete}>Yes, delete</button>
       <Dialog.Close>Cancel</Dialog.Close>
     </Dialog.Content>
@@ -636,15 +644,15 @@ Status updates must be programmatically determinable:
 
 ## Testing Tools
 
-| Tool | Purpose | Link |
-|------|---------|------|
-| **axe DevTools** | Automated testing | [Browser extension](https://www.deque.com/axe/devtools/) |
-| **WebAIM Contrast Checker** | Color contrast | [webaim.org/resources/contrastchecker](https://webaim.org/resources/contrastchecker/) |
-| **WAVE** | Page-level audit | [wave.webaim.org](https://wave.webaim.org/) |
-| **NVDA** | Screen reader (Windows) | [nvaccess.org](https://www.nvaccess.org/) |
-| **JAWS** | Screen reader (Windows) | [freedomscientific.com](https://www.freedomscientific.com/products/software/jaws/) |
-| **VoiceOver** | Screen reader (macOS/iOS) | Built-in |
-| **TalkBack** | Screen reader (Android) | Built-in |
+| Tool                        | Purpose                   | Link                                                                                  |
+| --------------------------- | ------------------------- | ------------------------------------------------------------------------------------- |
+| **axe DevTools**            | Automated testing         | [Browser extension](https://www.deque.com/axe/devtools/)                              |
+| **WebAIM Contrast Checker** | Color contrast            | [webaim.org/resources/contrastchecker](https://webaim.org/resources/contrastchecker/) |
+| **WAVE**                    | Page-level audit          | [wave.webaim.org](https://wave.webaim.org/)                                           |
+| **NVDA**                    | Screen reader (Windows)   | [nvaccess.org](https://www.nvaccess.org/)                                             |
+| **JAWS**                    | Screen reader (Windows)   | [freedomscientific.com](https://www.freedomscientific.com/products/software/jaws/)    |
+| **VoiceOver**               | Screen reader (macOS/iOS) | Built-in                                                                              |
+| **TalkBack**                | Screen reader (Android)   | Built-in                                                                              |
 
 ---
 

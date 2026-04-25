@@ -24,20 +24,25 @@ Use when the user is:
 To ensure that AI agents (like Storybook MCP) can effectively understand, utilize, and test your components, follow these documentation standards:
 
 ### 1. Intentional Documentation (JSDoc)
+
 Don't just describe the type. Explain the **intent**.
+
 - **Component**: Document the "Why" and "When". Provide a high-level summary of the architectural role.
 - **Props**: Explain the effect of each prop, valid ranges, and how it interacts with other props.
 
 ### 2. Comprehensive Story Coverage
+
 AI relies on stories as living documentation and test cases.
+
 - **State Coverage**: Always include stories for all UI states: `Default`, `Loading`, `Error`, `Disabled`, and empty states.
 - **Interaction Testing**: Implement `play` functions for all interactive components. Use descriptive `step` labels.
 
 ### 3. Accessibility as First-Class Citizen
+
 AI can catch a11y regressions if stories are set up correctly.
+
 - Ensure all samples in Storybook are accessible.
 - Use `parameters.a11y.test = 'error'` to enforce a11y checks during automated testing.
-
 
 ## References
 

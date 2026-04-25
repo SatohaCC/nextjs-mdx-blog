@@ -46,19 +46,36 @@ export default defineConfig({
         },
         // フォントウェイトトークン
         fontWeights: {
+          thin: { value: '100' },
+          light: { value: '300' },
+          normal: { value: '400' },
+          medium: { value: '500' },
+          semibold: { value: '600' },
+          bold: { value: '700' },
           extrabold: { value: '800' },
+          black: { value: '900' },
         },
         // 行高トークン
         lineHeights: {
           none: { value: '1' },
-          snug: { value: '1.4' },
-          relaxed: { value: '1.8' },
+          tight: { value: '1.25' },
+          snug: { value: '1.375' },
+          normal: { value: '1.5' },
+          relaxed: { value: '1.625' },
+          loose: { value: '2' },
         },
         // フォントファミリートークン
         fonts: {
+          sans: {
+            value:
+              'var(--font-geist-sans), "Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif',
+          },
           mono: {
             value:
-              'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+              'var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+          },
+          serif: {
+            value: '"Noto Serif JP", "Hiragino Mincho ProN", "MS Mincho", serif',
           },
         },
         // イージングトークン
@@ -71,7 +88,27 @@ export default defineConfig({
         },
         // フォントサイズトークン
         fontSizes: {
-          code: { value: '0.9em' },
+          xs: { value: '0.75rem' },
+          sm: { value: '0.875rem' },
+          base: { value: '1rem' },
+          lg: { value: '1.125rem' },
+          xl: { value: '1.25rem' },
+          '2xl': { value: '1.5rem' },
+          '3xl': { value: '1.875rem' },
+          '4xl': { value: '2.25rem' },
+          '5xl': { value: '3rem' },
+          '6xl': { value: '3.75rem' },
+          '7xl': { value: '4.5rem' },
+          code: { value: '0.875em' },
+        },
+        // 字間トークン
+        letterSpacings: {
+          tighter: { value: '-0.05em' },
+          tight: { value: '-0.025em' },
+          normal: { value: '0em' },
+          wide: { value: '0.025em' },
+          wider: { value: '0.05em' },
+          widest: { value: '0.1em' },
         },
         // z-indexトークン
         zIndex: {
@@ -138,6 +175,26 @@ export default defineConfig({
         },
       },
       semanticTokens: {
+        fontSizes: {
+          heading: {
+            h1: { value: { base: '{fontSizes.3xl}', md: '{fontSizes.4xl}' } },
+            h2: { value: { base: '{fontSizes.2xl}', md: '{fontSizes.3xl}' } },
+            h3: { value: { base: '{fontSizes.xl}', md: '{fontSizes.2xl}' } },
+            h4: { value: { base: '{fontSizes.lg}', md: '{fontSizes.xl}' } },
+            h5: { value: { base: '{fontSizes.base}', md: '{fontSizes.lg}' } },
+            h6: { value: { base: '{fontSizes.sm}', md: '{fontSizes.base}' } },
+          },
+          body: {
+            large: { value: '{fontSizes.lg}' },
+            base: { value: '{fontSizes.base}' },
+            small: { value: '{fontSizes.sm}' },
+            xs: { value: '{fontSizes.xs}' },
+          },
+        },
+        lineHeights: {
+          heading: { value: '{lineHeights.tight}' },
+          body: { value: '{lineHeights.relaxed}' },
+        },
         colors: {
           bg: {
             default: { value: { base: '{colors.white}', _dark: '#09090b' } },
