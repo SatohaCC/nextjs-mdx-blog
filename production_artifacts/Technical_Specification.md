@@ -1,68 +1,53 @@
-# テスト強化計画 (Technical Specification)
+# Technical Specification: プロジェクト全体の整理とメンテナンス
 
 ## Executive Summary
-このプロジェクトのテストスイートをさらに充実させ、品質保証の自動化範囲を拡大します。現在はAPIのユニットテストとStorybookによるコンポーネント操作テストが主軸ですが、これに加えて **E2Eテストの導入**、**視覚的回帰テスト（スナップショット）の拡充**、および **アクセシビリティチェックの自動化** を行います。
+本プロジェクトのコードベースを整理し、メンテナンス性を向上させるためのタスク群です。不要なファイルの削除、スクリプトの追加、ドキュメントの更新、およびコンポーネント設計の整合性確認を行います。
 
 ## Requirements
+### Functional Requirements
+- なし（リファクタリング・整理を主目的とする）
 
-### 機能要件
-- **E2Eテスト (Playwright)**:
-  - トップページからの記事遷移が正しく行われること。
-  - 検索機能が期待通りに動作し、結果ページに遷移すること。
-  - ページネーションが正しく動作し、記事リストが切り替わること。
-  - テーマ切り替えが動作し、UIのスタイルが変更されること。
-- **コンポーネントテスト (Storybook + Vitest)**:
-  - すべての Story に対してスナップショットテストを実行し、意図しないUI変更を検知する。
-  - `ThemeToggle` や `SearchBox` などの重要コンポーネントのインタラクションテストを強化する。
-- **ページレベルテスト (Unit)**:
-  - 各ページの `generateMetadata` が正しく SEO タグを生成すること。
-  - `generateStaticParams` が正しいスラッグの一覧を返すこと。
-
-### 非機能要件
-- **アクセシビリティ (a11y)**:
-  - Storybook の a11y アドオンが WCAG 2.1 AA 違反を検知した場合、テストを失敗させる。
-- **保守性**:
-  - テストコードは各機能ディレクトリ（`src/features/*/api/*.test.ts` 等）または `e2e/` ディレクトリに整理する。
+### Non-Functional Requirements
+- **保守性**: 不要なコードや空ディレクトリを排除し、プロジェクト構造を簡潔に保つ。
+- **開発体験 (DX)**: Playwright 等の新しいツールの実行コマンドを整備し、ドキュメントを最新化する。
+- **一貫性**: すべてのコンポーネントが定義された設計パターン（Container/Presentational）に従っていることを確認する。
 
 ## Architecture & Tech Stack
-
-### 既存スタックの活用
-- **Vitest**: ユニットテストおよびコンポーネントテストのランナー。
-- **Storybook**: コンポーネントのカタログおよびインタラクションテストの基盤。
-- **Playwright**: `vitest-browser` のプロバイダーとして既に使用されているが、これをフルスタックの E2E テストにも活用する。
-
-### 新規導入・設定変更
-- **Playwright (E2E)**: `e2e/*.spec.ts` ファイルを作成し、Next.js サーバーに対してテストを実行する。
-- **Vitest Snapshots**: `storybookTest` プラグインと組み合わせて、自動的に全 Story のスナップショットを取得する。
-- **Storybook a11y**: `.storybook/preview.ts` のパラメータを変更し、違反時にエラーを投げるようにする。
-
-## Data Schema / State Management
-既存の型定義に変更はありませんが、テストデータ（Mock Posts）を共通化するためのユーティリティを `src/testing/` または `src/features/posts/api/testing-utils.ts` に抽出することを検討します。
+既存の Next.js 16, Panda CSS, Vitest, Playwright, Storybook のスタックを維持します。
 
 ## Proposed Changes
 
-### 1. E2E テストの導入
-- [NEW] `playwright.config.ts`: E2Eテスト用の設定ファイル。
-- [NEW] `e2e/basic-flows.spec.ts`: 基本的なユーザー導線のテスト。
+### 1. ディレクトリとファイルのクリーンアップ
+以下の未使用または不完全なディレクトリを削除します。
+- `src/test`: 空ディレクトリ
+- `src/testing`: 空ディレクトリ
+- `src/components/ui/ReadingProgressBar`: 使用されていないコンポーネント
+- `src/components/ui/Typography`: 実装ファイル (`.tsx`) が存在せず、スタイルのみが残っている不完全なディレクトリ
 
-### 2. アクセシビリティチェックの厳格化
-- [MODIFY] `.storybook/preview.ts`: `parameters.a11y.test: 'error'` を追加。
+### 2. `package.json` のスクリプト整備
+Playwright による E2E テストを簡単に実行できるよう、以下のスクリプトを追加します。
+- `"test:e2e": "playwright test"`
+- `"test:ui": "playwright test --ui"`
 
-### 3. スナップショットテストの拡充
-- [MODIFY] `vitest.config.ts`: スナップショット取得のための設定を確認/追加。
+### 3. ドキュメントの更新 (`README.md`)
+最近導入した Playwright についての記述を追加し、最新のディレクトリ構成を反映させます。
+- 技術スタックに Playwright を追加。
+- npm scripts 一覧に E2E テスト用コマンドを追加。
 
-### 4. ページメタデータのテスト
-- [NEW] `src/app/posts/[slug]/page.test.ts`: `generateMetadata` 等のテスト。
+### 4. コンポーネント設計の一貫性確認
+以下の項目を監査し、不整合があれば修正します。
+- `src/components/ui/` 内の各コンポーネントに Storybook (`.stories.tsx`) が存在すること。
+- `src/features/` 内のコンポーネントが Container/Presentational パターン（または定義されたシンプルパターン）に従っていること。
 
 ## Verification Plan
 
 ### Automated Tests
-- `npm run test`: 全ユニットテスト、コンポーネントテスト（スナップショット含む）、および a11y チェックを実行。
-- `npx playwright test`: 新規導入する E2E テストを実行。
+- `npm run lint`: 削除後のインポートエラーなどがないか確認。
+- `npm run test`: 既存のユニットテストがすべてパスすることを確認。
+- `npm run build`: プロジェクトが正常にビルドできることを確認。
 
 ### Manual Verification
-- Storybook UI を開き、Interactions パネルで新しいテストステップが緑色になっていることを確認。
-- a11y パネルで違反がないことを確認。
+- `npm run storybook`: 削除したコンポーネントが Storybook から消え、他のストーリーが正常に動作することを確認。
 
 ---
 この技術スタックと仕様で承認いただけますか？ `Technical_Specification.md` を直接編集してコメントを残していただくことも可能です。修正が必要な場合は指示してください。

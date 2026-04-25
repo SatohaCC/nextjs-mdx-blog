@@ -2,6 +2,8 @@ import { defineConfig } from '@pandacss/dev';
 
 export default defineConfig({
   preflight: true,
+  outdir: 'styled-system',
+  jsxFramework: 'react',
   include: [
     './src/**/*.{js,jsx,ts,tsx}',
     './pages/**/*.{js,jsx,ts,tsx}',
@@ -25,26 +27,22 @@ export default defineConfig({
         },
       },
       tokens: {
-        // サイズトークン
         sizes: {
           sidebar: { value: '280px' },
           searchBox: { value: '140px' },
           searchBoxExpanded: { value: '160px' },
           accentBar: { value: '4px' },
         },
-        // ボーダー幅トークン
         borderWidths: {
           thin: { value: '1px' },
           medium: { value: '2px' },
           thick: { value: '4px' },
         },
-        // シャドウトークン
         shadows: {
           sm: { value: '0 1px 2px rgba(0,0,0,0.05)' },
           md: { value: '0 4px 12px rgba(0,0,0,0.1)' },
           lg: { value: '0 10px 25px rgba(0,0,0,0.15)' },
         },
-        // フォントウェイトトークン
         fontWeights: {
           thin: { value: '100' },
           light: { value: '300' },
@@ -55,7 +53,6 @@ export default defineConfig({
           extrabold: { value: '800' },
           black: { value: '900' },
         },
-        // 行高トークン
         lineHeights: {
           none: { value: '1' },
           tight: { value: '1.25' },
@@ -64,7 +61,6 @@ export default defineConfig({
           relaxed: { value: '1.625' },
           loose: { value: '2' },
         },
-        // フォントファミリートークン
         fonts: {
           sans: {
             value:
@@ -78,16 +74,13 @@ export default defineConfig({
             value: '"Noto Serif JP", "Hiragino Mincho ProN", "MS Mincho", serif',
           },
         },
-        // イージングトークン
         easings: {
           standard: { value: 'cubic-bezier(0.4, 0, 0.2, 1)' },
           spring: { value: 'cubic-bezier(0.34, 0, 0.22, 2.45)' },
         },
-        // デュレーショントークン
         durations: {
           medium: { value: '250ms' },
         },
-        // フォントサイズトークン
         fontSizes: {
           xs: { value: '0.75rem' },
           sm: { value: '0.875rem' },
@@ -102,7 +95,6 @@ export default defineConfig({
           '7xl': { value: '4.5rem' },
           code: { value: '0.875em' },
         },
-        // 字間トークン
         letterSpacings: {
           tighter: { value: '-0.05em' },
           tight: { value: '-0.025em' },
@@ -111,7 +103,6 @@ export default defineConfig({
           wider: { value: '0.05em' },
           widest: { value: '0.1em' },
         },
-        // z-indexトークン
         zIndex: {
           hide: { value: -1 },
           base: { value: 0 },
@@ -130,9 +121,7 @@ export default defineConfig({
           current: { value: 'currentColor' },
           white: { value: '#ffffff' },
           black: { value: '#000000' },
-          // たけのこの里カラーパレット
           takenoko: {
-            // チョコレートブラウン
             chocolate: {
               50: { value: '#EFEBE9' },
               100: { value: '#D7CCC8' },
@@ -145,7 +134,6 @@ export default defineConfig({
               800: { value: '#4E342E' },
               900: { value: '#3E2723' },
             },
-            // クリーム（ビスケット）
             cream: {
               50: { value: '#FFFDE7' },
               100: { value: '#FFF9C4' },
@@ -158,7 +146,6 @@ export default defineConfig({
               800: { value: '#F57F17' },
               900: { value: '#FF6F00' },
             },
-            // 竹の葉グリーン（より深い色を追加）
             bamboo: {
               50: { value: '#E8F5E9' },
               100: { value: '#C8E6C9' },
@@ -170,7 +157,7 @@ export default defineConfig({
               700: { value: '#388E3C' },
               800: { value: '#2E7D32' },
               900: { value: '#1B5E20' },
-              950: { value: '#051507' }, // 極めて深い緑（AAA背景用）
+              950: { value: '#051507' },
             },
           },
         },
@@ -199,53 +186,21 @@ export default defineConfig({
         colors: {
           bg: {
             default: { value: { base: '{colors.white}', _dark: '#09090b' } },
-            muted: {
-              value: { base: '{colors.takenoko.bamboo.50}', _dark: '#18181b' },
-            },
-            subtle: {
-              value: {
-                base: '{colors.takenoko.bamboo.100}',
-                _dark: '#27272a',
-              },
-            },
-            active: {
-              value: { base: '{colors.takenoko.bamboo.900}', _dark: '#27272a' },
-            },
+            muted: { value: { base: '{colors.takenoko.bamboo.50}', _dark: '#18181b' } },
+            subtle: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '#27272a' } },
+            active: { value: { base: '{colors.takenoko.bamboo.900}', _dark: '#27272a' } },
           },
           text: {
             default: {
-              value: {
-                base: '{colors.takenoko.chocolate.900}',
-                _dark: '{colors.white}',
-              },
+              value: { base: '{colors.takenoko.chocolate.900}', _dark: '{colors.white}' },
             },
-            muted: {
-              value: {
-                base: '{colors.takenoko.chocolate.700}',
-                _dark: '{colors.white}',
-              },
-            },
+            muted: { value: { base: '{colors.takenoko.chocolate.700}', _dark: '{colors.white}' } },
             inverted: { value: { base: '{colors.white}', _dark: '{colors.white}' } },
-            onAccent: {
-              value: {
-                base: '{colors.white}',
-                _dark: '{colors.white}',
-              },
-            },
+            onAccent: { value: { base: '{colors.white}', _dark: '{colors.white}' } },
           },
           border: {
-            default: {
-              value: {
-                base: '{colors.takenoko.bamboo.200}',
-                _dark: '#27272a',
-              },
-            },
-            muted: {
-              value: {
-                base: '{colors.takenoko.bamboo.100}',
-                _dark: '#18181b',
-              },
-            },
+            default: { value: { base: '{colors.takenoko.bamboo.200}', _dark: '#27272a' } },
+            muted: { value: { base: '{colors.takenoko.bamboo.100}', _dark: '#18181b' } },
           },
           accent: {
             default: {
@@ -274,12 +229,7 @@ export default defineConfig({
             },
           },
           link: {
-            default: {
-              value: {
-                base: '{colors.takenoko.bamboo.900}',
-                _dark: '{colors.white}',
-              },
-            },
+            default: { value: { base: '{colors.takenoko.bamboo.900}', _dark: '{colors.white}' } },
             hover: {
               value: {
                 base: '{colors.takenoko.bamboo.700}',
@@ -288,22 +238,14 @@ export default defineConfig({
             },
           },
           overlay: {
-            subtle: {
-              value: { base: 'rgba(0, 0, 0, 0.04)', _dark: 'rgba(255, 255, 255, 0.08)' },
-            },
-            light: {
-              value: { base: 'rgba(0, 0, 0, 0.06)', _dark: 'rgba(255, 255, 255, 0.12)' },
-            },
+            subtle: { value: { base: 'rgba(0, 0, 0, 0.04)', _dark: 'rgba(255, 255, 255, 0.08)' } },
+            light: { value: { base: 'rgba(0, 0, 0, 0.06)', _dark: 'rgba(255, 255, 255, 0.12)' } },
           },
           alert: {
             note: {
               fg: { value: { base: '{colors.blue.800}', _dark: '{colors.blue.200}' } },
-              bg: {
-                value: { base: '{colors.blue.50}', _dark: 'rgba(59, 130, 246, 0.1)' },
-              },
-              border: {
-                value: { base: '{colors.blue.200}', _dark: '{colors.blue.800}' },
-              },
+              bg: { value: { base: '{colors.blue.50}', _dark: 'rgba(59, 130, 246, 0.1)' } },
+              border: { value: { base: '{colors.blue.200}', _dark: '{colors.blue.800}' } },
             },
             tip: {
               fg: {
@@ -313,10 +255,7 @@ export default defineConfig({
                 },
               },
               bg: {
-                value: {
-                  base: '{colors.takenoko.bamboo.50}',
-                  _dark: 'rgba(76, 175, 80, 0.1)',
-                },
+                value: { base: '{colors.takenoko.bamboo.50}', _dark: 'rgba(76, 175, 80, 0.1)' },
               },
               border: {
                 value: {
@@ -327,30 +266,18 @@ export default defineConfig({
             },
             important: {
               fg: { value: { base: '{colors.purple.800}', _dark: '{colors.purple.200}' } },
-              bg: {
-                value: { base: '{colors.purple.50}', _dark: 'rgba(168, 85, 247, 0.1)' },
-              },
-              border: {
-                value: { base: '{colors.purple.200}', _dark: '{colors.purple.800}' },
-              },
+              bg: { value: { base: '{colors.purple.50}', _dark: 'rgba(168, 85, 247, 0.1)' } },
+              border: { value: { base: '{colors.purple.200}', _dark: '{colors.purple.800}' } },
             },
             warning: {
               fg: { value: { base: '{colors.amber.900}', _dark: '{colors.amber.200}' } },
-              bg: {
-                value: { base: '{colors.amber.50}', _dark: 'rgba(245, 158, 11, 0.1)' },
-              },
-              border: {
-                value: { base: '{colors.amber.200}', _dark: '{colors.amber.800}' },
-              },
+              bg: { value: { base: '{colors.amber.50}', _dark: 'rgba(245, 158, 11, 0.1)' } },
+              border: { value: { base: '{colors.amber.200}', _dark: '{colors.amber.800}' } },
             },
             caution: {
               fg: { value: { base: '{colors.red.800}', _dark: '{colors.red.100}' } },
-              bg: {
-                value: { base: '{colors.red.50}', _dark: 'rgba(239, 68, 68, 0.1)' },
-              },
-              border: {
-                value: { base: '{colors.red.200}', _dark: '{colors.red.800}' },
-              },
+              bg: { value: { base: '{colors.red.50}', _dark: 'rgba(239, 68, 68, 0.1)' } },
+              border: { value: { base: '{colors.red.200}', _dark: '{colors.red.800}' } },
             },
           },
         },
@@ -366,25 +293,41 @@ export default defineConfig({
         },
         spacing: {
           layout: {
-            gutter: {
-              value: { base: '{spacing.6}', lg: '{spacing.8}' },
-            },
+            gutter: { value: { base: '{spacing.6}', lg: '{spacing.8}' } },
             pagePadding: { value: '{spacing.layout.gutter}' },
           },
-          component: {
-            padding: { value: '{spacing.6}' },
-          },
-          section: {
-            gap: { value: { base: '{spacing.10}', lg: '{spacing.14}' } },
-          },
-          content: {
-            sectionGap: { value: '{spacing.12}' },
+          component: { padding: { value: '{spacing.6}' } },
+          section: { gap: { value: { base: '{spacing.10}', lg: '{spacing.14}' } } },
+          content: { sectionGap: { value: '{spacing.12}' } },
+        },
+      },
+      textStyles: {
+        h1: {
+          value: {
+            fontSize: 'heading.h1',
+            lineHeight: 'heading',
+            fontWeight: 'bold',
+            letterSpacing: 'tight',
           },
         },
+        h2: {
+          value: {
+            fontSize: 'heading.h2',
+            lineHeight: 'heading',
+            fontWeight: 'bold',
+            letterSpacing: 'tight',
+          },
+        },
+        h3: { value: { fontSize: 'heading.h3', lineHeight: 'heading', fontWeight: 'bold' } },
+        h4: { value: { fontSize: 'heading.h4', lineHeight: 'heading', fontWeight: 'semibold' } },
+        h5: { value: { fontSize: 'heading.h5', lineHeight: 'heading', fontWeight: 'semibold' } },
+        h6: { value: { fontSize: 'heading.h6', lineHeight: 'heading', fontWeight: 'semibold' } },
+        bodyL: { value: { fontSize: 'body.large', lineHeight: 'body' } },
+        body: { value: { fontSize: 'body.base', lineHeight: 'body' } },
+        bodyS: { value: { fontSize: 'body.small', lineHeight: 'body' } },
+        bodyXS: { value: { fontSize: 'body.xs', lineHeight: 'body' } },
+        code: { value: { fontFamily: 'mono', fontSize: 'code' } },
       },
     },
   },
-
-  outdir: 'styled-system',
-  jsxFramework: 'react',
 });
