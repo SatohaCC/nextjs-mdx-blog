@@ -17,7 +17,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * 複数のタグを横並びで表示するコンテナ。TagLink や TagLabel を子要素として合成して使用する。
+ * 複数のタグを横並びで表示するコンテナ。TagLink を子要素として合成して使用する。
  *
  * @summary 記事カードやタグ一覧でタグを横並びに並べる場合に使用する
  */

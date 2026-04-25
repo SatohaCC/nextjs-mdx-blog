@@ -429,7 +429,7 @@ export default defineConfig({
         tag: {
           className: 'tag',
           description: 'The styles for the Tag component',
-          jsx: ['TagLabel', 'TagLink'],
+          jsx: ['TagLink'],
           base: {
             display: 'inline-flex',
             alignItems: 'center',
