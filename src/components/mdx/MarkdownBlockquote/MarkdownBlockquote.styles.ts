@@ -13,27 +13,22 @@ export const alertContainerRecipe = cva({
       note: {
         bg: 'alert.note.bg',
         borderColor: 'alert.note.border',
-        color: 'alert.note.fg',
       },
       tip: {
         bg: 'alert.tip.bg',
         borderColor: 'alert.tip.border',
-        color: 'alert.tip.fg',
       },
       important: {
         bg: 'alert.important.bg',
         borderColor: 'alert.important.border',
-        color: 'alert.important.fg',
       },
       warning: {
         bg: 'alert.warning.bg',
         borderColor: 'alert.warning.border',
-        color: 'alert.warning.fg',
       },
       caution: {
         bg: 'alert.caution.bg',
         borderColor: 'alert.caution.border',
-        color: 'alert.caution.fg',
       },
     },
   },
