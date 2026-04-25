@@ -6,10 +6,7 @@ export const tocContainerStyles = css({
   py: '4',
 });
 
-export const tocHeadingStyles = cx(
-  sectionHeadingBaseStyles,
-  css({ fontSize: 'md', mb: '4' })
-);
+export const tocHeadingStyles = cx(sectionHeadingBaseStyles, css({ fontSize: 'md', mb: '4' }));
 
 export const tocListStyles = css({ listStyle: 'none', p: 0, m: 0 });
 

@@ -13,6 +13,8 @@ export const tagStyles = css({
   border: '1px solid',
   borderColor: 'border.muted',
   color: 'text.muted',
+  position: 'relative',
+  zIndex: '1',
 
   transitionProperty: 'all',
   transitionDuration: 'medium',

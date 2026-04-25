@@ -1,3 +1,5 @@
+import { HoverStyle } from '@/styles/animations.styles';
+
 import { css, cx } from '../../../../../../styled-system/css';
 import { grid } from '../../../../../../styled-system/patterns';
 import { sectionHeadingBaseStyles } from '../../../../../styles/common.styles';
@@ -16,21 +18,27 @@ export const relatedPostsHeadingStyles = cx(
 
 export const relatedPostsGridStyles = grid({ columns: { base: 1, sm: 3 }, gap: '4' });
 
-export const relatedPostCardStyles = css({
-  display: 'block',
-  p: '4',
-  borderRadius: 'lg',
-  border: '1px solid',
-  borderColor: 'border.default',
-  textDecoration: 'none',
-  transitionProperty: 'border-color, transform, box-shadow',
-  transitionDuration: 'slow',
-  _hover: {
-    borderColor: 'accent.default',
-    transform: 'translateY(-2px)',
-    boxShadow: 'md',
-  },
-});
+export const relatedPostCardStyles = cx(
+  HoverStyle(),
+  css({
+    display: 'block',
+    p: '4',
+    borderRadius: 'md',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    borderColor: 'border.default',
+
+    bg: 'bg.default',
+    transitionProperty: 'border-color, transform, box-shadow',
+    transitionDuration: 'slow',
+    boxShadow: { base: 'none', sm: 'card.default' },
+    _hover: {
+      borderColor: 'accent.default',
+      transform: { sm: 'none' },
+      boxShadow: { sm: 'card.hover' },
+    },
+  })
+);
 
 export const relatedPostTitleStyles = css({
   fontSize: 'sm',

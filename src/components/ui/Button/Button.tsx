@@ -14,8 +14,6 @@ export interface ButtonProps extends AriaButtonProps {
   className?: string;
   /** フォーカス順序を制御するタブインデックス */
   tabIndex?: number;
-  /** スクリーンリーダーからボタンを隠す場合に使用 */
-  'aria-hidden'?: boolean | 'true' | 'false';
 }
 
 /**
@@ -29,31 +27,15 @@ export const Button = ({
   size = 'md',
   className,
   tabIndex,
-  'aria-hidden': ariaHidden,
   ...props
 }: ButtonProps) => {
-  const isHidden = ariaHidden === 'true' || ariaHidden === true;
+  const excludeFromTabOrder = props.excludeFromTabOrder || tabIndex === -1;
 
-  // react-aria-components の Button は tabIndex を直接プロパティとして取らないため、
-  // 代わりに excludeFromTabOrder を使用してフォーカス順序を制御します。
-  const excludeFromTabOrder = props.excludeFromTabOrder || isHidden || tabIndex === -1;
-
-  const button = (
+  return (
     <AriaButton
       {...props}
       excludeFromTabOrder={excludeFromTabOrder}
       className={cx(buttonStyles, variantStyles[variant], sizeStyles[size], className)}
     />
   );
-
-  // RACはaria-hiddenをDOMに伝播しないため、trueの場合はspanでラップするワークアラウンドを適用
-  if (isHidden) {
-    return (
-      <span aria-hidden="true" style={{ display: 'contents' }}>
-        {button}
-      </span>
-    );
-  }
-
-  return button;
 };

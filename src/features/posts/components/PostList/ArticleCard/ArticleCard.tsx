@@ -39,6 +39,7 @@ export const ArticleCard = ({ post }: ArticleCardProps) => {
         </h2>
         <FormattedDate date={post.frontmatter.date} className={dateStyles} />
         <p className={excerptStyles}>{post.frontmatter.excerpt}</p>
+        {/* {children} */}
       </div>
     </article>
   );

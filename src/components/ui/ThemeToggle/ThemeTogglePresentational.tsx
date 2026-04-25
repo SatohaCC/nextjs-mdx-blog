@@ -5,7 +5,7 @@ import { Button } from '../Button';
 type ThemeTogglePresentationalProps = {
   /** 現在のテーマ（`"light"` | `"dark"`）。`next-themes` の `resolvedTheme` を渡す */
   resolvedTheme: string | undefined;
-  /** ハイドレーション完了フラグ。`false` の間は aria-hidden で隠す */
+  /** ハイドレーション完了フラグ。`false` の間はフォーカス順序から除外する */
   mounted: boolean;
   /** テーマ切り替えボタンが押されたときのコールバック */
   onToggle: () => void;
@@ -13,7 +13,7 @@ type ThemeTogglePresentationalProps = {
 
 /**
  * ライト/ダークモードを切り替えるトグルボタン。
- * ハイドレーション前（`mounted=false`）はCLSを防ぐため aria-hidden で隠す。
+ * ハイドレーション前（`mounted=false`）はCLSを防ぐためフォーカス順序から除外する。
  *
  * @summary テーマ切り替えUIに使用する
  */
@@ -32,7 +32,7 @@ export const ThemeTogglePresentational = ({
       aria-label={
         mounted ? (isDark ? 'ライトモードに切り替え' : 'ダークモードに切り替え') : 'テーマ切り替え'
       }
-      aria-hidden={!mounted ? 'true' : undefined}
+      excludeFromTabOrder={!mounted}
     >
       {!mounted || isDark ? <Sun size={20} /> : <Moon size={20} />}
     </Button>

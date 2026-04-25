@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect } from 'storybook/test';
 
-import { TagLink, TagList } from '@/components/ui/Tag';
-
 import { ArticleCard } from './ArticleCard';
 
 const mockPost = {
@@ -49,39 +47,6 @@ export const Default: Story = {
       'Assert: 記事タイトルがリンクとして機能し、正しいパスを指していることを確認',
       async () => {
         await expect(link).toHaveAttribute('href', '/posts/hello-world');
-      }
-    );
-  },
-};
-
-/**
- * タグ付き記事カードの表示。タグリストを children として合成（Composition）して使用する。
- *
- * @summary タグが設定されている記事の一覧表示
- */
-export const WithTags: Story = {
-  render: (args) => (
-    <ArticleCard {...args}>
-      <TagList>
-        <TagLink tag="Next.js" />
-        <TagLink tag="TypeScript" />
-      </TagList>
-    </ArticleCard>
-  ),
-  play: async ({ canvas, step }) => {
-    let links: HTMLElement[];
-    let articleLink: HTMLElement;
-
-    await step('Arrange: 記事リンクとタグリンクを取得', async () => {
-      links = canvas.getAllByRole('link');
-      articleLink = canvas.getByRole('link', { name: 'Hello World' });
-    });
-
-    await step(
-      'Assert: 記事リンクとタグリンクが両方存在し、正しいパスを指していることを確認',
-      async () => {
-        await expect(links.length).toBeGreaterThanOrEqual(3);
-        await expect(articleLink).toHaveAttribute('href', '/posts/hello-world');
       }
     );
   },

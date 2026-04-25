@@ -4,10 +4,7 @@ import { sectionHeadingBaseStyles } from '../../../styles/common.styles';
 
 export const sidebarContainerStyles = stack({ gap: '10', position: 'sticky', top: '24' });
 
-export const sectionHeadingStyles = cx(
-  sectionHeadingBaseStyles,
-  css({ fontSize: 'md', mb: '4' })
-);
+export const sectionHeadingStyles = cx(sectionHeadingBaseStyles, css({ fontSize: 'md', mb: '4' }));
 
 export const postListStyles = stack({ gap: '4', listStyle: 'none', p: 0 });
 

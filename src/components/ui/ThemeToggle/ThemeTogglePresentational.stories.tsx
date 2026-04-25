@@ -19,7 +19,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * ハイドレーション前（`mounted=false`）の状態。CLS（累積レイアウトシフト）を防ぐため aria-hidden で隠される。
+ * ハイドレーション前（`mounted=false`）の状態。CLS（累積レイアウトシフト）を防ぐためフォーカス順序から除外される。
  *
  * @summary SSRとハイドレーションのギャップでCLSを防ぐ用途
  */
@@ -29,23 +29,11 @@ export const Placeholder: Story = {
     resolvedTheme: undefined,
   },
 
-  parameters: {
-    a11y: {
-      test: 'error',
-      config: {
-        rules: [
-          // aria-hidden内のButtonはハイドレーション前の短時間だけ表示されるCLSガード
-          // 実際のユーザー操作は発生しないため許容する
-          { id: 'aria-hidden-focus', enabled: false },
-        ],
-      },
-    },
-  },
   tags: ['!manifest'],
   play: async ({ canvasElement, step }) => {
-    await step('Assert: span 要素で AT から隠されていることを確認', async () => {
-      const wrapper = canvasElement.querySelector('[aria-hidden="true"]');
-      await expect(wrapper).toBeInTheDocument();
+    await step('Assert: キーボードフォーカスから除外されていることを確認', async () => {
+      const button = canvasElement.querySelector('button');
+      await expect(button).toHaveAttribute('tabindex', '-1');
     });
   },
 };
