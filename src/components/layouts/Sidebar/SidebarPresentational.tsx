@@ -5,6 +5,7 @@ import type { Post } from '@/features/posts/types';
 
 import {
   postDateStyles,
+  postItemStyles,
   postLinkStyles,
   postListStyles,
   sectionHeadingStyles,
@@ -25,7 +26,7 @@ export const SidebarPresentational = ({ allTags, latestPosts }: SidebarPresentat
         <h2 className={sectionHeadingStyles}>最新の記事</h2>
         <ul className={postListStyles}>
           {latestPosts.map((post) => (
-            <li key={post.slug}>
+            <li key={post.slug} className={postItemStyles}>
               <AppLink href={`/posts/${post.slug}`} className={postLinkStyles}>
                 {post.frontmatter.title}
               </AppLink>
