@@ -224,7 +224,7 @@ export default defineConfig({
               value: { base: '{colors.takenoko.chocolate.900}', _dark: '{colors.dark.100}' },
             },
             muted: {
-              value: { base: '{colors.takenoko.chocolate.700}', _dark: '{colors.dark.300}' },
+              value: { base: '{colors.takenoko.chocolate.700}', _dark: '{colors.dark.200}' },
             },
             inverted: { value: { base: '{colors.white}', _dark: '{colors.dark.100}' } },
             onAccent: { value: { base: '{colors.white}', _dark: '{colors.white}' } },

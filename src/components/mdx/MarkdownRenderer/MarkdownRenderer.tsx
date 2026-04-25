@@ -32,7 +32,18 @@ export const MarkdownRenderer = async ({ content }: MarkdownRendererProps) => {
         options={{
           mdxOptions: {
             remarkPlugins: [remarkGfm],
-            rehypePlugins: [[rehypeSlug], [rehypePrettyCode, { theme: 'github-dark' }]],
+            rehypePlugins: [
+              [rehypeSlug],
+              [
+                rehypePrettyCode,
+                {
+                  theme: {
+                    light: 'github-light',
+                    dark: 'github-dark-high-contrast',
+                  },
+                },
+              ],
+            ],
           },
         }}
       />

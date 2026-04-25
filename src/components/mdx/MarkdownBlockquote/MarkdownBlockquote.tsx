@@ -52,7 +52,7 @@ const ALERT_CONFIG: Record<string, AlertConfig> = {
   },
 };
 
-interface MDXElementProps {
+interface MDXElementProps extends React.HTMLAttributes<HTMLElement> {
   children?: ReactNode;
 }
 
@@ -91,19 +91,25 @@ export const MarkdownBlockquote = ({ children }: { children: ReactNode }) => {
 
   // 2. マーカーを除去したChildrenを再構成する
   const modifiedChildren = React.Children.map(children, (child, idx) => {
-    if (idx === markerIndex && React.isValidElement<MDXElementProps>(child) && child.type === 'p') {
+    if (React.isValidElement<MDXElementProps>(child) && child.type === 'p') {
       const pChildren = React.Children.toArray(child.props.children);
-      const first = pChildren[0];
+      let content = pChildren;
 
-      if (typeof first === 'string') {
-        const textWithoutMarker = first.replace(
-          /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i,
-          ''
-        );
-        return React.cloneElement(child as ReactElement<MDXElementProps>, {
-          children: [textWithoutMarker, ...pChildren.slice(1)],
-        });
+      if (idx === markerIndex) {
+        const first = pChildren[0];
+        if (typeof first === 'string') {
+          const textWithoutMarker = first.replace(
+            /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)\]\s*/i,
+            ''
+          );
+          content = [textWithoutMarker, ...pChildren.slice(1)];
+        }
       }
+
+      // p タグを再構成して返す（スタイルは標準の MarkdownRenderer に従う）
+      return React.cloneElement(child as ReactElement<MDXElementProps>, {
+        children: content,
+      });
     }
     return child;
   });
