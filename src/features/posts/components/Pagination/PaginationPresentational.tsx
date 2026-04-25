@@ -39,6 +39,7 @@ export const PaginationPresentational = ({
       ) : (
         <a
           className={disabledStyles}
+          role="link"
           aria-disabled="true"
           aria-label="前のページ（現在最初のページです）"
         >
@@ -50,8 +51,8 @@ export const PaginationPresentational = ({
       <div className={pageNumbersStyles}>
         {pages.map((page, index) =>
           page === 'ellipsis' ? (
-            <span key={`ellipsis-${index}`} className={ellipsisStyles} aria-hidden="true">
-              <MoreHorizontal size={16} />
+            <span key={`ellipsis-${index}`} className={ellipsisStyles} role="img" aria-label="省略">
+              <MoreHorizontal size={16} aria-hidden="true" />
             </span>
           ) : (
             <AppLink
@@ -84,6 +85,7 @@ export const PaginationPresentational = ({
       ) : (
         <a
           className={disabledStyles}
+          role="link"
           aria-disabled="true"
           aria-label="次のページ（現在最後のページです）"
         >
