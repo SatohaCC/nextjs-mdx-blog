@@ -5,7 +5,7 @@ import { FormattedDate } from '@/components/ui/FormattedDate';
 import type { Post } from '@/features/posts/types';
 
 import {
-  articleCardStyles,
+  articleCardRecipe,
   articleStackStyles,
   dateStyles,
   excerptStyles,
@@ -23,7 +23,7 @@ type ArticleCardProps = {
  */
 export const ArticleCard = ({ post }: ArticleCardProps) => {
   return (
-    <article className={articleCardStyles}>
+    <article className={articleCardRecipe()}>
       <div className={articleStackStyles}>
         <h2
           className={titleStyles}

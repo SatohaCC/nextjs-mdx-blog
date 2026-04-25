@@ -3,13 +3,13 @@
 import { Button as AriaButton, type ButtonProps as AriaButtonProps } from 'react-aria-components';
 
 import { cx } from '../../../../styled-system/css';
-import { buttonStyles, sizeStyles, variantStyles } from './styles';
+import { type ButtonVariantProps, buttonRecipe } from './styles';
 
 export interface ButtonProps extends AriaButtonProps {
   /** 視覚スタイルのバリアント。デフォルトは `primary` */
-  variant?: keyof typeof variantStyles;
+  variant?: ButtonVariantProps['variant'];
   /** ボタンのサイズ。デフォルトは `md` */
-  size?: keyof typeof sizeStyles;
+  size?: ButtonVariantProps['size'];
   /** 追加のCSSクラス名 */
   className?: string;
   /** フォーカス順序を制御するタブインデックス */
@@ -35,7 +35,7 @@ export const Button = ({
     <AriaButton
       {...props}
       excludeFromTabOrder={excludeFromTabOrder}
-      className={cx(buttonStyles, variantStyles[variant], sizeStyles[size], className)}
+      className={cx(buttonRecipe({ variant, size }), className)}
     />
   );
 };

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { AppLink } from '../AppLink';
-import { tagListStyles, tagStyles } from './styles';
+import { tagListStyles, tagRecipe } from './styles';
 
 type TagLabelProps = {
   /** タグのラベルテキスト */
@@ -15,11 +15,7 @@ type TagLabelProps = {
  * @summary クリック不可の表示用タグ
  */
 export const TagLabel = ({ children }: TagLabelProps) => {
-  return (
-    <span className={tagStyles} data-clickable="false">
-      {children}
-    </span>
-  );
+  return <span className={tagRecipe({ clickable: false })}>{children}</span>;
 };
 
 type TagLinkProps = {
@@ -41,7 +37,7 @@ export const TagLink = ({ tag, children }: TagLinkProps) => {
   const tagSlug = tag.toLowerCase().replace(/\s+/g, '-');
 
   return (
-    <AppLink href={`/tags/${tagSlug}`} className={tagStyles}>
+    <AppLink href={`/tags/${tagSlug}`} className={tagRecipe()}>
       {children || tag}
     </AppLink>
   );

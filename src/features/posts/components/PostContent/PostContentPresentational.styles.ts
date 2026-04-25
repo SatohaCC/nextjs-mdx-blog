@@ -1,6 +1,6 @@
 import { css } from '../../../../../styled-system/css';
 
-export const articleDateStyles = css({ color: 'text.muted', mb: '4' });
+export const articleDateStyles = css({ textStyle: 'bodyS', color: 'text.muted', mb: '4' });
 
 export const articleTagsContainerStyles = css({ mt: '2' });
 
