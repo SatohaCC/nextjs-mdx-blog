@@ -38,6 +38,12 @@ export const postLinkStyles = css({
   transitionProperty: 'color',
   transitionDuration: 'normal',
   _hover: { color: 'accent.default' },
+  _after: {
+    content: '""',
+    position: 'absolute',
+    inset: 0,
+    zIndex: '0',
+  },
 });
 
 export const postDateStyles = css({ fontSize: 'xs', color: 'text.muted' });
