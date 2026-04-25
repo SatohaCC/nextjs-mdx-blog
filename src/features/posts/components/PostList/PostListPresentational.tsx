@@ -1,7 +1,6 @@
 import { ViewTransition } from 'react';
 
 import { PageTitle } from '@/components/ui/PageTitle/PageTitle';
-import { TagLink, TagList } from '@/components/ui/Tag';
 import { PaginationContainer as Pagination } from '@/features/posts/components/Pagination';
 import type { Post } from '@/features/posts/types';
 
@@ -33,15 +32,7 @@ export const PostListPresentational = ({
 
       <div className={articleListStyles}>
         {posts.map((post) => (
-          <ArticleCard key={post.slug} post={post}>
-            {post.frontmatter.tags && (
-              <TagList>
-                {post.frontmatter.tags.map((tag) => (
-                  <TagLink key={tag} tag={tag} />
-                ))}
-              </TagList>
-            )}
-          </ArticleCard>
+          <ArticleCard key={post.slug} post={post} />
         ))}
       </div>
 
