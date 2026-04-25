@@ -1,0 +1,167 @@
+---
+title: 'Vitest と Storybook、どちらでテストを書くべき？このブログの使い分け'
+date: '2026-04-25'
+excerpt: 'Unit テスト（Vitest）と Storybook インタラクションテストの役割の違いを、このブログの実際のコードを例に解説します。'
+tags: ['Vitest', 'Storybook', 'Testing', 'React', 'Next.js']
+---
+
+# Vitest と Storybook、どちらでテストを書くべき？このブログの使い分け
+
+このブログにはテストが2種類ある。Vitest のユニットテストと、Storybook のインタラクションテストだ。
+
+「新しいコードを書いたとき、どちらにテストを書けばいい？」という疑問を持った。調べてみると、この2つは**テストする対象が根本的に違う**ことがわかった。この記事では、このブログの実際のコードを例にしながら、使い分けの基準を整理する。
+
+## このブログのテスト構成
+
+まず、どんなテストが存在するかを把握しておく。`vitest.config.ts` では `projects` を使って2種類のテスト環境を定義している。
+
+```ts
+// vitest.config.ts
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        // Storybook インタラクションテスト（ブラウザ環境）
+        plugins: [storybookTest({ configDir: '.storybook' })],
+        test: {
+          name: 'storybook',
+          browser: { enabled: true, provider: playwright({}) },
+        },
+      },
+      {
+        // ユニットテスト（Node.js 環境）
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+        },
+      },
+    ],
+  },
+});
+```
+
+`npm run test` を実行すると、両方がまとめて走る。ファイル名のルールとしては：
+
+- `*.test.ts` → ユニットテスト（Node.js 環境）
+- `*.stories.tsx` → Storybook インタラクションテスト（ブラウザ環境）
+
+という対応になっている。
+
+## ユニットテストが向いているケース
+
+ユニットテスト（`*.test.ts`）は**ロジックのテスト**に使う。このブログでいうと、投稿データを取得・変換・検索するバックエンドロジックがその対象だ。
+
+実際に `*.test.ts` ファイルが存在する場所を見ると、すべてビジネスロジック側にある。
+
+```
+src/features/posts/api/posts.test.ts     # 投稿一覧・ソート・ページネーション
+src/features/posts/api/search.test.ts    # 検索ロジック
+src/features/posts/api/toc-generator.test.ts # 目次生成
+src/lib/mdx-parser.test.ts              # MDX パース処理
+src/app/layout.test.ts                  # レイアウト（メタデータ生成など）
+```
+
+テスト対象は「関数に値を渡すと正しい値が返ってくるか」という純粋なロジックだ。ブラウザは必要ない。
+
+```ts
+// posts.test.ts の例：ソート順を確認するテスト
+it('日付降順にソートされる', async () => {
+  setupAllPosts([
+    makePost('old', { date: '2023-01-01' }),
+    makePost('new', { date: '2024-06-01' }),
+  ]);
+  const posts = await getSortedPostsData();
+  expect(posts.map((p) => p.slug)).toEqual(['new', 'old']);
+});
+```
+
+このテストでやっていることは「古い記事と新しい記事を用意して、ソートした結果が新しい順になっているか確認する」だけだ。UIは一切登場しない。
+
+**ユニットテストに向いているもの：**
+
+- データの変換・フィルタリング・ソート
+- ファイルシステムを使う処理（`fs` のモックで差し替える）
+- 純粋な計算ロジック
+- 環境変数によって挙動が変わるコード
+
+## Storybook インタラクションテストが向いているケース
+
+Storybook インタラクションテスト（`*.stories.tsx` の `play` 関数）は**UIのテスト**に使う。コンポーネントが実際にブラウザ上でレンダリングされた状態で、ユーザー操作をシミュレートして検証する。
+
+このブログの `Button.stories.tsx` を例に見てみよう。
+
+```tsx
+// Button.stories.tsx の例：クリックでコールバックが呼ばれることを確認
+export const ClickCallbackFires: Story = {
+  play: async ({ canvas, args, userEvent, step }) => {
+    await step('Arrange: ボタンを取得', async () => {
+      button = await canvas.findByRole('button', { name: 'クリック' });
+    });
+    await step('Act: ボタンをクリック', async () => {
+      await userEvent.click(button);
+    });
+    await step('Assert: コールバックが1回呼ばれていることを確認', async () => {
+      await expect(args.onPress).toHaveBeenCalledOnce();
+    });
+  },
+};
+```
+
+`canvas.findByRole('button')` でDOM上のボタンを取得し、`userEvent.click()` で実際にクリックしている。これはブラウザなしでは動かない。
+
+また、アクセシビリティの検証もここで行う。
+
+```tsx
+// キーボードフォーカス時に data-focus-visible 属性が付くことを確認
+export const FocusVisible: Story = {
+  play: async ({ canvas, userEvent, step }) => {
+    await step('Act: キーボードでフォーカスを移動', async () => {
+      await userEvent.tab();
+    });
+    await step('Assert: data-focus-visible 属性が付与されることを確認', async () => {
+      await expect(button).toHaveAttribute('data-focus-visible');
+    });
+  },
+};
+```
+
+**Storybook インタラクションテストに向いているもの：**
+
+- クリック・キーボード操作・フォーカスなどのユーザー操作
+- `disabled` 状態など、DOM 属性の確認
+- アクセシビリティ要件の検証
+- コンポーネントの視覚状態（ダークモード、各バリアントの見た目）
+
+## どちらで書くか、迷ったときの判断基準
+
+| 問いかけ | Yes | No |
+|---|---|---|
+| ブラウザ（DOM/レンダリング）が必要か？ | Storybook | Vitest unit |
+| UIコンポーネントを操作するか？ | Storybook | Vitest unit |
+| 純粋な関数・データ変換か？ | Vitest unit | — |
+
+シンプルに言うと：
+
+- **「何かが表示されて、それを操作する」** → Storybook インタラクションテスト
+- **「関数に値を渡して、返ってくる値を確認する」** → Vitest ユニットテスト
+
+> [!TIP]
+> 迷ったら「このテスト、ブラウザがなくても動く？」と自問してみる。答えが Yes なら Vitest ユニットテスト、No なら Storybook の `play` 関数が正しい置き場所だ。
+
+## なぜ分けているのか
+
+この2つを分けている理由は**実行環境が違うから**だ。
+
+ユニットテストは Node.js で動く。高速で、ファイルシステムや外部モジュールをモックしやすい。一方、Storybook インタラクションテストは Playwright を使って実際のブラウザで動く。遅いが、本物の DOM とユーザー操作を再現できる。
+
+混在させると、ブラウザが必要なテストが Node.js 環境で動かなかったり、逆にシンプルなロジックテストのためにブラウザを起動したりすることになる。環境を分けることで、それぞれが得意な領域だけを担当できる。
+
+## まとめ
+
+- **Vitest ユニットテスト**はロジックのテスト。Node.js 環境で動き、ブラウザは不要。
+- **Storybook インタラクションテスト**はUIのテスト。ブラウザ上でユーザー操作を再現して検証する。
+- 判断基準は「ブラウザが必要か？」の一点。
+- `vitest.config.ts` の `projects` で2つの環境を分離しているため、`npm run test` で両方まとめて実行できる。
+
+テストを書き始めたばかりのときは「どこに書けばいいかわからない」という状態が続くが、この使い分けを意識するだけで迷いがなくなる。まずは「関数の戻り値を確認したい → Vitest」「ボタンを押したときの動作を確認したい → Storybook」という感覚を身につけるところから始めてみてほしい。
