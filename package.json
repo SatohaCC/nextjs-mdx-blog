@@ -37,6 +37,7 @@
     "@chromatic-com/storybook": "^5.1.2",
     "@pandacss/dev": "^1.8.0",
     "@pandacss/eslint-plugin": "^0.3.2",
+    "@playwright/test": "^1.59.1",
     "@storybook/addon-a11y": "^10.2.4",
     "@storybook/addon-docs": "^10.2.4",
     "@storybook/addon-mcp": "^0.6.0",
