@@ -1,24 +1,13 @@
-import { css } from '../../../../styled-system/css';
+import { css, cx } from '../../../../styled-system/css';
 import { stack } from '../../../../styled-system/patterns';
+import { sectionHeadingBaseStyles } from '../../../styles/common.styles';
 
 export const sidebarContainerStyles = stack({ gap: '10', position: 'sticky', top: '24' });
 
-export const sectionHeadingStyles = css({
-  fontSize: 'md',
-  fontWeight: 'bold',
-  mb: '4',
-  color: 'text.default',
-  display: 'flex',
-  alignItems: 'center',
-  gap: '2',
-  _before: {
-    content: '""',
-    w: 'accentBar',
-    h: '1em',
-    bg: 'accent.default',
-    borderRadius: 'full',
-  },
-});
+export const sectionHeadingStyles = cx(
+  sectionHeadingBaseStyles,
+  css({ fontSize: 'md', mb: '4' })
+);
 
 export const postListStyles = stack({ gap: '4', listStyle: 'none', p: 0 });
 
