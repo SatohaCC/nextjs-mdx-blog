@@ -112,6 +112,7 @@ export const MarkdownBlockquote = ({ children }: { children: ReactNode }) => {
 
   return (
     <div
+      role="note"
       className={alertContainerRecipe({ type: alertType })}
       data-custom-blockquote="true"
       data-alert-type={alertType}
