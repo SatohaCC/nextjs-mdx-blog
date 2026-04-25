@@ -1,3 +1,4 @@
+import { AppLink } from '@/components/ui/AppLink';
 import { type TocItem } from '@/features/posts/api/toc-generator';
 
 import {
@@ -23,9 +24,9 @@ export const TableOfContents = ({ toc }: TableOfContentsProps) => {
       <ul className={tocListStyles}>
         {toc.map((item) => (
           <li key={item.id} className={tocItemRecipe({ level: item.level as 2 | 3 })}>
-            <a href={`#${item.id}`} className={tocLinkRecipe({ level: item.level as 2 | 3 })}>
+            <AppLink href={`#${item.id}`} className={tocLinkRecipe({ level: item.level as 2 | 3 })}>
               {item.text}
-            </a>
+            </AppLink>
           </li>
         ))}
       </ul>
