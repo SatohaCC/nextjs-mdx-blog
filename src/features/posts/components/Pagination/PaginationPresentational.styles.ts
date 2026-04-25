@@ -92,7 +92,7 @@ export const disabledStyles = css({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  p: '3',
+  p: '2',
   borderRadius: 'full',
   color: 'text.muted',
   bg: 'transparent',
@@ -100,6 +100,8 @@ export const disabledStyles = css({
   borderColor: 'border.muted',
   opacity: 0.4,
   cursor: 'not-allowed',
+  pointerEvents: 'none',
+  textDecoration: 'none',
 });
 
 export const paginationNavStyles = flex({

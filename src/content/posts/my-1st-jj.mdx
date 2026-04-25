@@ -1,0 +1,155 @@
+---
+title: 'Git しか知らなかった自分が Jujutsu を使ってみた'
+date: '2026-04-18'
+excerpt: '「git add が不要」「ブランチ名は後から付ける」—— Git とは設計思想が異なる Jujutsu の基本ワークフローを、Git ユーザー目線で整理した。'
+tags: ['Jujutsu', 'Git', 'バージョン管理']
+draft: true
+---
+
+# Git しか知らなかった自分が Jujutsu を使ってみた
+
+Git をずっと使ってきたが、「Jujutsu（jj）という新しいバージョン管理ツールが Git と共存できる」という話を聞いて試してみた。
+
+Git と似ているようで設計思想がかなり違い、最初は戸惑いが多かった。この記事では、Git ユーザーがつまずきやすいポイントを中心に、基本ワークフローを整理する。
+
+## Jujutsu とは
+
+_Jujutsu_（コマンド名: `jj`）は、Google のエンジニアが開発したバージョン管理システムだ。**既存の Git リポジトリと共存できる**のが最大の特徴で、`.git` ディレクトリをそのまま使いながら `jj` コマンドで操作できる。
+
+Git ユーザーが押さえておくべき用語の対応を先に整理しておく。
+
+| Git の概念 | Jujutsu の概念 | 補足 |
+|---|---|---|
+| commit | **change** | 作業の単位。内容は後から変更できる |
+| branch | **bookmark** | 手動で動かす必要がある（自動追従しない） |
+| HEAD | **`@`**（working copy） | 現在の作業場所 |
+| staging area | **なし** | `git add` は不要。ファイル保存が即反映される |
+| commit message | **description** | `jj describe` で設定する |
+
+Git の「ステージング」という概念が存在しないのが最大の違いだ。ファイルを保存した瞬間、自動的に現在の change に含まれる。
+
+## 既存プロジェクトへの導入
+
+すでに Git リポジトリがあるプロジェクトへの導入はコマンド1つで完了する。
+
+```bash
+cd your-existing-project
+jj git init --colocate
+```
+
+`--colocate` を付けると `.git` ディレクトリと同じ場所に設定ファイルが作られ、Git コマンドとの共存が可能になる。
+
+リモートの最新状態を取得する（Git の `git fetch` に相当）。
+
+```bash
+jj git fetch
+```
+
+## 基本ワークフロー：作業開始からマージまで
+
+### 作業を開始する（`jj new`）
+
+Git では `git checkout -b feature-branch` でブランチを切る。jj では `jj new` で「新しい change」を作成する。
+
+```bash
+jj new main
+```
+
+`main` ブランチを親にして、新しい作業場所を作るイメージだ。
+
+> [!TIP]
+> jj ではブランチ名（bookmark）を**最初に決めなくていい**。コードを書いてから名前を付けられる。
+
+### コードを書く
+
+普通にエディタでコードを書くだけでよい。**`git add` は不要**だ。ファイルを保存すると自動的に現在の change に含まれる。
+
+変更の確認は `jj status` で行う。
+
+```bash
+jj status
+```
+
+```
+Working copy changes:
+M src/components/Button.tsx
+```
+
+### description（コミットメッセージ）を設定する（`jj describe`）
+
+push する前にコミットメッセージに相当する「description」を設定する。
+
+```bash
+jj describe -m "feat: ボタンコンポーネントを追加"
+```
+
+> [!WARNING]
+> description がない change は push できない。`jj git push` を実行すると `Error: Won't push commit ... since it has no description` というエラーが出る。先に `jj describe` を実行しておこう。
+
+### bookmark（ブランチ）を作成する
+
+description を設定したら、bookmark（= Git のブランチ）を作成してリモートに送る名前を付ける。
+
+```bash
+jj bookmark create feat-add-button -r @
+```
+
+`-r @` は「現在の change（`@`）に付ける」という意味だ。
+
+### リモートに push する
+
+```bash
+jj git push -b feat-add-button
+```
+
+`-b` で push する bookmark 名を指定する。GitHub を開くと、指定した名前のブランチが作成されていることを確認できる。
+
+### PR 作成・マージ後の作業
+
+GitHub でプルリクエストを作成してマージしたあと、ローカルをリモートと同期する。
+
+```bash
+jj git fetch
+```
+
+次の作業を始めるには、リモートの `main` を親として新しい change を作成する。
+
+```bash
+jj new main@origin
+```
+
+`main@origin` と書くことで、リモートの最新 main を明示的に指定できる。
+
+## Git との比較：よく混乱するポイント
+
+### `git branch` で見るとずっと main にいる
+
+jj を使っていても、`git branch` で確認するとずっと main ブランチにいるように見える。これは **jj と Git でブランチの概念が根本的に違う**からだ。
+
+jj では「ブランチの中で作業する」という感覚を手放す必要がある。作業は change（`@`）で行い、bookmark はあとから付けるラベルに過ぎない。
+
+### ワークフローの対応まとめ
+
+| Git のコマンド | jj の対応コマンド |
+|---|---|
+| `git checkout -b feature` | `jj new main` |
+| `git add .` | 不要（自動追跡）|
+| `git commit -m "message"` | `jj describe -m "message"` |
+| `git push origin feature` | `jj bookmark create feature -r @` → `jj git push -b feature` |
+| `git fetch` | `jj git fetch` |
+| `git log` | `jj log` |
+
+## まとめ
+
+- `jj git init --colocate` で既存 Git リポジトリに導入できる
+- **`git add` は不要**。ファイル保存が自動的に change に反映される
+- **ブランチ名（bookmark）は後から付けられる**。コードを先に書いてよい
+- push 前に `jj describe -m "メッセージ"` でdescriptionを設定する必要がある
+- Git の「ブランチの中で作業する」感覚は一度手放すと理解が早い
+
+Git に慣れた人ほど最初は混乱するが、「変更は自動追跡・名前は後付け」という2点を押さえれば基本的な流れはつかめる。
+
+## 参考
+
+- [Jujutsu 公式ドキュメント](https://jj-vcs.github.io/jj/latest/)
+- [jj の Tutorial](https://jj-vcs.github.io/jj/latest/tutorial/)

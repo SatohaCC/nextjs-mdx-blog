@@ -47,5 +47,7 @@ export const iconButtonStyles = css({
   justifyContent: 'center',
   p: '2',
   borderRadius: 'md',
+  outline: 'none',
   _hover: { bg: 'bg.muted' },
+  _focusVisible: { outline: '2px solid', outlineColor: 'accent.focusRing', outlineOffset: '2px' },
 });

@@ -11,10 +11,10 @@ import { darkWrapperStyles, iconImageStyles, lightWrapperStyles } from './styles
  */
 export const GithubIcon = () => (
   <>
-    <span className={lightWrapperStyles}>
+    <span className={lightWrapperStyles} aria-hidden="true">
       <Image src="/github-mark.png" alt="" width={20} height={20} className={iconImageStyles} />
     </span>
-    <span className={darkWrapperStyles}>
+    <span className={darkWrapperStyles} aria-hidden="true">
       <Image
         src="/github-mark-white.png"
         alt=""

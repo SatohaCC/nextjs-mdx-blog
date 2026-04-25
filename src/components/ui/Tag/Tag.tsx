@@ -3,21 +3,6 @@ import { type ReactNode } from 'react';
 import { AppLink } from '../AppLink';
 import { tagListStyles, tagRecipe } from './styles';
 
-type TagLabelProps = {
-  /** タグのラベルテキスト */
-  children: ReactNode;
-};
-
-/**
- * リンク（クリック）機能を持たない、純粋な表示専用のタグコンポーネント。
- * 記事詳細ページの見出し横や、リンクとして機能させたくない場面で使用します。
- *
- * @summary クリック不可の表示用タグ
- */
-export const TagLabel = ({ children }: TagLabelProps) => {
-  return <span className={tagRecipe({ clickable: false })}>{children}</span>;
-};
-
 type TagLinkProps = {
   /** タグ名。URLスラグ（`/tags/xxx`）の生成に使用される */
   tag: string;

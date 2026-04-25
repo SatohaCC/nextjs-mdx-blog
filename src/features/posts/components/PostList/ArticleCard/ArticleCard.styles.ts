@@ -42,11 +42,20 @@ export const articleCardRecipe = cva({
         transform: 'rotate(-10deg) scale(1.05)',
       },
     },
+
+    // stretched link パターン: a:focus-visible が内側にあるときカード全体にフォーカスリングを表示
+    '&:has(a:focus-visible)': {
+      outline: '2px solid',
+      outlineColor: 'accent.focusRing',
+      outlineOffset: '2px',
+    },
   },
 });
 
 // Typography Styles
 export const titleLinkStyles = css({
+  // カード全体のフォーカスリングに委譲するため、テキストレベルのリングは非表示
+  _focusVisible: { outline: 'none' },
   _after: {
     content: '""',
     position: 'absolute',
