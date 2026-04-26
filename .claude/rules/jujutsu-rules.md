@@ -233,6 +233,7 @@ jj log --ignore-working-copy -r 'conflict()'
    - 「変更を含めますか？」→ 常に含まれている
    - 「main にマージしますか？」→ 特に指示がなければ main
    - 「squash しますか？」→ しない
+4. **Issue 対応時の PR 必須化** — Issue に対する実装を完了した際は、`main` への直接 push は行わず、必ずトピックブックマークを作成して PR を提出すること。
 
 ### PR 作成手順
 
@@ -243,8 +244,10 @@ jj git fetch
 # 2. 現在の状態を確認
 jj log --ignore-working-copy
 
-# 3. bookmark が設定されていることを確認（リモート含む）
+# 3. bookmark が設定されていることを確認し、なければ作成する
+#    （トピックブックマーク名は feat/issue-34 のように識別しやすいものにする）
 jj bookmark list --all --ignore-working-copy
+jj bookmark create <bookmark-name> -r @
 
 # 4. bookmark が未追跡の場合は追跡を開始する
 jj bookmark track <bookmark-name>@origin
