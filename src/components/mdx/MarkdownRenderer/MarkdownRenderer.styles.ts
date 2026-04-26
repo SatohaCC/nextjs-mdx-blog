@@ -2,8 +2,7 @@ import { css } from '../../../../styled-system/css';
 
 export const markdownContentStyles = css({
   '& h1': {
-    fontSize: { base: '2xl', sm: '3xl' },
-    fontWeight: 'bold',
+    textStyle: 'h1',
     mt: '8',
     mb: '6',
     pb: '2',
@@ -12,23 +11,20 @@ export const markdownContentStyles = css({
     color: 'text.default',
   },
   '& h2': {
-    fontSize: { base: 'xl', sm: '2xl' },
-    fontWeight: 'bold',
+    textStyle: 'h2',
     mt: '8',
     mb: '5',
     color: 'text.default',
   },
   '& h3': {
-    fontSize: { base: 'lg', sm: 'xl' },
-    fontWeight: 'bold',
+    textStyle: 'h3',
     mt: '6',
     mb: '4',
     color: 'text.default',
   },
   '& p': {
+    textStyle: 'body',
     mb: '5',
-    lineHeight: 'relaxed',
-    fontSize: { base: 'base', sm: 'lg' },
     color: 'text.muted',
     textWrap: 'pretty',
   },

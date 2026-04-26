@@ -11,6 +11,21 @@ export default defineConfig({
     './.storybook/**/*.{js,jsx,ts,tsx}',
   ],
   exclude: [],
+  patterns: {
+    extend: {
+      container: {
+        description: 'A centered container with responsive padding',
+        transform(props) {
+          return {
+            maxW: '6xl',
+            mx: 'auto',
+            px: { base: '6', lg: '8' },
+            ...props,
+          };
+        },
+      },
+    },
+  },
 
   conditions: {
     light: '[data-theme=light] &',
@@ -54,6 +69,8 @@ export default defineConfig({
         '64': { value: '16rem' },
       },
       sizes: {
+        '10': { value: '{spacing.10}' },
+        '12': { value: '{spacing.12}' },
         sidebar: { value: '280px' },
         searchBox: { value: '140px' },
         searchBoxExpanded: { value: '160px' },
@@ -401,10 +418,34 @@ export default defineConfig({
           letterSpacing: 'tight',
         },
       },
-      h3: { value: { fontSize: 'heading.h3', lineHeight: 'heading', fontWeight: 'bold' } },
-      h4: { value: { fontSize: 'heading.h4', lineHeight: 'heading', fontWeight: 'semibold' } },
-      h5: { value: { fontSize: 'heading.h5', lineHeight: 'heading', fontWeight: 'semibold' } },
-      h6: { value: { fontSize: 'heading.h6', lineHeight: 'heading', fontWeight: 'semibold' } },
+      h3: {
+        value: {
+          fontSize: 'heading.h3',
+          lineHeight: 'heading',
+          fontWeight: 'bold',
+        },
+      },
+      h4: {
+        value: {
+          fontSize: 'heading.h4',
+          lineHeight: 'heading',
+          fontWeight: 'semibold',
+        },
+      },
+      h5: {
+        value: {
+          fontSize: 'heading.h5',
+          lineHeight: 'heading',
+          fontWeight: 'semibold',
+        },
+      },
+      h6: {
+        value: {
+          fontSize: 'heading.h6',
+          lineHeight: 'heading',
+          fontWeight: 'semibold',
+        },
+      },
       bodyL: { value: { fontSize: 'body.large', lineHeight: 'body' } },
       body: { value: { fontSize: 'body.base', lineHeight: 'body' } },
       bodyS: { value: { fontSize: 'body.small', lineHeight: 'body' } },
@@ -521,6 +562,44 @@ export default defineConfig({
         },
         defaultVariants: {
           clickable: true,
+        },
+      },
+      glassmorphism: {
+        className: 'glassmorphism',
+        description: 'Glassmorphism effect for headers and overlays',
+        base: {
+          backdropFilter: 'blur(8px)',
+          bg: 'bg.default/80',
+        },
+      },
+      focusRing: {
+        className: 'focus-ring',
+        description: 'Shared focus ring styles for interactive elements',
+        base: {
+          outline: 'none',
+          _focusVisible: {
+            outline: '2px solid',
+            outlineColor: 'accent.focusRing',
+            outlineOffset: '2px',
+          },
+        },
+      },
+      sectionHeading: {
+        className: 'section-heading',
+        description: 'Style for section headings with an accent bar',
+        base: {
+          fontWeight: 'bold',
+          color: 'text.default',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '2',
+          _before: {
+            content: '""',
+            w: 'accentBar',
+            h: '1em',
+            bg: 'accent.default',
+            borderRadius: 'full',
+          },
         },
       },
     },

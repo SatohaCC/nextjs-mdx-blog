@@ -1,5 +1,6 @@
 import { css, cx } from '../../../../styled-system/css';
 import { stack } from '../../../../styled-system/patterns';
+import { focusRing } from '../../../../styled-system/recipes';
 import { HoverStyle } from '../../../styles/animations.styles';
 import { sectionHeadingBaseStyles } from '../../../styles/common.styles';
 
@@ -29,22 +30,25 @@ export const postItemStyles = cx(
   })
 );
 
-export const postLinkStyles = css({
-  display: 'block',
-  fontSize: 'sm',
-  color: 'text.default',
-  fontWeight: 'medium',
-  lineHeight: 'tight',
-  transitionProperty: 'color',
-  transitionDuration: 'normal',
-  _hover: { color: 'accent.default' },
-  _after: {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    zIndex: '0',
-  },
-});
+export const postLinkStyles = cx(
+  focusRing(),
+  css({
+    display: 'block',
+    fontSize: 'sm',
+    color: 'text.default',
+    fontWeight: 'medium',
+    lineHeight: 'tight',
+    transitionProperty: 'color',
+    transitionDuration: 'normal',
+    _hover: { color: 'accent.default' },
+    _after: {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      zIndex: '0',
+    },
+  })
+);
 
 export const postDateStyles = css({ fontSize: 'xs', color: 'text.muted' });
 

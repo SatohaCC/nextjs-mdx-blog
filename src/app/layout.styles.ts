@@ -1,4 +1,5 @@
 import { css } from '../../styled-system/css';
+import { container } from '../../styled-system/patterns';
 
 export const bodyStyles = css({
   bg: 'bg.default',
@@ -13,12 +14,9 @@ export const pageWrapperStyles = css({
   flexDirection: 'column',
 });
 
-export const mainContentLayoutStyles = css({
+export const mainContentLayoutStyles = container({
   flex: 1,
   w: 'full',
-  maxW: '6xl',
-  mx: 'auto',
-  px: { base: '6', lg: '8' },
   py: { base: '6', lg: '8' },
   display: 'flex',
   flexDirection: { base: 'column', lg: 'row' },

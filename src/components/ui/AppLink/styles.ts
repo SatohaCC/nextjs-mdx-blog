@@ -1,17 +1,15 @@
-import { css } from '../../../../styled-system/css';
+import { css, cx } from '../../../../styled-system/css';
+import { focusRing } from '../../../../styled-system/recipes';
 
-export const appLinkStyles = css({
-  textDecoration: 'none',
-  color: 'inherit',
-  transitionProperty: 'color',
-  transitionDuration: 'normal',
-  outline: 'none',
-  _hover: {
-    color: 'accent.default',
-  },
-  _focusVisible: {
-    outline: '2px solid',
-    outlineColor: 'accent.focusRing',
-    outlineOffset: '2px',
-  },
-});
+export const appLinkStyles = cx(
+  focusRing(),
+  css({
+    textDecoration: 'none',
+    color: 'inherit',
+    transitionProperty: 'color',
+    transitionDuration: 'normal',
+    _hover: {
+      color: 'accent.default',
+    },
+  })
+);

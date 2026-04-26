@@ -49,12 +49,45 @@ test.describe('Basic User Flows', () => {
     await expect(themeToggle).toBeVisible();
 
     // 初期状態（ライトモード）の背景色を確認
-    // next-themes は html または body に class や data-theme を付与することが多い
-
     await themeToggle.click();
 
-    // テーマが変わったことを何らかの形で確認（例：アイコンの変化、属性の変化）
-    // ここではエラーが起きないことと、ボタンがクリック可能であることを確認
+    // テーマが変わったことを何らかの形で確認
     await expect(themeToggle).toBeEnabled();
+  });
+
+  test.describe('Visual Regression Tests', () => {
+    test('トップページの全体レイアウトが崩れていないこと', async ({ page }) => {
+      await page.goto('/');
+      // 初期レンダリングとフォントの読み込みを待機
+      await page.waitForLoadState('networkidle');
+
+      // ページ全体のスクリーンショットを比較
+      await expect(page).toHaveScreenshot('homepage.png', {
+        fullPage: true,
+        maxDiffPixelRatio: 0.05,
+      });
+    });
+
+    test('ページネーションのコンポーネントが正しく表示されていること', async ({ page }) => {
+      await page.goto('/');
+      const pagination = page.getByRole('navigation', { name: 'Pagination' });
+      await pagination.scrollIntoViewIfNeeded();
+
+      // 特定の要素のみを比較（周辺のコンテンツに左右されない）
+      await expect(pagination).toHaveScreenshot('pagination.png');
+    });
+
+    test('記事詳細ページのレイアウトが崩れていないこと', async ({ page }) => {
+      await page.goto('/');
+      // 最初の記事をクリックして遷移
+      await page.locator('article').first().click();
+      await page.waitForLoadState('networkidle');
+
+      // ページ全体のスクリーンショットを比較
+      await expect(page).toHaveScreenshot('article-page.png', {
+        fullPage: true,
+        maxDiffPixelRatio: 0.05,
+      });
+    });
   });
 });

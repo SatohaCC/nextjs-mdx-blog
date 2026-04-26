@@ -1,33 +1,33 @@
-import { css, cva } from '../../../../../styled-system/css';
+import { css, cva, cx } from '../../../../../styled-system/css';
 import { flex } from '../../../../../styled-system/patterns';
+import { focusRing } from '../../../../../styled-system/recipes';
 
-export const paginationLinkStyles = css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  p: '2',
-  borderRadius: 'full',
-  bg: 'bg.muted',
-  color: 'text.default',
-  cursor: 'pointer',
-  transitionProperty: 'background-color, border-color, color, box-shadow',
-  transitionDuration: 'slow',
-  transitionTimingFunction: 'standard',
-  textDecoration: 'none',
-  border: '1px solid',
-  borderColor: 'border.muted',
-  _hover: {
-    bg: 'bg.default',
-    borderColor: 'accent.default',
-    color: 'accent.default',
-    boxShadow: 'card.default',
-  },
-  _focusVisible: {
-    outline: '2px solid',
-    outlineColor: 'accent.focusRing',
-    outlineOffset: '2px',
-  },
-});
+export const paginationLinkStyles = cx(
+  focusRing(),
+  css({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    w: '10',
+    h: '10',
+    borderRadius: 'full',
+    bg: 'bg.muted',
+    color: 'text.default',
+    cursor: 'pointer',
+    transitionProperty: 'background-color, border-color, color, box-shadow',
+    transitionDuration: 'slow',
+    transitionTimingFunction: 'standard',
+    textDecoration: 'none',
+    border: '1px solid',
+    borderColor: 'border.muted',
+    _hover: {
+      bg: 'bg.default',
+      borderColor: 'accent.default',
+      color: 'accent.default',
+      boxShadow: 'card.default',
+    },
+  })
+);
 
 export const pageNumberRecipe = cva({
   base: {
@@ -44,6 +44,7 @@ export const pageNumberRecipe = cva({
     transitionProperty: 'background-color, border-color, color, box-shadow',
     transitionDuration: 'slow',
     border: '1px solid',
+    outline: 'none',
     _focusVisible: {
       outline: '2px solid',
       outlineColor: 'accent.focusRing',
@@ -56,6 +57,10 @@ export const pageNumberRecipe = cva({
         bg: 'accent.default',
         color: 'bg.default',
         borderColor: 'accent.default',
+        cursor: 'default',
+        _hover: {
+          color: 'bg.default',
+        },
       },
       false: {
         bg: 'transparent',
@@ -92,7 +97,8 @@ export const disabledStyles = css({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  p: '2',
+  w: '10',
+  h: '10',
   borderRadius: 'full',
   color: 'text.muted',
   bg: 'transparent',
