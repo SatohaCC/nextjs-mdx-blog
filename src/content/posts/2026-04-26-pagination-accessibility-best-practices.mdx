@@ -1,0 +1,108 @@
+---
+title: 'ページネーションのアクセシビリティ — リンクのセマンティクスと非活性状態の扱い'
+date: '2026-04-26'
+excerpt: 'Next.js と Panda CSS を使用したページネーション実装において、スクリーンリーダー対応や非活性ボタンの適切な処理方法について解説します。'
+tags: ['Accessibility', 'Next.js', 'React', 'UI/UX']
+draft: true
+---
+
+ブログやECサイトなど、多くのコンテンツを扱うWebサイトに欠かせないのが**ページネーション**です。
+
+一見シンプルなUIですが、アクセシビリティ（a11y）を考慮すると、実は多くの配慮が必要なコンポーネントでもあります。「現在のページをどう伝えるか」「押せないボタン（前へ/次へ）をどう扱うか」など、実装時に直面する課題とその解決策について、このブログの実装を例に解説します。
+
+## 1. ランドマークとラベル
+
+まず、ページネーション全体を `<nav>` 要素で囲むことが基本です。これにより、スクリーンリーダー利用者は「ページ移動のためのナビゲーションである」ことを即座に理解できます。
+
+```tsx
+<nav aria-label="ページネーション">{/* コンテンツ */}</nav>
+```
+
+ページ内に複数の `<nav>` が存在する場合（ヘッダー、フッター、ページネーションなど）、`aria-label` を付与して個別の役割を明示することが推奨されます。
+
+## 2. 「現在のページ」の明示
+
+ユーザーがいま何ページ目にいるのかを伝えるには、`aria-current` 属性を使用します。
+
+```tsx
+<AppLink
+  key={page}
+  href={getPageUrl(page)}
+  className={pageNumberRecipe({ active: currentPage === page })}
+  aria-current={currentPage === page ? 'page' : undefined}
+>
+  {page}
+</AppLink>
+```
+
+`aria-current="page"` を付与することで、支援技術は視覚的なスタイル（色など）だけでなく、セマンティクスとして「ここが現在のページである」と読み上げてくれます。
+
+## 3. 非活性（Disabled）状態の扱い
+
+今回の記事の核心となるのが、**「最初/最後のページにおける『前へ/次へ』ボタン」**の扱いです。
+
+### なぜ `<button disabled>` を使わないのか？
+
+ページ遷移を伴うナビゲーションは、本質的に「リンク（`<a>`）」です。しかし、リンクにはネイティブな `disabled` 属性が存在しません。
+
+そのため、このブログでは**「`href` を持たない `<a>` 要素」**として実装しています。
+
+### aria-disabled と role="link" の組み合わせ
+
+リンクとして認識させつつ、クリックできないことを伝えるために以下の属性を付与しています。
+
+```tsx
+<a
+  className={disabledStyles}
+  role="link"
+  aria-disabled="true"
+  aria-label="前のページ（現在最初のページです）"
+>
+  <ChevronLeft size={20} />
+</a>
+```
+
+- **`aria-disabled="true"`**: スクリーンリーダーに「この要素は無効である」ことを伝えます。
+- **`role="link"`**: `href` がなくてもリンクとして認識させ、構造の一貫性を保ちます。
+
+### 文脈を補足する aria-label
+
+視覚的にはグレーアウトされていれば「押せない」ことがわかりますが、音声読み上げでは「前のページ」だけだと不十分な場合があります。
+
+そこで、`aria-label` に**「なぜ押せないのか」というコンテキストを追加**しています。
+
+- `aria-label="前のページ（現在最初のページです）"`
+- `aria-label="次のページ（現在最後のページです）"`
+
+これにより、ユーザーは「ボタンが壊れている」のではなく、「これ以上先がないから無効になっている」のだと確信を持って理解できます。
+
+## 4. スタイリングとインタラクション
+
+CSS（Panda CSS）側でも、誤操作を防ぐための処理を行っています。
+
+```typescript
+export const disabledStyles = css({
+  // ...
+  opacity: 0.4,
+  cursor: 'not-allowed',
+  pointerEvents: 'none', // マウスクリックやホバーを無効化
+});
+```
+
+`pointer-events: none` を指定することで、JavaScript のイベントハンドラが設定されていても、物理的なクリックを無効化できます。
+
+## まとめ
+
+ページネーションのアクセシビリティ対応のポイントをまとめます。
+
+- **`<nav>` 要素**と適切な **`aria-label`** で役割を伝える
+- **`aria-current="page"`** で現在の位置を明示する
+- 非活性なリンクは **`aria-disabled="true"`** と**補足的な `aria-label`** を組み合わせる
+- **`pointer-events: none`** で不必要なインタラクションを排除する
+
+アクセシビリティは「おもてなし」ではなく、すべてのユーザーが等しく情報にアクセスするための「品質」です。細かな属性一つひとつが、誰かの使いやすさに直結していることを意識して実装していきたいですね。
+
+## 参考
+
+- [WAI-ARIA Authoring Practices Guide (APG) - Pagination Example](https://www.w3.org/WAI/ARIA/apg/patterns/pagination/)
+- [MDN: aria-current](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
