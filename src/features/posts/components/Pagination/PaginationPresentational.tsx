@@ -26,7 +26,7 @@ export const PaginationPresentational = ({
   getPageUrl,
 }: PaginationPresentationalProps) => {
   return (
-    <nav aria-label="Pagination" className={paginationNavStyles}>
+    <nav aria-label="ページネーション" className={paginationNavStyles}>
       {/* Previous Button */}
       {currentPage > 1 ? (
         <AppLink
