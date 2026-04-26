@@ -15,7 +15,7 @@ export const FooterPresentational = () => {
   return (
     <footer className={footerContainerStyles}>
       <div className={footerInnerStyles}>
-        <nav className={footerNavStyles}>
+        <nav className={footerNavStyles} aria-label="フッターナビゲーション">
           <AppLink href="/" className={footerLinkStyles}>
             ホーム
           </AppLink>

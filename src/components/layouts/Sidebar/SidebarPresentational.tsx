@@ -22,7 +22,7 @@ export const SidebarPresentational = ({ allTags, latestPosts }: SidebarPresentat
   return (
     <div className={sidebarContainerStyles}>
       {/* Recent Posts Section */}
-      <section>
+      <section aria-label="最新の記事">
         <h2 className={sectionHeadingStyles}>最新の記事</h2>
         <ul className={postListStyles}>
           {latestPosts.map((post) => (
@@ -37,7 +37,7 @@ export const SidebarPresentational = ({ allTags, latestPosts }: SidebarPresentat
       </section>
 
       {/* Tags Section */}
-      <section>
+      <section aria-label="タグ一覧">
         <h2 className={sectionHeadingStyles}>タグ一覧</h2>
         <div className={tagContainerStyles}>
           <TagList>

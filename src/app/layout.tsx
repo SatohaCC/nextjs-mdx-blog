@@ -72,7 +72,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
               <main id="main-content" className={mainStyles}>
                 {children}
               </main>
-              <aside className={sidebarWrapperStyles}>
+              <aside className={sidebarWrapperStyles} aria-label="サイドバー">
                 <Sidebar />
               </aside>
             </div>
