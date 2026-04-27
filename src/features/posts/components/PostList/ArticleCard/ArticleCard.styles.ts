@@ -1,9 +1,11 @@
-import { css, cva } from '../../../../../../styled-system/css';
+import { css, cx } from '../../../../../../styled-system/css';
 import { stack } from '../../../../../../styled-system/patterns';
+import { bambooHover } from '../../../../../../styled-system/recipes';
 
-// Card Recipe
-export const articleCardRecipe = cva({
-  base: {
+// Card Styles
+export const articleCardStyles = cx(
+  bambooHover(),
+  css({
     height: 'full',
     display: 'flex',
     flexDirection: 'column',
@@ -13,34 +15,15 @@ export const articleCardRecipe = cva({
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'border.default',
-    bg: 'bg.default',
     transitionProperty: 'border-color, transform, box-shadow',
     transitionDuration: 'slow',
     boxShadow: { base: 'none', sm: 'card.default' },
     position: 'relative',
-
-    _before: {
-      content: '""',
-      position: 'absolute',
-      inset: 0,
-      bg: 'takenoko.bamboo.400',
-      opacity: 0,
-      zIndex: 'hide',
-      transformOrigin: 'center',
-      transitionProperty: 'transform, opacity',
-      transitionDuration: 'normal',
-      transitionTimingFunction: 'spring',
-      borderRadius: 'inherit',
-      pointerEvents: 'none',
-    },
+    bg: 'bg.default',
 
     _hover: {
-      borderColor: { sm: 'accent.default' },
-      boxShadow: { sm: 'card.hover' },
-      _before: {
-        opacity: 0.4,
-        transform: 'rotate(-10deg) scale(1.05)',
-      },
+      borderColor: 'accent.default',
+      boxShadow: 'card.hover',
     },
 
     // stretched link パターン: a:focus-visible が内側にあるときカード全体にフォーカスリングを表示
@@ -49,8 +32,8 @@ export const articleCardRecipe = cva({
       outlineColor: 'accent.focusRing',
       outlineOffset: '2px',
     },
-  },
-});
+  })
+);
 
 // Typography Styles
 export const titleLinkStyles = css({

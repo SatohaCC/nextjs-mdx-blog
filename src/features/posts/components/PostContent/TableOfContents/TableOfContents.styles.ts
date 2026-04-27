@@ -1,12 +1,12 @@
 import { css, cva, cx } from '../../../../../../styled-system/css';
-import { sectionHeadingBaseStyles } from '../../../../../styles/common.styles';
+import { sectionHeading } from '../../../../../../styled-system/recipes';
 
 export const tocContainerStyles = css({
   mb: '12',
   py: '4',
 });
 
-export const tocHeadingStyles = cx(sectionHeadingBaseStyles, css({ fontSize: 'md', mb: '4' }));
+export const tocHeadingStyles = cx(sectionHeading(), css({ fontSize: 'md', mb: '4' }));
 
 export const tocListStyles = css({ listStyle: 'none', p: 0, m: 0 });
 
