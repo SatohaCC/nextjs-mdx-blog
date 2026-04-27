@@ -5,11 +5,16 @@ import { PaginationContainer as Pagination } from '@/features/posts/components/P
 import type { Post } from '@/features/posts/types';
 
 import { ArticleCard } from './ArticleCard/ArticleCard';
-import { articleListStyles } from './PostListPresentational.styles';
+import {
+  articleListStyles,
+  emptyStateStyles,
+  hitCountStyles,
+} from './PostListPresentational.styles';
 
 type PostListPresentationalProps = {
   posts: Post[];
   totalPages: number;
+  totalCount?: number;
   currentPage: number;
   title?: string;
   subtitle?: string;
@@ -20,6 +25,7 @@ type PostListPresentationalProps = {
 export const PostListPresentational = ({
   posts,
   totalPages,
+  totalCount,
   currentPage,
   title = 'Latest Posts',
   subtitle,
@@ -30,11 +36,19 @@ export const PostListPresentational = ({
     <ViewTransition>
       <PageTitle subtitle={subtitle}>{title}</PageTitle>
 
-      <div className={articleListStyles}>
-        {posts.map((post) => (
-          <ArticleCard key={post.slug} post={post} />
-        ))}
-      </div>
+      {totalCount !== undefined && <div className={hitCountStyles}>ヒット件数: {totalCount}件</div>}
+
+      {posts.length > 0 ? (
+        <div className={articleListStyles}>
+          {posts.map((post) => (
+            <ArticleCard key={post.slug} post={post} />
+          ))}
+        </div>
+      ) : (
+        <div className={emptyStateStyles}>
+          <p>該当する記事が見つかりませんでした。</p>
+        </div>
+      )}
 
       {totalPages > 1 && (
         <Pagination

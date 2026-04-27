@@ -18,6 +18,11 @@ export const searchPosts = async (query: string): Promise<Post[]> => {
   );
 };
 
+export const getSearchTotalCount = async (query: string): Promise<number> => {
+  const posts = await searchPosts(query);
+  return posts.length;
+};
+
 export const getSearchTotalPages = async (query: string): Promise<number> => {
   const posts = await searchPosts(query);
   return Math.max(1, Math.ceil(posts.length / siteConfig.postsPerPage));

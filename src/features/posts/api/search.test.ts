@@ -2,7 +2,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { Post } from '../types';
 import { getAllPosts } from './posts';
-import { getPaginatedSearchPosts, getSearchTotalPages, searchPosts } from './search';
+import {
+  getPaginatedSearchPosts,
+  getSearchTotalCount,
+  getSearchTotalPages,
+  searchPosts,
+} from './search';
 
 vi.mock('@/features/posts/api/posts', () => ({ getAllPosts: vi.fn() }));
 
@@ -90,6 +95,17 @@ describe('getSearchTotalPages', () => {
     const posts = Array.from({ length: 7 }, (_, i) => makePost(`p${i}`, 'react post', 'excerpt'));
     vi.mocked(getAllPosts).mockResolvedValue(posts);
     expect(await getSearchTotalPages('react')).toBe(2);
+  });
+});
+
+describe('getSearchTotalCount', () => {
+  it('マッチする記事の総数を返す', async () => {
+    const results = await getSearchTotalCount('react');
+    expect(results).toBe(3); // POSTS 内に "react" を含むのは 3 つ (a, d, f)
+  });
+
+  it('マッチしない場合は 0', async () => {
+    expect(await getSearchTotalCount('xxxxxxxx')).toBe(0);
   });
 });
 

@@ -103,18 +103,58 @@ export const WithCustomTitle: Story = {
  */
 export const WithPagination: Story = {
   args: {
-    totalPages: 5,
     currentPage: 1,
+    totalPages: 5,
   },
   play: async ({ canvas, step }) => {
     let nav: HTMLElement;
 
     await step('Arrange: ページネーション要素を取得', async () => {
-      nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      nav = canvas.getByRole('navigation', { name: 'ページネーション' });
     });
 
     await step('Assert: ページネーション（ナビゲーション）が表示される', async () => {
       await expect(nav).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * ヒット件数が表示される記事一覧。検索結果などで使用する。
+ *
+ * @summary ヒット件数付きの記事一覧
+ */
+export const WithHitCount: Story = {
+  args: {
+    posts: mockPosts,
+    title: '"React" の検索結果',
+    totalCount: mockPosts.length,
+  },
+  play: async ({ canvas, step }) => {
+    await step('Assert: ヒット件数が表示される', async () => {
+      const hitCount = canvas.getByText(`ヒット件数: ${mockPosts.length}件`);
+      await expect(hitCount).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * 検索結果が 0 件の場合の記事一覧。
+ *
+ * @summary 検索結果なし（空状態）の表示
+ */
+export const Empty: Story = {
+  args: {
+    posts: [],
+    title: '"存在しないワード" の検索結果',
+    totalCount: 0,
+  },
+  play: async ({ canvas, step }) => {
+    await step('Assert: 該当なしのメッセージが表示される', async () => {
+      const message = canvas.getByText('該当する記事が見つかりませんでした。');
+      await expect(message).toBeInTheDocument();
+      const hitCount = canvas.getByText('ヒット件数: 0件');
+      await expect(hitCount).toBeInTheDocument();
     });
   },
 };
