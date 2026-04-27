@@ -70,7 +70,7 @@ test.describe('Basic User Flows', () => {
 
     test('ページネーションのコンポーネントが正しく表示されていること', async ({ page }) => {
       await page.goto('/');
-      const pagination = page.getByRole('navigation', { name: 'Pagination' });
+      const pagination = page.getByRole('navigation', { name: 'ページネーション' });
       await pagination.scrollIntoViewIfNeeded();
 
       // 特定の要素のみを比較（周辺のコンテンツに左右されない）

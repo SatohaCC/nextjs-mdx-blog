@@ -4,13 +4,10 @@ export default defineConfig({
   preflight: true,
   outdir: 'styled-system',
   jsxFramework: 'react',
-  include: [
-    './src/**/*.{js,jsx,ts,tsx}',
-    './pages/**/*.{js,jsx,ts,tsx}',
-    './pages/**/*stories.{js,jsx,ts,tsx}',
-    './.storybook/**/*.{js,jsx,ts,tsx}',
-  ],
+  include: ['./src/**/*.{js,jsx,ts,tsx}', './.storybook/**/*.{js,jsx,ts,tsx}'],
   exclude: [],
+  //   optimize: true,
+  minify: process.env.NODE_ENV === 'production',
   patterns: {
     extend: {
       container: {
@@ -599,6 +596,33 @@ export default defineConfig({
             h: '1em',
             bg: 'accent.default',
             borderRadius: 'full',
+          },
+        },
+      },
+      bambooHover: {
+        className: 'bamboo-hover',
+        description: 'Bamboo hover effect with rotating background',
+        base: {
+          position: 'relative',
+          _before: {
+            content: '""',
+            position: 'absolute',
+            inset: 0,
+            bg: 'takenoko.bamboo.400',
+            opacity: 0,
+            zIndex: 'hide',
+            transformOrigin: 'center',
+            transitionProperty: 'transform, opacity',
+            transitionDuration: 'normal',
+            transitionTimingFunction: 'spring',
+            borderRadius: 'inherit',
+            pointerEvents: 'none',
+          },
+          _hover: {
+            _before: {
+              opacity: 0.4,
+              transform: 'rotate(-10deg) scale(1.05)',
+            },
           },
         },
       },

@@ -1,17 +1,15 @@
 import { css, cx } from '../../../../styled-system/css';
 import { stack } from '../../../../styled-system/patterns';
-import { focusRing } from '../../../../styled-system/recipes';
-import { HoverStyle } from '../../../styles/animations.styles';
-import { sectionHeadingBaseStyles } from '../../../styles/common.styles';
+import { bambooHover, focusRing, sectionHeading } from '../../../../styled-system/recipes';
 
 export const sidebarContainerStyles = stack({ gap: '10', position: 'sticky', top: '24' });
 
-export const sectionHeadingStyles = cx(sectionHeadingBaseStyles, css({ fontSize: 'md', mb: '4' }));
+export const sectionHeadingStyles = cx(sectionHeading(), css({ fontSize: 'md', mb: '4' }));
 
 export const postListStyles = stack({ gap: '2', listStyle: 'none', p: 0 });
 
 export const postItemStyles = cx(
-  HoverStyle(),
+  bambooHover(),
   css({
     borderRadius: 'md',
     p: '2',
@@ -20,11 +18,11 @@ export const postItemStyles = cx(
     borderWidth: '1px',
     borderStyle: 'solid',
     borderColor: 'transparent',
-
     _hover: {
       borderWidth: '1px',
       borderStyle: 'solid',
       borderColor: 'border.default',
+      boxShadow: 'card.hover',
       bg: 'bg.default',
     },
   })

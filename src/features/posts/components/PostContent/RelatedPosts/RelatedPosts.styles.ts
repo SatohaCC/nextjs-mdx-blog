@@ -1,8 +1,6 @@
-import { HoverStyle } from '@/styles/animations.styles';
-
 import { css, cx } from '../../../../../../styled-system/css';
 import { grid } from '../../../../../../styled-system/patterns';
-import { sectionHeadingBaseStyles } from '../../../../../styles/common.styles';
+import { bambooHover, sectionHeading } from '../../../../../../styled-system/recipes';
 
 export const relatedPostsContainerStyles = css({
   mt: '12',
@@ -11,15 +9,12 @@ export const relatedPostsContainerStyles = css({
   borderColor: 'border.default',
 });
 
-export const relatedPostsHeadingStyles = cx(
-  sectionHeadingBaseStyles,
-  css({ fontSize: 'lg', mb: '6' })
-);
+export const relatedPostsHeadingStyles = cx(sectionHeading(), css({ fontSize: 'lg', mb: '6' }));
 
 export const relatedPostsGridStyles = grid({ columns: { base: 1, sm: 3 }, gap: '4' });
 
 export const relatedPostCardStyles = cx(
-  HoverStyle(),
+  bambooHover(),
   css({
     display: 'block',
     p: '4',

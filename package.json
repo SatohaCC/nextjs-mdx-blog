@@ -18,7 +18,8 @@
     "build-storybook": "storybook build",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "test:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "github-slugger": "^2.0.0",
@@ -55,6 +56,7 @@
     "eslint-config-next": "16.1.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-boundaries": "^6.0.2",
+    "eslint-plugin-perfectionist": "^5.9.0",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-storybook": "^10.2.4",
