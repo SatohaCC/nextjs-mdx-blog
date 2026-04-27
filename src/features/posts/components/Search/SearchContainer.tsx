@@ -1,4 +1,8 @@
-import { getPaginatedSearchPosts, getSearchTotalPages } from '@/features/posts/api/search';
+import {
+  getPaginatedSearchPosts,
+  getSearchTotalCount,
+  getSearchTotalPages,
+} from '@/features/posts/api/search';
 import { PostListPresentational } from '@/features/posts/components/PostList';
 
 type SearchContainerProps = {
@@ -10,9 +14,10 @@ export const SearchContainer = async ({ searchParams }: SearchContainerProps) =>
   const query = q || '';
   const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1);
 
-  const [posts, totalPages] = await Promise.all([
+  const [posts, totalPages, totalCount] = await Promise.all([
     getPaginatedSearchPosts(query, currentPage),
     getSearchTotalPages(query),
+    getSearchTotalCount(query),
   ]);
 
   const getPageUrl = (p: number) => {
@@ -27,6 +32,7 @@ export const SearchContainer = async ({ searchParams }: SearchContainerProps) =>
     <PostListPresentational
       posts={posts}
       totalPages={totalPages}
+      totalCount={totalCount}
       currentPage={currentPage}
       title={query ? `"${query}" の検索結果` : '検索'}
       subtitle={query ? undefined : '検索キーワードを入力してください'}

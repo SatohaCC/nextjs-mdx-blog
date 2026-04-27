@@ -113,7 +113,7 @@ export const WithPagination: Story = {
     let nav: HTMLElement;
 
     await step('Arrange: ページネーション要素を取得', async () => {
-      nav = canvas.getByRole('navigation', { name: 'Pagination' });
+      nav = canvas.getByRole('navigation', { name: 'ページネーション' });
     });
 
     await step(

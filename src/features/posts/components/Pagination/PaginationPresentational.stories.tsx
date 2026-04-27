@@ -37,7 +37,7 @@ export const FirstPage: Story = {
     let nextLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'ページネーション' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 1' });
       nextLink = within(nav).getByRole('link', { name: '次のページ' });
     });
@@ -70,7 +70,7 @@ export const MiddlePage: Story = {
     let nextLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'ページネーション' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 3' });
       prevLink = within(nav).getByRole('link', { name: '前のページ' });
       nextLink = within(nav).getByRole('link', { name: '次のページ' });
@@ -104,7 +104,7 @@ export const LastPage: Story = {
     let prevLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'ページネーション' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
       prevLink = within(nav).getByRole('link', { name: '前のページ' });
     });
@@ -135,7 +135,7 @@ export const WithEllipsis: Story = {
     let currentLink: HTMLElement;
 
     await step('Arrange: ページネーション要素とリンクを取得', async () => {
-      const nav = await canvas.findByRole('navigation', { name: 'Pagination' });
+      const nav = await canvas.findByRole('navigation', { name: 'ページネーション' });
       currentLink = within(nav).getByRole('link', { name: 'ページ 5' });
     });
 
