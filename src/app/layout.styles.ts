@@ -6,6 +6,7 @@ export const bodyStyles = css({
   color: 'text.default',
   transitionProperty: 'background-color, color',
   transitionDuration: 'normal',
+  overflowX: 'hidden', // 画面端でのアニメーションによる横スクロールを防止
 });
 
 export const pageWrapperStyles = css({
