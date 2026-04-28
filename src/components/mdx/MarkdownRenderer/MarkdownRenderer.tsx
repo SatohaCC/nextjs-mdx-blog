@@ -6,13 +6,16 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
 import { MarkdownBlockquote } from '@/components/mdx/MarkdownBlockquote/MarkdownBlockquote';
+import { MarkdownImage } from '@/components/mdx/MarkdownImage';
 import { AppLink } from '@/components/ui/AppLink';
+import rehypeImageSize from '@/lib/rehype-image-size';
 
 import { markdownContentStyles } from './MarkdownRenderer.styles';
 
 const defaultComponents = {
   a: AppLink,
   blockquote: MarkdownBlockquote,
+  img: MarkdownImage,
 };
 
 type MarkdownRendererProps = {
@@ -24,6 +27,7 @@ export const MarkdownRenderer = async ({ content }: MarkdownRendererProps) => {
   'use cache';
   cacheLife('days');
   cacheTag('posts');
+
   return (
     <div className={markdownContentStyles}>
       <MDXRemote
@@ -34,6 +38,7 @@ export const MarkdownRenderer = async ({ content }: MarkdownRendererProps) => {
             remarkPlugins: [remarkGfm],
             rehypePlugins: [
               [rehypeSlug],
+              [rehypeImageSize],
               [
                 rehypePrettyCode,
                 {

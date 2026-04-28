@@ -78,13 +78,13 @@ test.describe('Basic User Flows', () => {
     });
 
     test('記事詳細ページのレイアウトが崩れていないこと', async ({ page }) => {
-      await page.goto('/');
-      // 最初の記事をクリックして遷移
-      await page.locator('article').first().click();
+      // 特定のデモ記事（画像やコードブロックを含む）に直接遷移
+      await page.goto('/posts/2026-04-29-image-optimization-demo');
       await page.waitForLoadState('networkidle');
 
       // ページ全体のスクリーンショットを比較
-      await expect(page).toHaveScreenshot('article-page.png', {
+      // 修正後のレイアウトを基準とするため、初回実行時は snapshot が生成されます
+      await expect(page).toHaveScreenshot('demo-article-page.png', {
         fullPage: true,
         maxDiffPixelRatio: 0.05,
       });

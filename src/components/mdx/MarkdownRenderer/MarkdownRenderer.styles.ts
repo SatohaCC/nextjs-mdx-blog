@@ -46,6 +46,29 @@ export const markdownContentStyles = css({
     fontSize: '0.9em',
     fontWeight: 'medium',
   },
+  '& pre': {
+    bg: 'bg.muted',
+    p: '4',
+    borderRadius: 'md',
+    overflowX: 'auto',
+    border: '1px solid',
+    borderColor: 'border.muted',
+    fontSize: 'sm',
+    lineHeight: 'relaxed',
+    maxWidth: 'full',
+    my: '8',
+    fontFamily: 'mono',
+    '& code': {
+      bg: 'transparent',
+      p: 0,
+      color: 'inherit',
+      fontSize: 'inherit',
+      fontWeight: 'inherit',
+      display: 'block',
+      wordBreak: 'break-all',
+      overflowWrap: 'break-word',
+    },
+  },
   '& [data-rehype-pretty-code-figure]': {
     my: '8',
     '& [data-rehype-pretty-code-title]': {
@@ -61,24 +84,12 @@ export const markdownContentStyles = css({
       borderColor: 'border.muted',
     },
     '& pre': {
-      bg: 'bg.muted',
-      p: '4',
-      borderRadius: 'md',
-      overflowX: 'auto',
-      border: '1px solid',
-      borderColor: 'border.muted',
-      fontSize: 'sm',
-      lineHeight: 'relaxed',
+      my: '0',
       '&[data-has-title]': {
         borderTopRadius: 'none',
       },
     },
     '& code': {
-      bg: 'transparent',
-      p: 0,
-      color: 'inherit',
-      fontSize: 'inherit',
-      fontWeight: 'inherit',
       display: 'grid',
     },
     '& [data-highlighted-line]': {
@@ -120,5 +131,9 @@ export const markdownContentStyles = css({
     px: '4',
     py: '3',
     color: 'text.muted',
+  },
+  '& figure': {
+    my: '8',
+    mx: '0',
   },
 });
