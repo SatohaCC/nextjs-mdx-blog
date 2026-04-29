@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { siteConfig } from '@/content/site';
 import { getPostBySlug, getSortedPostsData } from '@/features/posts/api/posts';
-import { PostContentContainer as PostContent } from '@/features/posts/components/PostContent';
+import { PostContentContainer as PostContent } from '@/features/posts/components/PostContent/PostContentContainer';
 import type { Post } from '@/features/posts/types';
 
 export const generateStaticParams = async () => {

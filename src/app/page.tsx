@@ -1,4 +1,4 @@
-import { PostListContainer as PostList } from '@/features/posts/components/PostList';
+import { PostListContainer as PostList } from '@/features/posts/components/PostList/PostListContainer';
 
 const Home = () => {
   return <PostList currentPage={1} />;

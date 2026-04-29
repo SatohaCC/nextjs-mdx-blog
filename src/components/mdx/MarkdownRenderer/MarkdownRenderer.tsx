@@ -6,8 +6,8 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 
 import { MarkdownBlockquote } from '@/components/mdx/MarkdownBlockquote/MarkdownBlockquote';
-import { MarkdownImage } from '@/components/mdx/MarkdownImage';
-import { AppLink } from '@/components/ui/AppLink';
+import { MarkdownImage } from '@/components/mdx/MarkdownImage/MarkdownImage';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
 import rehypeImageSize from '@/lib/rehype-image-size';
 
 import { markdownContentStyles } from './MarkdownRenderer.styles';

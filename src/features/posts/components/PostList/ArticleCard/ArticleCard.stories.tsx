@@ -11,7 +11,6 @@ const mockPost = {
     excerpt: 'これはブログ記事の概要テキストです。記事の内容を簡潔に説明します。',
     tags: ['Next.js', 'TypeScript'],
   },
-  content: '',
 };
 
 const meta = {
@@ -68,7 +67,6 @@ export const LongContent: Story = {
         excerpt:
           'この記事では、Next.js 14 の App Router と React Server Components を組み合わせたモダンなフルスタック開発手法を詳しく解説します。サーバーサイドレンダリング、データフェッチング、キャッシュ戦略など多岐にわたるトピックをカバーします。',
       },
-      content: '',
     },
   },
 };

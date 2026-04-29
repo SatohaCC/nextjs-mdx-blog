@@ -1,5 +1,5 @@
-import { AppLink } from '@/components/ui/AppLink';
-import type { Post } from '@/features/posts/types';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
+import type { PostSummary } from '@/features/posts/types';
 
 import {
   relatedPostCardStyles,
@@ -11,7 +11,7 @@ import {
 } from './RelatedPosts.styles';
 
 type RelatedPostsProps = {
-  posts: Post[];
+  posts: PostSummary[];
 };
 
 export const RelatedPosts = ({ posts }: RelatedPostsProps) => {

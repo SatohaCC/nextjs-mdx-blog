@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { AppLink } from '../AppLink';
+import { AppLink } from '../AppLink/AppLink';
 import { tagListStyles, tagRecipe } from './styles';
 
 type TagLinkProps = {

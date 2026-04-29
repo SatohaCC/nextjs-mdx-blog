@@ -1,4 +1,4 @@
-import { MarkdownRenderer } from '@/components/mdx';
+import { MarkdownRenderer } from '@/components/mdx/MarkdownRenderer/MarkdownRenderer';
 import { PageTitle } from '@/components/ui/PageTitle/PageTitle';
 
 type AboutPresentationalProps = {

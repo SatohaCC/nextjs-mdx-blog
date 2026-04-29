@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { siteConfig } from '@/content/site';
 import { getAllTags, getPostsByTag } from '@/features/posts/api/posts';
-import { TagPageContainer as TagPage } from '@/features/posts/components/TagPage';
+import { TagPageContainer as TagPage } from '@/features/posts/components/TagPage/TagPageContainer';
 
 export const generateStaticParams = async () => {
   const tags = await getAllTags();

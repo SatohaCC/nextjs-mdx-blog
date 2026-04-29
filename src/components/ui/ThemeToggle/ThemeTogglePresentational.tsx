@@ -1,6 +1,6 @@
 import { Moon, Sun } from 'lucide-react';
 
-import { Button } from '../Button';
+import { Button } from '../Button/Button';
 
 type ThemeTogglePresentationalProps = {
   /** 現在のテーマ（`"light"` | `"dark"`）。`next-themes` の `resolvedTheme` を渡す */

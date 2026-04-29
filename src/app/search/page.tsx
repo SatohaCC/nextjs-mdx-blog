@@ -3,7 +3,8 @@ import { Suspense } from 'react';
 import type { Metadata } from 'next';
 
 import { siteConfig } from '@/content/site';
-import { SearchContainer, SearchSkeleton } from '@/features/posts/components/Search';
+import { SearchContainer } from '@/features/posts/components/Search/SearchContainer';
+import { SearchSkeleton } from '@/features/posts/components/Search/SearchSkeleton';
 
 type SearchPageProps = {
   searchParams: Promise<{ q?: string; page?: string }>;

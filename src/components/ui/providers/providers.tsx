@@ -4,7 +4,7 @@ import { type ReactNode } from 'react';
 
 import { ThemeProvider } from 'next-themes';
 
-import { ScrollToTop } from '../ScrollToTop';
+import { ScrollToTop } from '../ScrollToTop/ScrollToTop';
 
 type ProvidersProps = {
   children: ReactNode;

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { AppLink } from '@/components/ui/AppLink';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
 import { GithubIcon } from '@/components/ui/GithubIcon/GithubIcon';
-import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { ThemeToggleContainer as ThemeToggle } from '@/components/ui/ThemeToggle/ThemeToggleContainer';
 import { siteConfig } from '@/content/site';
-import { SearchBox } from '@/features/posts/components/SearchBox';
+import { SearchBoxContainer as SearchBox } from '@/features/posts/components/SearchBox/SearchBoxContainer';
 
 import {
   headerContainerStyles,

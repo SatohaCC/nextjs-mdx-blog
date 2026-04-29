@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { AppLink } from '@/components/ui/AppLink';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
 import { CopyrightYear } from '@/components/ui/CopyrightYear/CopyrightYear';
 import { siteConfig } from '@/content/site';
 

@@ -12,6 +12,8 @@ export type Post = {
   content: string;
 };
 
+export type PostSummary = Omit<Post, 'content'>;
+
 export type SearchParams = {
   q?: string;
 };

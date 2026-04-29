@@ -1,51 +1,66 @@
-# Technical Specification: Panda CSS Common Patterns and Typography Abstraction
+# Technical Specification: Vercel Best Practices Optimization (Serialization & Imports)
 
-## Executive Summary
-This project aims to refactor the styling layer of the blog using Panda CSS's advanced features (Patterns, Recipes, TextStyles, and Semantic Tokens). The goal is to eliminate code duplication, enforce design consistency, and simplify maintenance by moving shared style logic from individual `.styles.ts` files into the central `panda.config.ts`.
+## 1. Executive Summary
+Vercel のベストプラクティスに基づき、検索機能および全体的なバンドルサイズ/パフォーマンスを最適化します。主な修正点は、Server Component から Client Component へ渡されるデータの最小化（Serialization）と、Tree Shaking の効率を向上させるための直接インポートへの変更です。
 
-## Requirements
+## 2. Requirements
 ### Functional Requirements
-- **Container Pattern**: Centralize the common layout pattern used for content centering and padding.
-- **Typography Tokens**: Abstract MDX and site-wide typography (headings, body text) into reusable `textStyles`.
-- **Focus Ring Utility**: Standardize the visual indicator for focused interactive elements across the site.
-- **Shared Recipes**: Extract repeated component patterns (like glassmorphism for headers/navigation) into reusable recipes.
+- 検索結果の一覧表示において、カード（ArticleCard）が必要とするデータのみをクライアントに送信する。
+- 検索機能自体の挙動や検索精度に影響を与えないこと。
 
-### Non-functional Requirements
-- **Performance**: Maintain or slightly improve CSS bundle size by reducing duplicate rule definitions.
-- **Maintainability**: Ensure styles can be updated globally from `panda.config.ts`.
-- **Developer Experience**: Provide clear, semantic names for patterns and styles (e.g., `<div className={container()}>`).
+### Non-Functional Requirements
+- **Performance**: シリアライズされる JSON データ量を削減し、ハイドレーション速度と TTFB を改善する。
+* **Bundle Size**: 不要なモジュールのバンドルを防ぎ、初期読み込み速度を改善する。
+* **Maintainability**: プロジェクトの既存のアーキテクチャ（Vertical Slice）を尊重しつつ、型安全性を維持する。
 
-## Architecture & Tech Stack
+## 3. Architecture & Tech Stack
 - **Framework**: Next.js 16 (App Router)
 - **Styling**: Panda CSS
-- **Design Tokens**: `panda.config.ts` (Existing)
+- **Data Flow**: 
+    - `src/features/posts/api/search.ts` (Data provider)
+    - `src/features/posts/components/Search/SearchContainer.tsx` (Data fetcher / Server Component)
+    - `src/features/posts/components/PostList/PostListPresentational.tsx` (UI / Client Component)
 
-### Proposed Architectural Changes
-1.  **Patterns**: Add a `container` pattern to `panda.config.ts`.
-2.  **Text Styles**: Add a `textStyles` object to `panda.config.ts` covering `h1` through `h6`, `body`, and `code`.
-3.  **Conditions/Utilities**: Define a `focusRing` condition or utility to handle `_focusVisible` consistently.
-4.  **Recipes**: Define a `glassmorphism` recipe.
+## 4. Implementation Details
 
-## Data Schema / State Management (Style Mapping)
-Existing styles will be mapped to new tokens as follows:
+### 4.1 Serialization Optimization (Issue #48-1)
+現在、`SearchContainer` から `PostListPresentational` に `posts: Post[]` 配列を渡していますが、`Post` 型には巨大になりうる `content`（記事本文）が含まれています。一覧表示では `content` は不要なため、これを除去した `PostSummary` 型を定義し、データを Pick して渡します。
 
-| Component | Current Style | New Abstraction |
-| :--- | :--- | :--- |
-| **Main Layout** | `maxW: '6xl', mx: 'auto', px: { base: '6', lg: '8' }` | `container()` pattern |
-| **Header Inner** | `maxW: '6xl', mx: 'auto'` | `container()` pattern |
-| **MDX H1** | `fontSize: { base: '2xl', sm: '3xl' }, fontWeight: 'bold'` | `textStyle: 'h1'` |
-| **Buttons/Links** | `_focusVisible: { outline: '2px solid', ... }` | `focusRing` utility/style |
+#### Data Schema Changes
+`src/features/posts/types.ts` に `PostSummary` 型を追加するか、既存の型を拡張します。
 
-## Implementation Plan
-1.  **Panda Config Update**: Modify `panda.config.ts` to include the new definitions.
-2.  **Codegen**: Run `panda codegen` to update the `styled-system`.
-3.  **Style Migration**:
-    - Update `src/app/layout.styles.ts`
-    - Update `src/components/layouts/Header/HeaderPresentational.styles.ts`
-    - Update `src/components/mdx/MarkdownRenderer/MarkdownRenderer.styles.ts`
-    - Update other components using the focus ring pattern (Button, AppLink, etc.).
-4.  **Cleanup**: Remove redundant style definitions from local `.styles.ts` files.
+```typescript
+// src/features/posts/types.ts
+export type PostSummary = Omit<Post, 'content'>;
+```
 
-## Risk Assessment
-- **Breaking Changes**: Minimal, as we are mainly consolidating existing styles. Visual regression testing via Storybook is required.
-- **Panda CSS Codegen**: Ensure the `styled-system` is correctly regenerated.
+#### Code Changes
+- `SearchContainer.tsx` 内で、取得した `posts` を `PostSummary` に map して渡す。
+- `PostListPresentational` および関連コンポーネントの Props 型を `PostSummary[]` に更新する。
+
+### 4.2 Barrel Imports Avoidance (Issue #48-2)
+`index.ts`（バレルファイル）を介したインポートを、ファイル直接インポートに変更します。
+
+#### Affected Files
+- `src/app/search/page.tsx`: 
+    - `import { SearchContainer, SearchSkeleton } from '@/features/posts/components/Search';` 
+    - → 直接ファイルからインポートするように修正。
+- `src/features/posts/components/Search/SearchContainer.tsx`:
+    - `import { PostListPresentational } from '@/features/posts/components/PostList';`
+    - → 直接ファイルからインポートするように修正。
+
+## 5. Affected Files (Path List)
+- [MODIFY] `src/features/posts/types.ts`
+- [MODIFY] `src/features/posts/components/Search/SearchContainer.tsx`
+- [MODIFY] `src/features/posts/components/PostList/PostListPresentational.tsx`
+- [MODIFY] `src/features/posts/components/PostList/ArticleCard/ArticleCard.tsx`
+- [MODIFY] `src/app/search/page.tsx`
+
+## 6. Verification Plan
+### Automated Tests
+- `npm run test src/features/posts/api/search.test.ts`: 検索ロジックが壊れていないことを確認。
+- `npm run build`: 型エラーが発生しないこと、ビルドが成功することを確認。
+
+### Manual Verification
+- 検索画面を表示し、従来通り記事がリスト表示されることを確認。
+- ブラウザのネットワークタブで、Server Component から Client Component へ渡されるデータ（`__NEXT_DATA__` または RSC Payload）に `content` が含まれていないことを確認する。

@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { AppLink } from '@/components/ui/AppLink';
-import { FormattedDate } from '@/components/ui/FormattedDate';
-import type { Post } from '@/features/posts/types';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
+import { FormattedDate } from '@/components/ui/FormattedDate/FormattedDate';
+import type { PostSummary } from '@/features/posts/types';
 
 import {
   articleCardStyles,
@@ -14,7 +14,7 @@ import {
 } from './ArticleCard.styles';
 
 type ArticleCardProps = {
-  post: Post;
+  post: PostSummary;
 };
 
 /**
