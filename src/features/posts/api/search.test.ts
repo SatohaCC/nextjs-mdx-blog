@@ -9,13 +9,24 @@ import {
   searchPosts,
 } from './search';
 
+vi.mock('next/cache', () => ({
+  cacheLife: vi.fn(),
+  cacheTag: vi.fn(),
+}));
+
 vi.mock('@/features/posts/api/posts', () => ({ getAllPosts: vi.fn() }));
 
-function makePost(slug: string, title: string, excerpt: string, tags: string[] = []): Post {
+function makePost(
+  slug: string,
+  title: string,
+  excerpt: string,
+  content: string = '',
+  tags: string[] = []
+): Post {
   return {
     slug,
     frontmatter: { title, date: '2024-01-01', excerpt, tags, draft: false },
-    content: '',
+    content,
   };
 }
 
@@ -58,6 +69,14 @@ describe('searchPosts', () => {
 
   it('マッチなしで空配列', async () => {
     expect(await searchPosts('xxxxxxxxxx')).toEqual([]);
+  });
+
+  it('content に部分一致', async () => {
+    const postWithContent = makePost('h', 'Title', 'Excerpt', 'Specific keyword in content');
+    vi.mocked(getAllPosts).mockResolvedValue([...POSTS, postWithContent]);
+
+    const results = await searchPosts('specific keyword');
+    expect(results.map((p) => p.slug)).toContain('h');
   });
 
   it('101文字のクエリは最初の100文字で検索される', async () => {
