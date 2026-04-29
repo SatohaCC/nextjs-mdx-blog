@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { siteConfig } from '@/content/site';
 import { getTotalPages } from '@/features/posts/api/posts';
-import { PostListContainer as PostList } from '@/features/posts/components/PostList';
+import { PostListContainer as PostList } from '@/features/posts/components/PostList/PostListContainer';
 
 export const generateStaticParams = async () => {
   const totalPages = await getTotalPages();

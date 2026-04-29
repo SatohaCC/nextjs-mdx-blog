@@ -1,6 +1,6 @@
-import { AppLink } from '@/components/ui/AppLink';
-import { FormattedDate } from '@/components/ui/FormattedDate';
-import { TagLink, TagList } from '@/components/ui/Tag';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
+import { FormattedDate } from '@/components/ui/FormattedDate/FormattedDate';
+import { TagLink, TagList } from '@/components/ui/Tag/Tag';
 import type { Post } from '@/features/posts/types';
 
 import {

@@ -1,8 +1,8 @@
 import { ViewTransition } from 'react';
 
 import { PageTitle } from '@/components/ui/PageTitle/PageTitle';
-import { PaginationContainer as Pagination } from '@/features/posts/components/Pagination';
-import type { Post } from '@/features/posts/types';
+import { PaginationContainer as Pagination } from '@/features/posts/components/Pagination/PaginationContainer';
+import type { PostSummary } from '@/features/posts/types';
 
 import { ArticleCard } from './ArticleCard/ArticleCard';
 import {
@@ -12,7 +12,7 @@ import {
 } from './PostListPresentational.styles';
 
 type PostListPresentationalProps = {
-  posts: Post[];
+  posts: PostSummary[];
   totalPages: number;
   totalCount?: number;
   currentPage: number;

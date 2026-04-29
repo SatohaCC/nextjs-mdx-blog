@@ -3,7 +3,8 @@ import {
   getSearchTotalCount,
   getSearchTotalPages,
 } from '@/features/posts/api/search';
-import { PostListPresentational } from '@/features/posts/components/PostList';
+import { PostListPresentational } from '@/features/posts/components/PostList/PostListPresentational';
+import type { PostSummary } from '@/features/posts/types';
 
 type SearchContainerProps = {
   searchParams: Promise<{ q?: string; page?: string }>;
@@ -20,6 +21,12 @@ export const SearchContainer = async ({ searchParams }: SearchContainerProps) =>
     getSearchTotalCount(query),
   ]);
 
+  // Serialization の最適化: クライアントコンポーネントに渡す前に不要な content を除去
+  const sanitizedPosts: PostSummary[] = posts.map(({ slug, frontmatter }) => ({
+    slug,
+    frontmatter,
+  }));
+
   const getPageUrl = (p: number) => {
     const params = new URLSearchParams();
     if (query) params.set('q', query);
@@ -30,7 +37,7 @@ export const SearchContainer = async ({ searchParams }: SearchContainerProps) =>
 
   return (
     <PostListPresentational
-      posts={posts}
+      posts={sanitizedPosts}
       totalPages={totalPages}
       totalCount={totalCount}
       currentPage={currentPage}

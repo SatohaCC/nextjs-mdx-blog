@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
 
-import { AppLink } from '@/components/ui/AppLink';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
 
 import {
   disabledStyles,

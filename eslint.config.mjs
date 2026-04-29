@@ -47,6 +47,8 @@ const eslintConfig = defineConfig([
     'build/**',
     'next-env.d.ts',
     'styled-system/**',
+    'playwright-report/**',
+    'test-results/**',
   ]),
   {
     rules: {

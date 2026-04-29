@@ -1,8 +1,8 @@
-import { MarkdownRenderer } from '@/components/mdx';
-import { BackButtonContainer as BackButton } from '@/components/ui/BackButton';
-import { FormattedDate } from '@/components/ui/FormattedDate';
+import { MarkdownRenderer } from '@/components/mdx/MarkdownRenderer/MarkdownRenderer';
+import { BackButtonContainer as BackButton } from '@/components/ui/BackButton/BackButtonContainer';
+import { FormattedDate } from '@/components/ui/FormattedDate/FormattedDate';
 import { PageTitle } from '@/components/ui/PageTitle/PageTitle';
-import { TagLink, TagList } from '@/components/ui/Tag';
+import { TagLink, TagList } from '@/components/ui/Tag/Tag';
 import { type TocItem } from '@/features/posts/api/toc-generator';
 import type { Post } from '@/features/posts/types';
 

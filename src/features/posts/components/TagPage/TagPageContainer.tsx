@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { siteConfig } from '@/content/site';
 import { getPostsByTag } from '@/features/posts/api/posts';
+import type { PostSummary } from '@/features/posts/types';
 
 import { TagPagePresentational } from './TagPagePresentational';
 
@@ -21,6 +22,12 @@ export const TagPageContainer = async ({ tag, currentPage = 1 }: TagPageContaine
   const startIndex = (currentPage - 1) * siteConfig.postsPerPage;
   const paginatedPosts = allPosts.slice(startIndex, startIndex + siteConfig.postsPerPage);
 
+  // Serialization の最適化: クライアントコンポーネントに渡す前に不要な content を除去
+  const sanitizedPosts: PostSummary[] = paginatedPosts.map(({ slug, frontmatter }) => ({
+    slug,
+    frontmatter,
+  }));
+
   const displayTag =
     allPosts[0]?.frontmatter.tags?.find(
       (t) => t.toLowerCase().replace(/\s+/g, '-') === tag.toLowerCase()
@@ -28,7 +35,7 @@ export const TagPageContainer = async ({ tag, currentPage = 1 }: TagPageContaine
 
   return (
     <TagPagePresentational
-      posts={paginatedPosts}
+      posts={sanitizedPosts}
       displayTag={displayTag}
       currentPage={currentPage}
       totalPages={totalPages}

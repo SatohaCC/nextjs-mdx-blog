@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import { Footer } from '@/components/layouts/Footer';
-import { Header } from '@/components/layouts/Header';
-import { Sidebar } from '@/components/layouts/Sidebar';
-import { SkipLink } from '@/components/ui/SkipLink';
-import { Providers } from '@/components/ui/providers';
+import { FooterPresentational as Footer } from '@/components/layouts/Footer/FooterPresentational';
+import { HeaderPresentational as Header } from '@/components/layouts/Header/HeaderPresentational';
+import { SidebarContainer as Sidebar } from '@/components/layouts/Sidebar/SidebarContainer';
+import { SkipLink } from '@/components/ui/SkipLink/SkipLink';
+import { Providers } from '@/components/ui/providers/providers';
 import { siteConfig } from '@/content/site';
 
 import './globals.css';

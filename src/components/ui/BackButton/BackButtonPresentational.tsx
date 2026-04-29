@@ -1,6 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button/Button';
 
 type BackButtonPresentationalProps = {
   /** 戻るボタンが押されたときのコールバック */

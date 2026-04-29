@@ -30,7 +30,6 @@ export const WithPosts: Story = {
           date: '2024-01-10',
           excerpt: 'Server Side Rendering の基本を解説します。',
         },
-        content: '',
       },
       {
         slug: 'related-post-2',
@@ -39,7 +38,6 @@ export const WithPosts: Story = {
           date: '2024-02-05',
           excerpt: '型推論と型ガードについて詳しく解説します。',
         },
-        content: '',
       },
     ],
   },

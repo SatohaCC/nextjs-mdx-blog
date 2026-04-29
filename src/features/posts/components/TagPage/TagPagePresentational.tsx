@@ -1,11 +1,11 @@
-import { AppLink } from '@/components/ui/AppLink';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
 import { PostListPresentational as PostList } from '@/features/posts/components/PostList/PostListPresentational';
-import type { Post } from '@/features/posts/types';
+import type { PostSummary } from '@/features/posts/types';
 
 import { backToHomeLinkStyles, tagPageContainerStyles } from './TagPagePresentational.styles';
 
 type TagPagePresentationalProps = {
-  posts: Post[];
+  posts: PostSummary[];
   displayTag: string;
   currentPage: number;
   totalPages: number;

@@ -1,5 +1,5 @@
-import { AppLink } from '@/components/ui/AppLink';
-import { Button } from '@/components/ui/Button';
+import { AppLink } from '@/components/ui/AppLink/AppLink';
+import { Button } from '@/components/ui/Button/Button';
 
 import {
   statusPageActionsStyles,

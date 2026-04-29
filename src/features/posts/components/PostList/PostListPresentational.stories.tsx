@@ -12,7 +12,6 @@ const mockPosts = [
       excerpt: 'App Router の基本的な使い方と Pages Router との違いを解説します。',
       tags: ['Next.js', 'React'],
     },
-    content: '',
   },
   {
     slug: 'typescript-generics',
@@ -22,7 +21,6 @@ const mockPosts = [
       excerpt: 'ジェネリクスの基礎から応用まで、実践的なサンプルで解説します。',
       tags: ['TypeScript'],
     },
-    content: '',
   },
   {
     slug: 'pandacss-introduction',
@@ -31,7 +29,6 @@ const mockPosts = [
       date: '2024-01-10',
       excerpt: 'PandaCSS の基本概念とセットアップ方法を紹介します。',
     },
-    content: '',
   },
 ];
 

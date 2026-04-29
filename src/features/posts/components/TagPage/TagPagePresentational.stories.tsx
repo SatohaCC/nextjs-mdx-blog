@@ -12,7 +12,6 @@ const mockPosts = [
       excerpt: 'App Router の基本的な使い方と Pages Router との違いを解説します。',
       tags: ['Next.js', 'React'],
     },
-    content: '',
   },
   {
     slug: 'nextjs-server-components',
@@ -22,7 +21,6 @@ const mockPosts = [
       excerpt: 'RSC の特性とクライアントコンポーネントとの使い分けを解説します。',
       tags: ['Next.js', 'React'],
     },
-    content: '',
   },
 ];
 
