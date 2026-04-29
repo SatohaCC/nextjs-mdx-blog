@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
     // lucide-reactのbarrelインポートを最適化
-    optimizePackageImports: ['lucide-react'],
+    optimizePackageImports: ['lucide-react', 'react-aria-components'],
   },
 };
 

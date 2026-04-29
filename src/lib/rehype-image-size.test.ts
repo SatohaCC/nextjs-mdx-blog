@@ -1,21 +1,28 @@
-import { describe, expect, it, vi } from 'vitest';
-import rehypeImageSize from './rehype-image-size';
-import fs from 'node:fs';
 import imageSize from 'image-size';
+import fs from 'node:fs';
+import { describe, expect, it, vi } from 'vitest';
+
+import rehypeImageSize from './rehype-image-size';
 
 vi.mock('node:fs');
 vi.mock('image-size');
 
+interface MockNode {
+  type: string;
+  tagName: string;
+  properties: Record<string, unknown>;
+}
+
 describe('rehypeImageSize', () => {
   it('should add width and height to local image elements', async () => {
     const plugin = rehypeImageSize();
-    
+
     // モックの設定
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readFileSync).mockReturnValue(Buffer.from('dummy'));
     vi.mocked(imageSize).mockReturnValue({ width: 800, height: 600 });
 
-    const mockNode: any = {
+    const mockNode: MockNode = {
       type: 'element',
       tagName: 'img',
       properties: {
@@ -29,7 +36,7 @@ describe('rehypeImageSize', () => {
     };
 
     // プラグインの実行
-    (plugin as any)(tree);
+    (plugin as (tree: unknown) => void)(tree);
 
     expect(mockNode.properties.width).toBe(800);
     expect(mockNode.properties.height).toBe(600);
@@ -37,8 +44,8 @@ describe('rehypeImageSize', () => {
 
   it('should skip external images', async () => {
     const plugin = rehypeImageSize();
-    
-    const mockNode: any = {
+
+    const mockNode: MockNode = {
       type: 'element',
       tagName: 'img',
       properties: {
@@ -51,7 +58,7 @@ describe('rehypeImageSize', () => {
       children: [mockNode],
     };
 
-    (plugin as any)(tree);
+    (plugin as (tree: unknown) => void)(tree);
 
     expect(mockNode.properties.width).toBeUndefined();
     expect(mockNode.properties.height).toBeUndefined();
