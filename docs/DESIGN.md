@@ -58,6 +58,12 @@
 3. **Styles (`*.styles.ts`)**:
    - `css()` や `cva()` (Recipe) を使用したスタイル定義。
 
+### インポート規則
+パフォーマンス最適化のため、バレルファイル（`index.ts`）は使用しません。コンポーネントをインポートする際は、常に実体ファイルを直接指定してください。
+
+- ✅ `import { Button } from '@/components/ui/Button/Button';`
+- ❌ `import { Button } from '@/components/ui/Button';`
+
 ### 共通UIプリミティブ (`src/components/ui/`)
 
 再利用性の高い部品（Button, Tag, AppLink等）はここに配置されます。これらは機能に依存せず、どこからでもインポート可能です。
