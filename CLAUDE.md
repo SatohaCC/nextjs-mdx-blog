@@ -54,3 +54,11 @@ Node.js >=24.14.1 required.
 4. description は.agents\workflows\commit-message-generator.md を参照して。
 
 **禁止事項:** `git` コマンドの直接使用（`jj git` サブコマンドおよび `gh` CLI は許可）
+
+## Issue 管理
+
+プロジェクトの課題（バグ、改善案、タスク）は **GitHub Issues** で管理する。
+
+- 新しい課題が見つかった場合は、`gh issue create` で GitHub に登録すること。
+- ローカルファイル（`ISSUES.md` など）での課題管理は行わない。
+- 作業開始前、または作業中に気づいた改善点は積極的に Issue 化して可視化すること。

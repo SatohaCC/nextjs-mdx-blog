@@ -34,6 +34,11 @@ Next.js、PandaCSS、React Aria を使用した、Satoha（[satoha.net](https://
 - ✅ **[テストガイドライン (docs/TESTING.md)](docs/TESTING.md)**: テストの使い分け（Vitest / Storybook / Playwright）、実装パターン。
 - 🎬 **[アニメーションガイドライン (docs/ANIMATIONS.md)](docs/ANIMATIONS.md)**: モーション設計、Framer Motion / Panda CSS による実装方法。
 
+## 課題管理
+
+プロジェクトのバグ報告、機能要望、改善案などの課題管理は **[GitHub Issues](https://github.com/SatohaCC/nextjs-mdx-blog/issues)** で行っています。
+ローカルの `ISSUES.md` などは使用せず、常に GitHub 上で最新の状態を管理します。
+
 ## はじめに
 
 ### インストール
