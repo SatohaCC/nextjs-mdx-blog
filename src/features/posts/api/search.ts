@@ -1,8 +1,13 @@
+import { cacheLife } from 'next/cache';
+
 import { siteConfig } from '@/content/site';
 import { getAllPosts } from '@/features/posts/api/posts';
 import type { Post } from '@/features/posts/types';
 
 export const searchPosts = async (query: string): Promise<Post[]> => {
+  'use cache';
+  cacheLife('minutes');
+
   const normalizedQuery = query.slice(0, 100);
   if (!normalizedQuery.trim()) {
     return [];
@@ -14,7 +19,8 @@ export const searchPosts = async (query: string): Promise<Post[]> => {
   return allPosts.filter(
     (post) =>
       post.frontmatter.title.toLowerCase().includes(lowerQuery) ||
-      post.frontmatter.excerpt.toLowerCase().includes(lowerQuery)
+      post.frontmatter.excerpt.toLowerCase().includes(lowerQuery) ||
+      post.content.toLowerCase().includes(lowerQuery)
   );
 };
 

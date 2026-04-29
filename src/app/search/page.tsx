@@ -6,16 +6,27 @@ import { siteConfig } from '@/content/site';
 import { SearchContainer, SearchSkeleton } from '@/features/posts/components/Search';
 
 type SearchPageProps = {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; page?: string }>;
 };
 
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
-  const { q } = await searchParams;
-  const title = q ? `"${q}" の検索結果` : '検索';
+  const { q, page } = await searchParams;
+  const query = q || '';
+  const currentPage = parseInt(page ?? '1', 10) || 1;
+
+  const title = query ? `"${query}" の検索結果` : '検索';
+
+  // Canonical URL の構築
+  const params = new URLSearchParams();
+  if (query) params.set('q', query);
+  if (currentPage > 1) params.set('page', String(currentPage));
+  const queryString = params.toString();
+  const canonicalUrl = `${siteConfig.url}/search${queryString ? `?${queryString}` : ''}`;
+
   return {
     title,
-    description: q ? `「${q}」に関する記事の検索結果` : '記事を検索できます',
-    alternates: { canonical: `${siteConfig.url}/search` },
+    description: query ? `「${query}」に関する記事の検索結果` : '記事を検索できます',
+    alternates: { canonical: canonicalUrl },
   };
 }
 
