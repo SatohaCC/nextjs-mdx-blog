@@ -44,4 +44,33 @@ describe('extractToc', () => {
     expect(result.map((t) => t.text)).toEqual(['First', 'Sub', 'Second']);
     expect(result.map((t) => t.level)).toEqual([2, 3, 2]);
   });
+
+  it('コードブロック内の見出しは無視する', () => {
+    const content = `
+## 正しい見出し
+\`\`\`bash
+## コードブロック内のコメント
+\`\`\`
+### 別の正しい見出し
+~~~
+## チルダのコードブロック
+~~~
+    `;
+    const result = extractToc(content);
+    expect(result).toHaveLength(2);
+    expect(result[0].text).toBe('正しい見出し');
+    expect(result[1].text).toBe('別の正しい見出し');
+  });
+
+  it('HTMLコメント内の見出しは無視する', () => {
+    const content = `
+## 正しい見出し
+<!--
+## コメントアウトされた見出し
+-->
+    `;
+    const result = extractToc(content);
+    expect(result).toHaveLength(1);
+    expect(result[0].text).toBe('正しい見出し');
+  });
 });
