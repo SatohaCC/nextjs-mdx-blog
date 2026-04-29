@@ -69,12 +69,10 @@ src/
 ComponentName/
 ├── ComponentName.tsx          # ロジック・JSX（スタイルなし）
 ├── ComponentName.styles.ts    # スタイル定義 (※src/components/ui/ では styles.ts)
-├── ComponentName.stories.tsx  # (任意) Storybookカタログ・Vitestテスト対象
-└── index.ts                   # 公開APIの定義
+└── ComponentName.stories.tsx  # (任意) Storybookカタログ・Vitestテスト対象
 ```
 
-複雑なコンポーネントや、外部からフォルダ名で参照したい場合にこのパターンを適用します。
-関連性の強い小さなコンポーネント群をまとめる場合（例: `src/components/mdx/`）は、親ディレクトリの `index.ts` で一括管理することを検討してください。
+複雑なコンポーネントでも、Next.js の Tree Shaking 最適化のためバレルファイル（index.ts）は作成せず、常に実体ファイルを直接インポートします。
 
 ### ファイルの役割
 
@@ -83,7 +81,6 @@ ComponentName/
 | `ComponentName.tsx`         | Reactコンポーネントのロジックとマークアップ |
 | `ComponentName.styles.ts`   | PandaCSSを使用したスタイル定義              |
 | `ComponentName.stories.tsx` | StorybookカタログおよびVitestテスト定義     |
-| `index.ts`                  | 外部へのエクスポート（公開APIの定義）       |
 
 ---
 
@@ -221,8 +218,7 @@ ComponentName/
 ├── ComponentNameContainer.tsx               # Server Component / データ取得（スタイルファイルなし）
 ├── ComponentNamePresentational.tsx          # Client Component / 表示
 ├── ComponentNamePresentational.styles.ts    # Presentational のスタイル
-├── ComponentNamePresentational.stories.tsx  # (任意) Storybookカタログ・Vitestテスト対象
-└── index.ts
+└── ComponentNamePresentational.stories.tsx  # (任意) Storybookカタログ・Vitestテスト対象
 ```
 
 **Container はスタイルファイルを持ちません。** スタイルはすべて Presentational 側に定義します。
@@ -245,10 +241,9 @@ ComponentName/
 1. `src/components/ui/<ComponentName>/` フォルダを作成
 2. `styles.ts` を先に作成し、必要なスタイルを定義
 3. `ComponentName.tsx` を作成し、スタイルをインポート
-4. `index.ts` でエクスポート（wildcard re-export）
+4. 外部からはフォルダ名ではなく、ファイルの実体を直接インポートする
    ```typescript
-   // index.ts
-   export * from './ComponentName';
+   import { ComponentName } from '@/components/ui/ComponentName/ComponentName';
    ```
 
 ### 機能専用コンポーネント（`src/features/<feature>/components/`）の場合
@@ -260,16 +255,9 @@ ComponentName/
 3. `ComponentNamePresentational.styles.ts` でスタイルを定義
 4. `ComponentNamePresentational.tsx` を作成し、スタイルをインポート
 5. UIカタログやテストが必要な場合は `ComponentNamePresentational.stories.tsx` を作成
-6. `index.ts` で **Container と Presentational の両方** を named export する
+6. インポート側では必要に応じて `as` を使い、Container と Presentational を区別する
    ```typescript
-   // index.ts
-   export { ComponentNameContainer } from './ComponentNameContainer';
-   export { ComponentNamePresentational } from './ComponentNamePresentational';
-   ```
-   Container を外部向けの簡潔な名前で公開したい場合はエイリアスを使います:
-   ```typescript
-   export { ComponentNameContainer as ComponentName } from './ComponentNameContainer';
-   export { ComponentNamePresentational } from './ComponentNamePresentational';
+   import { ComponentNameContainer as ComponentName } from '@/features/posts/components/ComponentName/ComponentNameContainer';
    ```
 
 #### データ取得なし（UIのみのコンポーネント）
@@ -280,10 +268,9 @@ Container/Presentational パターンは使わず、`ComponentName` をそのま
 2. `ComponentName.styles.ts` でスタイルを定義
 3. `ComponentName.tsx` を作成し、スタイルをインポート
 4. UIカタログやテストが必要な場合は `ComponentName.stories.tsx` を作成
-5. `index.ts` で named export する
+5. 直接ファイルを指定してインポートする
    ```typescript
-   // index.ts
-   export { ComponentName } from './ComponentName';
+   import { ComponentName } from '@/features/posts/components/ComponentName/ComponentName';
    ```
 
 ---
