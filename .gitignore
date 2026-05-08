@@ -55,3 +55,6 @@ test-results/
 
 # Jujutsu
 .jj/
+
+# Agents
+.agents/
